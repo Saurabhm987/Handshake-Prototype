@@ -14,10 +14,18 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "concurrently": "^5.1.0",
+    "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
+    "cryptr": "^6.0.1",
     "express": "^4.17.1",
+    "express-basic-auth": "^1.2.0",
+    "express-session": "^1.17.0",
+    "mdbreact": "^4.25.2",
     "morgan": "^1.9.1",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "react-jss": "^10.0.4",
+    "react-material-ui-form": "^1.1.6",
+    "uuid": "^3.4.0"
   }
 }
