@@ -1,0 +1,47 @@
+
+    body > .grid {
+      height: 100%;
+    }
+
+    .ui.input {
+      font-size: 1.5em;
+  }
+
+  .ui.message.regStud {
+    background: white;
+  }
+    
+    .ui.secondary.segment.login {
+      background: white;
+      color: rgba(0,0,0,.6);
+  }
+    #loginStudSeg {
+      background: white;
+    }
+    #logo-class {
+      margin-top: -100px;
+    }
+    #loginStud {
+      max-width: 450px;
+    }
+
+#logo-id .logo-class {
+    margin: 0 auto;
+    max-width: 200px;
+    max-height: 40px;
+}
+
+.ui.inverted.segment, .ui.primary.inverted.segment {
+  background: #2377cc;
+  color: rgba(255,255,255,.9);
+}
+.ui.inverted.menu .item, .ui.inverted.menu .item>a:not(.ui) {
+  background: 0 0;
+  font-size: 2em;
+}
+
+#cardHover:hover {
+  background: rgb(245, 241, 241);
+  cursor: pointer;
+  text-decoration: underline;
+}

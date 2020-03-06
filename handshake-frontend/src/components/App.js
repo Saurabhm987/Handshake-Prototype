@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-// import './App.css';
 import Main from './Main';
-import {BrowserRouter} from 'react-router-dom';
+import {BrowserRouter, Switch} from 'react-router-dom';
+import "../components/App.css"
 
 class App extends Component {
   render() {
     return(
       <BrowserRouter>
+        <Switch>
         <div>
           <Main/>
         </div>
+        </Switch>
       </BrowserRouter>
     );
   }

@@ -9,6 +9,7 @@
 #json 
 package-lock.json
 
+indexOriginal.js
 
 # production
 /build

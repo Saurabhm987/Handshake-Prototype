@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
-
-// import cookie from 'react-cookies';
-// import {Redirect} from 'react-router';
-
 
 export default class Register extends Component{
     constructor(props){
@@ -60,19 +55,11 @@ export default class Register extends Component{
     submitForm = async (e) => {
         e.preventDefault();
 
-        const regInfo = {
-            name: this.state.name,
-            email: this.state.email,
-            password: this.state.password,
-            uniName: this.state.uniName, 
-            access: this.state.access
-        }
-
-        console.log("requested body in client: ", regInfo);
+        const { name, uniName, email, password, access} = this.state;
 
         axios.defaults.withCredentials = true;
 
-        await axios.post('http://localhost:3001/register', regInfo)
+        await axios.post('http://localhost:3001/register', { name,uniName, email, password, access})
             .then(response => {
                 console.log("responseRegister: ", response );
                 if(response.status === 200){
@@ -87,65 +74,44 @@ export default class Register extends Component{
 
     render(){
         return(
-            <MDBContainer>
-            <MDBRow>
-              <MDBCol md="6">
-                <form>
-                  <p className="h4 text-center mb-4">Sign up</p>
-                  <label htmlFor="defaultFormRegisterNameEx" className="grey-text">
-                    Your name
-                  </label>
-                  <input onChange={this.nameHandler} type="text" id="defaultFormRegisterNameEx" className="form-control" />
-                  <br />
-                  <label htmlFor="defaultFormRegisterEmailEx" className="grey-text">
-                    Your email
-                  </label>
-                  <input onChange={this.emailHandler} type="email" id="defaultFormRegisterEmailEx" className="form-control" />
-                  <br />
-                  <label htmlFor="defaultFormRegisterPasswordEx" className="grey-text">
-                    Your password
-                  </label>
-                  <input onChange={this.passwordHandler} type="password" id="defaultFormRegisterPasswordEx" className="form-control" />
-                  <br />
-                  <label htmlFor="defaultFormRegisterCollegeNameEx" className="grey-text">
-                    Your college name
-                  </label>
-                  <input onChange={this.uniNameHandler} type="text" id="defaultFormRegisterCollegeNameEx" className="form-control" />
-                  <label htmlFor="defaultFormRegisterStudentorProfEx" className="grey-text">
-                    Student or Prof 
-                  </label>
-                  <input onChange={this.accessControlHandler} type="text" id="defaultFormRegisterStudentorProfEx" className="form-control" />
-                  <div className="text-center mt-4">
-                    <MDBBtn onClick={this.submitForm} color="primary" type="submit">
-                      Register
-                    </MDBBtn>
-                  </div>
-                </form>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
 
-        // -----------------------------------------------------------------------------
-
-            // <form class="ui form">
-            //     <div class="field">
-            //         <label>Student Name</label>
-            //         <input onChange={this.nameHandler} type="text" name="name" placeholder=" Student Name"/>
-            //     </div>
-            //     <div class="field">
-            //         <label>Email</label>
-            //          <input onChange={this.emailHandler} type="email" name="email" placeholder="Email"/>
-            //     </div>
-            //     <div class="field">
-            //         <label>Password</label>
-            //          <input onChange={this.passwordHandler} type="password" name="email" placeholder="Email"/>
-            //     </div>
-            //     <div class="field">
-            //         <label>University Name</label>
-            //          <input onChange={this.uniNameHandler} type="text" name="uniName" placeholder="University Name"/>
-            //     </div>
-            //     <button onClick= {this.submitForm} class="ui button" type="submit">Submit</button>
-            // </form>
+          <div   style={{margin: "8% 15% 8% 26%", width:"50%"}}>
+            <div>
+                <h2>Join the Handshake community</h2>
+            </div>
+            <br/>
+            <div>
+              <h3>Discover jobs and internships based on your interests.</h3>
+            </div>
+            <div>
+                <a href="/register">Are you an employer? Create an account here.</a>
+            </div>
+            <br/>
+            <form className="ui form">
+              <div className="field">
+                    <h5><label>University Name</label></h5>
+                     <input onChange={this.uniNameHandler} type="text" name="uniName" placeholder="University Name"/>
+                </div>
+                <br/>
+                <div className="field">
+                    <h5><label>Student Name</label></h5>
+                    <input onChange={this.nameHandler} type="text" name="name" placeholder=" Student Name"/>
+                </div>
+                <br/>
+                <div className="field">
+                    <h5><label>Email Adress</label></h5>
+                    <label>Please use your school email</label>
+                     <input onChange={this.emailHandler} type="email" name="email" placeholder="Email"/>
+                </div>
+                <br/>
+                <div className="field" >
+                    <h5><label>Password</label></h5>
+                     <input onChange={this.passwordHandler} type="password" name="email" placeholder="Email"/>
+                </div> 
+                <br/>
+                <button onClick= {this.submitForm} className=" large ui button" type="submit">Submit</button>
+              </form>
+            </div>
         );
     }
 }

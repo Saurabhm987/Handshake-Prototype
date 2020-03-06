@@ -20,12 +20,17 @@
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "express-session": "^1.17.0",
+    "jsonwebtoken": "^8.5.1",
     "mdbreact": "^4.25.2",
     "morgan": "^1.9.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.2",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "react-jss": "^10.0.4",
     "react-material-ui-form": "^1.1.6",
+    "semantic-ui-react": "^0.88.2",
     "uuid": "^3.4.0"
   }
 }

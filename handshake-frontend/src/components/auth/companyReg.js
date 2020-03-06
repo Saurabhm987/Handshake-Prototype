@@ -1,90 +1,43 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
 
-
-export default class CompanyReg extends Component{
+export default class JobPost extends Component{
     constructor(props){
         super(props);
 
         this.state = {
-            name : "",
-            email: "",
-            password: "",
-            loc: "",
-            descr: "",
-            contact: "",
-            authFlag: false
+            company_name : "",
+            company_email: "",
+            company_psw: "",
+            company_loc: "",
+            company_descr: "",
+            company_contact: "",
+            company_profile_photo: ""
         }
 
-        this.nameHandler = this.nameHandler.bind(this);
-        this.emailHandler = this.emailHandler.bind(this);
-        this.passwordHandler = this.passwordHandler.bind(this);
-        this.locHandler = this.locHandler.bind(this);
-        this.descrHandler = this.descrHandler.bind(this);
-        this.contactHandler = this.contactHandler.bind(this);
-        this.submitForm = this.submitForm.bind(this);        
+        this.changeHandler = this.changeHandler.bind(this);
+        this.submitForm = this.submitForm.bind(this);
+        
     }
 
-    nameHandler = (e) => {
-        this.setState({
-            name: e.target.value
-        })
-    }
-
-    emailHandler = (e) => {
-        this.setState({
-            email: e.target.value
-        })
-    }
-
-    passwordHandler = (e) => {
-        this.setState({
-            password: e.target.value
-        })
-    }
-
-    locHandler = (e) => {
-        this.setState({
-            loc: e.target.value
-        })
-    }
-
-    descrHandler = (e) => {
-        this.setState({
-            descr: e.target.value
-        })
-    }
-
-    contactHandler = (e) => {
-        this.setState({
-            contact: e.target.value
-        })
+    changeHandler = (e) =>{
+      this.setState({
+        [e.target.name] : e.targe.value
+      })
     }
 
     submitForm = async (e) => {
         e.preventDefault();
 
-        const regInfo = {
-            name: this.state.name,
-            email: this.state.email,
-            password: this.state.password,
-            loc: this.state.loc, 
-            descr: this.state.descr,
-            contact: this.state.contact
-        }
-
-        console.log("requested body in client: ", regInfo);
+        const regObj = Object.assign(this.state);
 
         axios.defaults.withCredentials = true;
-
-        await axios.post('http://localhost:3001/companyRegister', regInfo)
+        await axios.post('http://localhost:3001/registerCompany', regObj)
             .then(response => {
                 console.log("responseRegister: ", response );
                 if(response.status === 200){
                     console.log("successfully regiesterd!!!!!!!!!!");
-                    this.props.history.push('/profaccess');
-
+                    // this.props.history.push('/login');
                 }else{
                   console.log("bad response!!!!!!!");
                 }
@@ -93,47 +46,45 @@ export default class CompanyReg extends Component{
 
     render(){
         return(
-            <MDBContainer>
-            <MDBRow>
-              <MDBCol md="6">
-                <form>
-                  <p className="h4 text-center mb-4">Sign up</p>
-                  <label htmlFor="defaultFormRegisterNameEx" className="grey-text">
-                    company name
-                  </label>
-                  <input onChange={this.nameHandler} type="text" id="defaultFormRegisterNameEx" className="form-control" />
-                  <br />
-                  <label htmlFor="defaultFormRegisterEmailEx" className="grey-text">
-                    company email
-                  </label>
-                  <input onChange={this.emailHandler} type="email" id="defaultFormRegisterEmailEx" className="form-control" />
-                  <br />
-                  <label htmlFor="defaultFormRegisterPasswordEx" className="grey-text">
-                     password
-                  </label>
-                  <input onChange={this.passwordHandler} type="password" id="defaultFormRegisterPasswordEx" className="form-control" />
-                  <br />
-                  <label htmlFor="defaultFormRegisterCollegeNameEx" className="grey-text">
-                    location
-                  </label>
-                  <input onChange={this.locHandler} type="text" id="defaultFormRegisterLocEx" className="form-control" />
-                  <label htmlFor="defaultFormRegisterStudentorProfEx" className="grey-text">
-                    description
-                  </label>
-                  <input onChange={this.descrHandler} type="text" id="defaultFormRegisterDescriptionEx" className="form-control" />
-                  <label htmlFor="defaultFormRegisterStudentorProfEx" className="grey-text">
-                    contact
-                  </label>
-                  <input onChange={this.contactHandler} type="number" id="defaultFormRegistercontactEx" className="form-control" />
-                  <div className="text-center mt-4">
-                    <MDBBtn onClick={this.submitForm} color="primary" type="submit">
-                      Register
-                    </MDBBtn>
-                  </div>
-                </form>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
+          <div   style={{margin: "8% 15% 8% 26%", width:"50%"}}>
+            <div>
+              <h3>Employer Registrations</h3>
+            </div>
+            <br/>
+            <form className="ui form">
+              <div className="field">
+                    <h5><label>Company Name</label></h5>
+                     <input onChange={this.changeHandler} type="text" name="company_name" placeholder="Company Name"/>
+                </div>
+                <br/>
+                <div className="field">
+                    <h5><label>Company Email</label></h5>
+                     <input onChange={this.changeHandler} type="text" name="company_email" placeholder="Company Email"/>
+                </div>
+                <br/>
+                <div className="field">
+                    <h5><label>Password</label></h5>
+                    <input onChange={this.changeHandler} type="text" name="company_psw" placeholder="Password"/>
+                </div>
+                <br/>
+                <div className="field">
+                    <h5><label>Location </label></h5>
+                     <input onChange={this.emailHandler} type="number" name="company_loc" placeholder="Location"/>
+                </div>
+                <br/>
+                <div className="field" >
+                    <h5><label>Company Description</label></h5>
+                     <input onChange={this.changeHandler} type="password" name="company_descr" placeholder="Company Description"/>
+                </div> 
+                <br/>
+                <div className="field" >
+                    <h5><label>Contact Number</label></h5>
+                     <input onChange={this.changeHandler} type="password" name="company_contact" placeholder="Contact Number"/>
+                </div> 
+                <br/>
+                <button onClick= {this.submitForm} className=" large ui button" type="submit">Register</button>
+              </form>
+            </div>
         );
     }
 }

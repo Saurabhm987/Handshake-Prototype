@@ -1,0 +1,166 @@
+import React, {Component} from 'react';
+import { TextArea } from 'semantic-ui-react';
+import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+
+export default class SummaryCard extends Component {
+    constructor(props){
+        super(props);
+
+        this.state = {
+            editmode: false,
+            objective: "",
+            token: "",
+            isLogin: true
+        }
+
+        this.editHandler = this.editHandler.bind(this);
+        this.saveHandler = this.saveHandler.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    //necessary to update the component
+    componentDidUpdate(){
+    }
+
+    componentDidMount(){
+        const accessString = localStorage.getItem('JWT');
+        if(accessString === null){
+            this.setState({
+                isLogin: false
+            })
+            console.log("token is null!....Please Login Again......");
+        }
+
+        this.setState({
+            token: accessString
+        })
+
+        console.log("summary_card_compdidmnt_accessString: ", accessString);
+
+        axios.get("http://localhost:3001/profileStudent/userInfo", { 
+            headers: {
+                Authorization: `JWT ${accessString}`
+            }
+        } ).then(response => {
+                if(response.status === 200){
+                    this.setState({
+                        objective: response.data.student_objective
+                    })
+                    // console.log("studentProfile_responseObj: ", response.data);
+                    console.log("summaryCard_updated_objective: ", this.state.objective);
+                }else{
+                    console.log("ERROR");
+                }
+            })
+    }
+
+    handleChange = (e) => {
+        this.setState({
+            [e.target.name] : e.target.value
+        })
+    }
+
+    saveHandler= (e) => {
+        e.preventDefault();
+
+        console.log("CALLING_SAVE_HANDLER.....");
+        // console.log("EDIT_INFO ", this.state.objective);
+
+        const updateInfo =this.state.objective;
+        console.log("summaryCard_updateInfo: ",updateInfo);
+
+        const headers = {
+            Authorization: `JWT ${this.state.token}`
+        }
+
+        console.log("summaryCard_logout_headers: ", this.state.token);
+
+        console.log("updateInfo: ", updateInfo);
+      
+        axios.put("http://localhost:3001/updateUserProfile", {
+            params : {
+                requestInfo : "summary" ,
+                data: updateInfo
+            }
+        } , {
+            headers: headers
+        })
+            .then(res => {
+                if(res.status === 200){
+                    this.setState({
+                        editmode:false
+                    })
+                    console.log("SUMMARY_UPDATED");
+                }
+            })
+    }
+    editHandler = (e) => {
+        e.preventDefault();
+
+        console.log("studentProfile_CALLING_EDIT_HANDLER");
+
+        this.setState({
+            editmode: true
+        })
+
+    }
+    
+    render(){
+
+        let summary = null;
+        const renderSummary = this.state.objective;
+        console.log("summaryCard_SUMMARY_INFO:", this.state.objective);
+
+        if(this.state.objective !== null && this.state.editmode === false && this.state.isLogin){
+            summary = (
+                <div>
+                <div style={{marginBottom: "20px"}}> 
+                    <h4>{renderSummary}</h4>
+                </div>
+                <div onClick={this.editHandler} class="ui bottom attached small button">
+                        Edit Summary 
+                </div>
+            </div>
+            )
+        }else if((this.state.editmode === true || this.state.objective=== null) && this.state.isLogin ){
+            summary =(
+                <div>
+                <div className="description" style={{marginBottom: "10px"}}>
+                            <h4>What are you passionate about? What are you looking for on Handshake? What are your experiences or skills?</h4>
+                 </div>
+                <form className="ui form">
+                    <textarea style={{fontSize:"1.5em"}} name="objective" placeholder="Tell us more" rows="3" onChange = { this.handleChange}></textarea>
+                </form>
+                <div onClick={this.saveHandler} class="ui bottom attached large button">
+                            Save Summary 
+                    </div>
+                    </div>
+            )
+        }else{
+            summary =(
+                <Redirect to= "/" />
+            )
+        }
+
+        return(
+            <div className="ui cards">
+            <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
+                <div className="content">
+                    <div className="header" style={{marginBottom: "10px"}}>
+                        My Journey
+                    </div>
+                        {summary}
+                    {/* <textarea style={{fontSize:"1.5em"}} placeholder="Tell us more" rows="3"></textarea> */}
+                </div>
+                {/* <div class="ui bottom attached large button">
+                        Save Summary 
+                </div> */}
+            </div>
+        </div>
+        );
+    }
+}
+
+
+{/* <span style={{color: "blue"}}><p className="card-text">What are you passionate about? What are you looking for on Handshake? What are your experiences or skills?</p></span> */}
