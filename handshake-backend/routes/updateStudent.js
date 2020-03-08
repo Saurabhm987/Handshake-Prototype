@@ -52,38 +52,38 @@ app.put('/updateUserProfile', (req, res, next) =>{
             console.log("QUERY_SUCCESS!");
             res.status(200).end();
         })
-    }else if(req.body.details ==="EDU"){
+    }else if(req.body.params.requestInfo ==="EDU"){
 
         console.log("IN_EDU_UPDATE");
 
-        let student_email = "student1@gmail.com";
-
+        let student_email =user.student_email;
 
         let eduObj = {
-            student_college_name: req.body.student_college_name	,
-            student_college_location : req.body.student_college_location,
-            student_college_degree : req.body.student_college_degree,
-            student_college_major : req.body.student_college_major,
-            student_college_yop : req.body.student_college_yop,
-            student_college_gpa	 : req.body.student_college_gpa,
-            // student_email	:  req.body.student_email USE ACTUAL 
+            student_college_name: req.body.params.data.student_college_name	,
+            student_college_location : req.body.params.data.student_college_location,
+            student_college_degree : req.body.params.data.student_college_degree,
+            student_college_major : req.body.params.data.student_college_major,
+            student_college_yop : req.body.params.data.student_college_yop,
+            student_college_gpa	 : req.body.params.data.student_college_gpa,
         }
 
-        let student_education_id = req.body.student_education_id;
+        let student_education_id = req.body.params.data.student_education_id;
 
         let insertQuery = 'UPDATE education_details SET ? WHERE student_email = ? AND student_education_id= ?';
         let query = mysql.format(insertQuery, [eduObj, student_email, student_education_id]);
 
-        pool.query(query, (err, response)=>{
+        pool.query(query, (err, rows)=>{
             if(err){
                 console.log("QUERY_ERRRO", err);
-                res.end();
+                res.status(200).send({
+                    message: "Q_ERROR"
+                });
             }
+            res.status(200).send({message: "Updated"});
+
             console.log("QUERY_SUCCESS!");
         })
 
-        res.end();
-        
     }else if(req.body.details === "EXP"){
 
         console.log("IN_EXP_UDPATE");

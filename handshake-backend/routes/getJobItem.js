@@ -8,7 +8,7 @@ module.exports = app => {
                 if(err){
                     console.log("pass_error: ", err);
                 }
-                console.log("getJobBoard_req_body: ", req.body);
+                console.log("getJobItem_req_body: ", req.body.params);
 
                 if(info !== undefined){
 

@@ -10,22 +10,26 @@ import JobBoard from "./JobBoard/jobboard";
 import StudentProfile from "./profile/studentProfile";
 import JobPost from "./admin/jobpost";
 import CompanyProfile from './profile/companyProfile';
+import StudentAppliedJob from './profile/companyProfile';
+import CompanyPostedJob from './profile/AppliedJob/companyPostedJob';
 
 class Main extends Component {
     render() {
         return(
             <div>
                 {/* <Route path="/" component={Navbar} /> */}
-                <Route path="/" component = {Header}/>
-                <Route path="/home" component = {Home}/>
-                <Route path="/login" component={Login}/>
-                <Route path="/register" component ={Register}/>
-                <Route path="/jobPost" component={JobPost} />
-                <Route path="/companyReg" component={CompanyReg}/>
-                <Route path="/companyLogin" component={CompanyLogin}/>
-                <Route path="/jobBoard" component={JobBoard}/>
-                <Route path="/studentProfile" component={StudentProfile} />
-                <Route path="/companyProfile" component={CompanyProfile} />
+                <Route   path="/" component = {Header}/>
+                <Route exact path="/home" component = {Home}/>
+                <Route exact path="/login" component={Login}/>
+                <Route exact path="/register" component ={Register}/>
+                <Route exact path="/jobPost" component={JobPost} />
+                <Route exact path="/companyReg" component={CompanyReg}/>
+                <Route exact path="/companyLogin" component={CompanyLogin}/>
+                <Route exact path="/jobBoard" component={JobBoard}/>
+                <Route exact path="/studentProfile" component={StudentProfile} />
+                <Route exact path="/studentAppliedJob" component={StudentAppliedJob} />
+                <Route exact path="/companyPostedJob" component={CompanyPostedJob} />
+                <Route exact path="/companyProfile" component={CompanyProfile} />
             </div>
         );
     }

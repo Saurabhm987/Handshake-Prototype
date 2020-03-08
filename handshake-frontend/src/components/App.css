@@ -4,7 +4,7 @@
     }
 
     .ui.input {
-      font-size: 1.5em;
+      font-size: 1.3em;
   }
 
   .ui.message.regStud {
@@ -37,10 +37,16 @@
 }
 .ui.inverted.menu .item, .ui.inverted.menu .item>a:not(.ui) {
   background: 0 0;
-  font-size: 2em;
+  font-size: 1.3em;
 }
 
 #cardHover:hover {
+  background: rgb(245, 241, 241);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#jobItemId:hover {
   background: rgb(245, 241, 241);
   cursor: pointer;
   text-decoration: underline;

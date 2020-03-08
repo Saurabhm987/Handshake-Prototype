@@ -55,6 +55,11 @@ export default class SummaryCard extends Component {
             })
     }
 
+    cancleChange = (e) => {
+        this.setState ({
+            editMode: !this.state.editMode
+        })
+    }
     handleChange = (e) => {
         this.setState({
             [e.target.name] : e.target.value
@@ -132,10 +137,16 @@ export default class SummaryCard extends Component {
                 <form className="ui form">
                     <textarea style={{fontSize:"1.5em"}} name="objective" placeholder="Tell us more" rows="3" onChange = { this.handleChange}></textarea>
                 </form>
-                <div onClick={this.saveHandler} class="ui bottom attached large button">
-                            Save Summary 
-                    </div>
-                    </div>
+                <br/>
+                <div className="extra content">
+                <div onClick={this.cancleChange} class="ui bottom attached large button" style={{ width: "300px", float:"left"}}>
+                           Cancel
+                </div>
+                <div onClick={this.saveHandler} class="ui bottom attached large button" style={{width: "300px", float:"right"}}>
+                            Save
+                </div>
+                </div>
+                </div>
             )
         }else{
             summary =(
@@ -151,11 +162,7 @@ export default class SummaryCard extends Component {
                         My Journey
                     </div>
                         {summary}
-                    {/* <textarea style={{fontSize:"1.5em"}} placeholder="Tell us more" rows="3"></textarea> */}
                 </div>
-                {/* <div class="ui bottom attached large button">
-                        Save Summary 
-                </div> */}
             </div>
         </div>
         );
@@ -163,4 +170,3 @@ export default class SummaryCard extends Component {
 }
 
 
-{/* <span style={{color: "blue"}}><p className="card-text">What are you passionate about? What are you looking for on Handshake? What are your experiences or skills?</p></span> */}

@@ -78,7 +78,7 @@ export default class Login extends Component{
 
       if(!isLogin){
         return(
-          <div class="ui middle aligned center aligned grid">
+          <div class="ui middle aligned center aligned grid" style={{marginTop: "8%"}}>
               <div class="column" id="loginStud">
 
             <form action=" " method="POST" class="ui large form">

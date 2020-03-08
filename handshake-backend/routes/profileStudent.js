@@ -62,36 +62,41 @@ module.exports = app =>{
 
                 }else if(req.params.requestInfo === 'expInfo'){
 
-                    let insertQuery1 = 'SELECT * FROM experience_details WHERE ?? = ? ';
-                    let query1 = mysql.format(insertQuery1, [ "student_email", requ.body.email ]);
+                    console.log("geting expinfo........")
 
-                    pool.query(query1, (err, rows, field) =>{
+                    let insertQuery1 = 'SELECT * FROM experience_details WHERE ?? = ? ';
+                    let query1 = mysql.format(insertQuery1, [ "student_email", user.student_email ]);
+
+                    pool.query(query1, (err, rows) =>{
                         if(err){
                             console.log("QUERY_ERROR: ", err);
-                            res.end();
+                            res.status(200).send({
+                                message: "Q_ERROR"
+                            });
                         }
-                        console.log("profileStudent_NO_QUERY_ERROR!");            
-                        console.log('profileStudent_SENDING_EXP_INFO..........');
-                        // console.log(rows);
+                        console.log("fetched expinfo!");            
+                        console.log('sending back to client.....');
                         console.log("_______________________________________");
                         res.json(rows);
 
                     })
                 }else if(req.params.requestInfo === 'eduInfo'){
 
+                    console.log("getting eduinfo.....")
+
                     let insertQuery2 = 'SELECT * FROM education_details WHERE ?? = ? ';
-                    let query2 = mysql.format(insertQuery2, [ "student_email", req.body.email ]);
+                    let query2 = mysql.format(insertQuery2, [ "student_email",user.student_email ]);
     
                     pool.query(query2, (err, rows) =>{
                         if(err){
                             console.log("QUERY_ERROR: ", err);
+                            
                             res.status(200).send({
                                 message: "DB_ERROR!"
                             })
                         }
-                        console.log("profileStudent_NO_QUERY_ERROR!");
+                        console.log("profileStudent_fetched_eduInfo");
                         console.log("profileStudent_SENDING_EDU_INFO................");
-                        // console.log(rows);
                         console.log("_______________________________________");
                         res.json(rows);
                     })  

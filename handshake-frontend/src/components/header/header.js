@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import axios from 'axios';
-// import profImage from 'homeProf.jpg';
+import { Link } from 'react-router-dom';
 
 export default class Header extends Component{
     constructor(props){
@@ -39,36 +37,47 @@ export default class Header extends Component{
 
         if(isLogin === false){
              return(
-            <div class="ui inverted segment" style={{marginBottom: "5%"}}>
-                <div class="ui inverted secondary menu">
-                <a href="/login" class="item">
-                        Student Login
-                    </a>
-                    <a href="/companyLogin" class="item">
-                    Employer Login
-                    </a>
-                    <a href="/companyReg" class="item">
-                    Employer Registration
-                    </a>
-                    <a href="register" class="item">
-                    Student Registration
-                    </a>
-                </div>
-        </div>
+                 
+                    <div class="ui inverted segment">
+                        <div class="ui inverted secondary menu">
+                        <a href="/login" class="item">
+                                Student Login
+                            </a>
+                            <a href="/companyLogin" class="item">
+                            Employer Login
+                            </a>
+                            <a href="/companyReg" class="item">
+                            Employer Registration
+                            </a>
+                            <a href="register" class="item">
+                            Student Registration
+                            </a>
+                        </div>
+                    </div>
+        
              )
         }else if(isLogin === true){
         return (
             <div class="ui inverted segment" >
                 <div class="ui inverted secondary menu">
-                <a href="/jobBoard" class="item">
-                        Job Posted
-                    </a>
-                    <a href="/eventBoard" class="item">
-                    Event Posted
-                    </a>
-                    <a href="/" onClick={this.handleLogout} class="item">
-                    Logout
-                    </a>
+                <Link to="/companyPostedJob" className="item">
+                    Posted Job 
+                </Link>
+                 <Link to="/eventBoard" className="item">
+                        Event Posted
+                    </Link>
+                    <div class="ui compact menu inverted segment menu">
+                        <div class="ui simple dropdown item">
+                            Name
+                            <i class="dropdown icon"></i>
+                            <div class="ui inverted secondary menu">
+                            {/* <div class="item" >Profile</div> */}
+                            <Link to="/studentProfile" className="item">Profile</Link>
+                            <div class="item">Application</div>
+                            <Link to="/home" className="item" onClick={this.handleLogout}>Logout</Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
         </div>
         )

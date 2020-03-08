@@ -75,7 +75,7 @@ export default class CompanyLogin extends Component{
 
     render(){
       return(
-        <div class="ui middle aligned center aligned grid">
+        <div class="ui middle aligned center aligned grid" style={{marginTop: "8%"}}>
             <div class="column" id="loginStud" >
           <form action=" " method="POST" class="ui large form" >
             <div class="ui stacked secondary  segment login" >

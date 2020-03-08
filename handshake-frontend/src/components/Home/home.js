@@ -1,49 +1,22 @@
-import React from 'react';
-export default function ButtonAppBar() {
-
-  return (
-
-    <div class="ui segment">
-  <div class="ui two column very relaxed grid">
-    <div class="column">
-    <div class="ui raised segment">
-      <div class="ui placeholder">
-        <div class="paragraph">
-          <div class="medium line">Student Access!!!!!</div>
-        </div>
-      </div>
-    </div>
-    </div>
-    <div class="column">
-      <p></p>
-      <p></p>
-      <p></p>
-      <p></p>
-    </div>
-  </div>
-  <div class="ui vertical divider">
-  </div>
-</div>
+import React, { Component } from 'react';
+import homeProf from '../header/homeProf.jpg'
+export default class Home extends Component {
+  constructor(props){
+    super(props);
 
 
-  );
+  }
+  render(){
+
+    return (
+            <div className="row">
+                <div className="col-md-6" style={{backgroundImage: `url(${homeProf})`,backgroundSize:"600px 650px", width:"600px", height:"650px", marginLeft:"10%", flex:"0 0 30%", marginTop:"4%"}}>
+                        
+                </div>
+                <div className="col-md-6">
+                      
+                </div>
+            </div> 
+    )
+  }
 }
-
-
-
-
-
-
-// <div className={classes.root}>
-    //   <AppBar position="static">
-    //     <Toolbar>
-    //       <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-    //         <MenuIcon />
-    //       </IconButton>
-    //       <Typography variant="h6" className={classes.title}>
-    //         News
-    //       </Typography>
-    //       <Button color="inherit"><Link to="/login">Login</Link></Button>
-    //     </Toolbar>
-    //   </AppBar>
-    // </div>

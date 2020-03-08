@@ -1,27 +1,78 @@
 import React, {Component} from 'react';
+import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 export default class EducationCard extends Component {
     constructor(props){
         super(props);
+
+        this.state = {
+            token: "", 
+            isLogin: true,
+            eduInfo: []
+
+        }
     }
     
+    componentDidUpdate(){
+    }
+
+    componentDidMount(){
+        const accessString = localStorage.getItem('JWT');
+        if(accessString === null){
+            this.setState({
+                isLogin: false
+            })
+            console.log("token is null!....Please Login Again......");
+        }
+
+        this.setState({
+            token: accessString
+        })
+
+        console.log("summary_card_compdidmnt_accessString: ", accessString);
+
+        axios.get("http://localhost:3001/profileStudent/eduInfo", { 
+            headers: {
+                Authorization: `JWT ${accessString}`
+            }
+        } ).then(response => {
+                if(response.status === 200){
+                    this.setState({
+                        eduInfo: response.data
+                    })
+                    // console.log("studentProfile_responseObj: ", response.data);
+                    console.log("eudcationCard_res_info: ", this.state.eduInfo);
+                }else{
+                    console.log("ERROR");
+                }
+            })
+    }
+
+
+
     render(){
+
+        let data = this.state.eduInfo;
+
         return(
                     <div className="ui cards">
+
+                    { data.map( edu => 
                         <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
                             <div className="content">
                                 <div className="header">Education</div>
                                 <div className="description">
-                                        <h2>San Jose State University</h2>
+                                        <h2>{edu.student_college_name}</h2>
                                 </div>
                                 <div className ="description">
-                                        Masters, Computer Engineering
+                                {edu.student_college_degree} {edu.student_college_major} 
                                 </div>
                                 <div className="description">
-                                        <h4>Aug 2018 - Aug 2020</h4>
+                                        <h4>{edu.student_college_yop}</h4>
                                 </div>
                                 <div className="description">
-                                       <h4> GPA: 3.32 </h4>
+                                       <h4> {edu.student_college_gpa}  </h4>
                                 </div>
                             </div>
                             <div class="ui bottom attached large button">
@@ -29,6 +80,8 @@ export default class EducationCard extends Component {
                                     Add Education
                             </div>
                         </div>
+
+                        )  }
                     </div>
         );
     }

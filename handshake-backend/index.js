@@ -37,8 +37,10 @@ require('./routes/profileStudent')(app);
 require('./routes/registerCompany')(app);
 require('./routes/registerStudent')(app);
 // require('./routes/updateCompany')(app);
+// require('./routes/updateEducation')(app);
 require('./routes/updateStudent')(app);
 require('./routes/getJobBoard')(app);
+require('./routes/getJobPosted')(app);
 require('./routes/getJobItem')(app);
 
 app.listen(3001);

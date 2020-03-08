@@ -26,6 +26,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.saveInfo = this.saveInfo.bind(this);
+        this.cancleChange = this.cancleChange.bind(this);
 
     }    
 
@@ -35,6 +36,11 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
         })
     }
 
+    cancleChange = (e) => {
+        this.setState ({
+            editMode: !this.state.editMode
+        })
+    }
     handleChange = (e) => {
         this.setState ({
             [e.target.name]: e.target.value
@@ -154,33 +160,35 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
                     <div class="content">
                     <div class="header">Edit your name</div>
                     <div class="ui input">
-                        <input type="text" name="student_name" defaultValue={this.state.name} onChange = { this.handleChange}/>
+                        <input type="text" name="student_name" defaultvalue={this.state.name} onChange = { this.handleChange}/>
                     </div>
                     <div class="description">Edit your university name</div>
                     <div class="ui input">
-                        <input type="text" name="student_college_name" defaultValue={this.state.col_name} onChange = { this.handleChange}/>
+                        <input type="text" name="student_college_name" defaultvalue={this.state.col_name} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Degree</div>
                     <div class="ui input">
-                        <input type="text" name="degree" defaultValue={this.state.degree} onChange = { this.handleChange}/>
+                        <input type="text" name="degree" defaultvalue={this.state.degree} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Major</div>
                     <div class="ui input">
-                        <input type="text" name="major" defaultValue={this.state.major} onChange = { this.handleChange}/>
+                        <input type="text" name="major" defaultvalue={this.state.major} onChange = { this.handleChange}/>
                     </div>
                     <div class="description">Graduation Year</div>
                     <div class="ui input">
-                        <input type="number" name="grad_date"defaultValue={this.state.grad_date} onChange = { this.handleChange}/>
+                        <input type="number" name="grad_date" defaultvalue={this.state.grad_date} onChange = { this.handleChange}/>
                     </div>
                     <div class="description">GPA</div>
                     <div class="ui input">
-                        <input type="text"name="gpa"  defaultValue={this.state.gpa} onChange = { this.handleChange}/>
+                        <input type="text"name="gpa"  defaultvalue={this.state.gpa} onChange = { this.handleChange}/>
                     </div>
                 </div>
                 <div class="extra content">
-                    <div  onClick= {this.saveInfo }className="ui bottom attached center medium button">
-                                <i class="edit icon"></i>
+                    <div  onClick= {this.saveInfo }className="ui bottom attached center medium button" style={{width:"100px", float: "left"}}>
                                     Save 
+                    </div>
+                    <div onClick={this.cancleChange} className="ui bottom attached center medium button" style={{width:"100px", float:"right"}}>
+                                    Cancel 
                     </div>
                 </div>
             </div>
