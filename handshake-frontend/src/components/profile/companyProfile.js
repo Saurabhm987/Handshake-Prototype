@@ -43,7 +43,7 @@ export default class CompanyProfile extends Component {
                 </div>
             </div>
         );  
-    }else if(this.state.isLogin == false){
+    }else if(this.state.isLogin === false){
         return(
             <Redirect to = "/"/>
         )

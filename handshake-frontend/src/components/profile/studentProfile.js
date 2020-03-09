@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import UserInfoCard from '../cards/userInfoCard';
 import ExperienceCard from '../cards/experienceCard';
 import EducationCard from '../cards/educationCard';
@@ -50,7 +49,7 @@ export default class StudentProfile extends Component {
                 </div>
             </div>
         );  
-    }else if(this.state.isLogin == false){
+    }else if(this.state.isLogin === false){
         return(
             <Redirect to = "/"/>
         )

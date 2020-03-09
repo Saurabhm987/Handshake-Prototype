@@ -7,35 +7,24 @@ export default class Jobs extends Component {
 
         this.state = {
             isLogin: true,
-            jobs: {}
+            jobs: {}, 
+            id:""
         }
+
+        // this.getData = this.getData.bind();
+        
     }
     
     componentDidUpdate(){
     }
 
+    /*
+    getData = () => {
 
-    componentDidMount(){
- 
-        const accessString = localStorage.getItem('JWT');
-  
-        if(accessString === null){
-            this.setState({
-                isLogin: false
-            })
-            console.log("token is null!");
-        }
-
-        const id = this.state.id;
-
-        console.log("jobItem token: ", accessString);
-
-        console.log("jobItem rec props: ", this.props.selJob);
-  
         axios.get("http://localhost:3001/getJobItem", {
             params: {
                 type: "getJob",
-                job_id: id
+                job_id: 0
             }
         },{ 
             headers: {
@@ -60,6 +49,47 @@ export default class Jobs extends Component {
             })
     }
 
+*/
+componentDidUpdate(nextProps) {
+    const id = this.props.selJob;
+    if(nextProps.selJob !== id){
+      this.setState({
+          id: nextProps.selJob
+      })
+    }
+}
+
+    componentDidMount(){
+
+        console.log("jobs_called!");
+        const accessString = localStorage.getItem('JWT');
+        console.log("jobItem token: ", accessString);
+        if(accessString === null){
+            this.setState({
+                isLogin: false
+            })
+            console.log("token is null!");
+        }else{
+            console.log("jobs - No_Token_Error!");
+            let id = this.props.selJob;
+            console.log("jobs_initial Id: ", id);
+
+            if(this.props.selJob !== ""){
+                this.setState({
+                    id :  this.props.selJob
+                })
+            }else{
+                this.setState({
+                    id : 0
+                })
+            }
+
+            console.log("jobs_fin_id: ",  this.state.id);
+
+        }
+
+    }
+
     render(){
         
         // console.log("normalPropsdisp: ", this.state.data);
@@ -72,11 +102,9 @@ export default class Jobs extends Component {
 
         return(
             <div>
-            {/* { this.state.disp.map( item => */}
-                {/* <div class="ui fluid placeholder" id="jobItemId" style={{background: "#F8F8FF", margin: "auto", padding: "15px" }}> */}
                 <div class="ui fluid placeholder" id="jobItemId" style={{margin: "auto", padding: "15px" }}>
                   <div class="image header">
-                    <div class="line"><h3>{this.state.jobs.job_title}</h3></div>
+                    <div class="line"><h3></h3></div>
                     <div class="line"></div>
                   </div>
                   <div class="paragraph">
@@ -85,8 +113,7 @@ export default class Jobs extends Component {
                     <div class="line"> </div>
                   </div>
                 </div>
-                {/* )} */}
-            </div>  
+        </div>  
         )
     }
 }

@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 
 export default class InterestCard extends Component {
-    constructor(props){
-        super(props);
-    }
+    
     
     render(){
         return(
@@ -27,4 +25,3 @@ export default class InterestCard extends Component {
 }
 
 
-{/* <span style={{color: "blue"}}><p className="card-text">What are you passionate about? What are you looking for on Handshake? What are your experiences or skills?</p></span> */}

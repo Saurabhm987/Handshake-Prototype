@@ -1,4 +1,8 @@
-
+body{
+  background:rgb(245, 242, 242);
+}
+    
+    
     body > .grid {
       height: 100%;
     }

@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 // require('./routes/applyEvent')(app);
-// require('./routes/applyJob')(app);
+require('./routes/applyJob')(app);
 // require('./routes/home')(app);
 // require('./routes/infoCompany')(app);
 // require('./routes/infoStudent')(app);

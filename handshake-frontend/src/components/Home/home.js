@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import homeProf from '../header/homeProf.jpg'
 export default class Home extends Component {
-  constructor(props){
-    super(props);
-
-
-  }
+  
   render(){
 
     return (

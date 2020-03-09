@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
 
 export default class JobItem extends Component {
-    constructor(props){
-        super(props);
-
-    }
+   
 
     render(){
 

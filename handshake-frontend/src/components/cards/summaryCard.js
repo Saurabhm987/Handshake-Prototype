@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { TextArea } from 'semantic-ui-react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
