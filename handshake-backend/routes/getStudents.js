@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var pool = require('../database/db-connection');
 
 module.exports = app => {
-    app.get("/getJobItem", (req, res, next) => {
+    app.get("/getStudents", (req, res, next) => {
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
                 if(err){
                     console.log("pass_error: ", err);
@@ -15,19 +15,15 @@ module.exports = app => {
                     console.log("checking error msg from passport.." , info.message);
                     res.status(200).send(info.message);
                     
-                }else if(req.body !== undefined && user.student_email !== null){
-
-                if(req.body.params.type === "getJob"){
+                }else if( user.student_email !== null){
                 
-                console.log("inside_get_job_item...");
+                console.log("inside_get_studentsjob_item...");
                 console.log("req_body: ", req.body);
-                let jobPosted = new Object();
-                let job_id = req.body.params.job_id;
-                let insertQuery = 'SELECT * FROM job_post WHERE job_id = ?';
-                let query = mysql.format(insertQuery, [job_id]);
+
+                let insertQuery = 'SELECT * FROM students';
+                let query = mysql.format(insertQuery);
 
                 pool.query(query, (err, rows, field) =>{
-
                     if(err){
                         console.log("QUERY_ERROR: ", err);
                         res.status(200).send({
@@ -37,16 +33,13 @@ module.exports = app => {
                     console.log("profileStudent_NO_QUERY_ERROR!");
                     console.log("-----------------rendered student info ---------------------------")
 
-                    jobPosted = Object.assign(rows);
+                    studentsInfo = Object.assign(rows);
+                    console.log("job posted..",studentsInfo);
 
-                    console.log("job posted..",jobPosted);
-
-                    res.json(jobPosted);
+                    res.json(studentsInfo);
                 })
-            }else{
-                console.log("no_parameters_passed");
             }
-            }else{
+            else{
                 console.log("request_body_absent!");
             }
         })(req, res, next);

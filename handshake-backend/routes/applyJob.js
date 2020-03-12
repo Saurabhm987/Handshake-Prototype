@@ -36,16 +36,18 @@ module.exports = app =>{
                 let student_email =  user.student_email;
                 let job_id = req.body.params.id;
                 let company_name = req.body.params.company; 
+                let job_title = req.body.params.job_title;
+                let profile_pic = req.body.params.profile_pic;
 
-                    let insertQuery = 'INSERT INTO applied_job (??,??,??,??)  VALUES (?,?,?,?)';
-                    let query = mysql.format(insertQuery, ["job_status", "student_email","job_id", "company_name", job_status, student_email, job_id, company_name]);
+                    let insertQuery = 'INSERT INTO applied_job (??,??,??,??,??, ??)  VALUES (?,?,?,?,?,?)';
+                    let query = mysql.format(insertQuery, ["job_status", "student_email","job_id", "company_name", "job_title", "profile_pic", job_status, student_email, job_id, company_name, job_title, profile_pic]);
                       
                     pool.query(query, (err, response) =>{
                         if(err){
                             console.log("Post job error : ", err);
                             return res.status(400).end("QUERY_ERROR");
                         }else{
-                            console.log("successfully posted job!!");
+                            console.log("successfully applied to job!!");
                         }
                     })
                     res.status(200).send({

@@ -11,7 +11,9 @@ export default class JobBoard extends Component {
       jobData: [],
       cardSelected:"",
       appliedJobId:"",
-      appliedCompany:""
+      appliedCompany:"",
+      applied_job_title:"",
+      applied_profile_pic:""
     }
 
     this.cardSelect = this.cardSelect.bind(this);
@@ -26,9 +28,6 @@ export default class JobBoard extends Component {
       cardSelected : e.currentTarget.dataset.div_id
     })
   }
-
-componentDidUpdate() {}
-
 
 sendData = async () => {
         const accessString = localStorage.getItem('JWT');
@@ -45,7 +44,9 @@ sendData = async () => {
         await axios.post("http://localhost:3001/applyJob",{
           params:{
             id: this.state.appliedJobId,
-            company: this.state.appliedCompany
+            company: this.state.appliedCompany,
+            job_title: this.state.applied_job_title,
+            profile_pic: this.state.applied_profile_pic
           }
         }, { 
             headers: {
@@ -62,7 +63,6 @@ sendData = async () => {
                   }
                    alert("Job Applied");
                    console.log("job_applied")
-                    // console.log("jobBoard_jobData: ", this.state.jobData);
                 }else{
                     console.log("ERROR");
                 }
@@ -73,7 +73,9 @@ sendData = async () => {
       
         this.setState({
           appliedJobId: e.currentTarget.dataset.selected_job_id,
-          appliedCompany: e.currentTarget.dataset.company_name
+          appliedCompany: e.currentTarget.dataset.company_name,
+          applied_job_title : e.currentTarget.dataset.job_title,
+          applied_profile_pic: e.currentTarget.dataset.profile_pic
       }, () => {
         this.sendData();
       })  
@@ -84,16 +86,18 @@ sendData = async () => {
     componentDidMount(){
       const accessString = localStorage.getItem('JWT');
 
-      if(accessString === null){
+      if(accessString === null || accessString === ""){
           this.setState({
               isLogin: false
           })
           console.log("token is null!");
+
+          this.props.history.push("login");
       }
 
       console.log("jobboard token: ", accessString);
 
-      axios.get("http://localhost:3001/getJobBoard", { 
+      axios.get("http://localhost:3001/getJobBoard/board", { 
           headers: {
               Authorization: `JWT ${accessString}`
           }
@@ -122,7 +126,6 @@ render() {
   console.log("curSelectedJob: ", curSelectedJob);
   let renderdata ={};
   renderdata = this.state.jobData;
-  let isav = 0;
 
   let searchBar = (
     <div className ="row">
@@ -133,53 +136,40 @@ render() {
       </div>
   )
 
-  let lefBar = (
 
-    <div class="ui items">
+  let filters = (
+    <div className="row" style={{ padding:"16px"}}>
+          <button class="ui primary basic button">Full-Time</button>
+          <button class="ui primary basic button">Part-Time</button>
+          <button class="ui primary basic button">Internship</button>
+    </div>
+  )
+
+  let lefBar = (
+    <div class="ui items" id="scroll">
         { renderdata.map( (item, index) =>
-          <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", paddingTop: "10px"}}>
-            <div class="image">￼
-              <img src="/images/wireframe/image.png"/>
-            </div>
-            <div class="content" style={{paddingLeft: "0%"}}>
-            <div className="header" id="cardHover"> {item.job_title}</div>
-              {/* <a class="header">{item.job_title}</a> */}
-              <div class="meta">
-                <span>{item.company_name} {item.job_loc}</span>
-              </div>
-              <div class="extra">
-                  {item.job_salary}
-              </div>
-              <div class="extra">
-              {item.job_post_date}
-              </div>
-              <div class="extra">
-              {item.job_type}
-              </div>
-              {/* <div className="large ui button" style={{margin: "10px"}} data-job={item.job_id} data-company_name={item.company_name} onClick={this.applied} >
-                Apply 
-            </div> */}
-            </div>
+          <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
+                <img src={item.profile_pic}  style={{width:"170px", height:"110px"}}/>
+                <div class="content" style={{padding: "5px"}}>
+                    <div className="header" > {item.job_title}</div>
+                        <div class="meta">
+                            <span>{item.company_name} {item.job_loc}</span>
+                        </div>
+                        <div class="extra">
+                            {item.job_salary}
+                        </div>
+                        <div class="extra">
+                            {item.job_post_date}
+                        </div>
+                        <div class="extra">
+                            {item.job_type}
+                      </div>
+                </div>
           </div>
         )}
   </div>
   )
 
-//  let  selectedJob = (
-//           <div class="ui items">
-//               <div class="ui fluid placeholder" id="jobItemId" style={{margin: "auto", padding: "15px" }}>
-//                   <div class="image header">
-//                     <div class="line"><h3>{renderdata[0].job_title}</h3></div>
-//                     <div class="line">{renderdata[0].company_name} {renderdata[0].job_loc}</div>
-//                   </div>
-//                   <div class="paragraph">
-//                     <div class="line"> {renderdata[0].job_salary}</div>
-//                     <div class="line">{renderdata[0].job_post_date}</div>
-//                     <div class="line"> {renderdata[0].job_type}</div>
-//                   </div>
-//                 </div>              
-//           </div>
-//  )
 
   if(this.state.isLogin === true && curSelectedJob === "" && renderdata !== {}){
           return (
@@ -187,11 +177,13 @@ render() {
             <br/>
                 {searchBar}
             <br/>
+                {filters}
+                <br/>
                 <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-5">
                           {lefBar}
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-7"style={{paddingLeft: "45px"}}>
                           <div class="ui items"  style={{background: "white"}}>
                             <div class="ui fluid placeholder" id="jobItemId" style={{margin: "auto", padding: "15px" }}>
                               <div class="image header">
@@ -221,27 +213,50 @@ render() {
     <br/>
         {searchBar}
     <br/>
+        {filters}
+        <br/>
         <div className="row">
-            <div className="col-md-4">
+            <div className="col-md-5">
                   {lefBar}
             </div>
-            <div className="col-md-8">
+            <div className="col-md-7" style={{paddingLeft: "45px"}}>
             <div class="ui items">
             
               <div class="ui fluid" id="jobItemId" style={{margin: "auto", padding: "25px", background: "white" , fontSize: "24px"}}>
                   <div class="image header">
-                    <br/>
-                    <div class="line"><h3>{renderdata[curSelectedJob].job_title}</h3></div>
-                    <div class="line">{renderdata[curSelectedJob].company_name} {renderdata[curSelectedJob].job_loc}</div>
+                 
+                    <div class="line"><h3><b>{renderdata[curSelectedJob].job_title}</b></h3></div>
+                    <div class="line"><h4>{renderdata[curSelectedJob].company_name} , {renderdata[curSelectedJob].job_loc}</h4></div>
+                    <div class="line"> {renderdata[curSelectedJob].job_type}</div>
+                    
                   </div>
+                  <br/>
                   <div class="paragraph">
+                  <div class="row" style={{border: "0.03em solid rgb(245, 242, 242)"}}>
+                  <div class="col-md-10"></div>
+                  <div className="row" style={{margin: "5px", width: "100%", background:"rgb(245, 242, 242)" }}>
+                      <div className="col-md-8" style={{margin:"5px"}}>
+                            <h4>Application closes on</h4>
+                      </div>
+                      <div className="col-md-1"></div>
+                      <div className="col-md-2">
+                            <div className="large ui green button" data-profile_pic={renderdata[curSelectedJob].profile_pic} data-job_title={renderdata[curSelectedJob].job_title}  data-selected_job_id={renderdata[curSelectedJob].job_id} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
+                                  Apply 
+                            </div>
+                      </div>
+                  </div>
+                   </div>
+                   </div>
+                   <br/>
+                  <div class="paragraph" style={{fontSize:"20px"}}>
+                  <div class ="line"><b>Description</b></div>
+                  <div class="line">{renderdata[curSelectedJob].job_descr}</div>
                     <div class="line"> {renderdata[curSelectedJob].job_salary}</div>
                     <div class="line">{renderdata[curSelectedJob].job_post_date}</div>
-                    <div class="line"> {renderdata[curSelectedJob].job_type}</div>
                   </div>
-                  <div className="large ui button" style={{margin: "10px"}} data-selected_job_id={renderdata[curSelectedJob].job_id} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
+                  {/* <div className="large ui blue button" style={{margin: "10px"}} data-selected_job_id={renderdata[curSelectedJob].job_id} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
                        Apply 
-                   </div>
+                   </div> */}
                 </div>   
           </div>
             </div>
@@ -261,61 +276,3 @@ render() {
 
 
 
-
-  // render(){
-
-  //   let renderData  = this.state.jobData;
-
-  //   return(
-
-  //     <div className="container">
-  //           <div className ="row">
-  //           <br/>
-  //           <div class="ui fluid action input" style={{marginLeft: "3%", marginRight:"5%", width:"100%"}}>
-  //           <input type="text" placeholder="Search opportunities"/>
-  //             <div class="ui button">Search</div>
-  //         </div>
-  //         </div>
-  //         <br/>
-
-  //         <div class="row">
-  //           <div class="col-md-3">
-  //             <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical" style={{marginLeft: "3%", width:"100%"}}>
-  //               { renderData.map( item =>
-  //                   <a class="nav-link" id={`#${item.job_id}1`} data-toggle="pill" href={`#${item.job_id}`} role="tab" aria-controls="v-pills-home" aria-selected="true" style={{color: "black"}} onClick={this.checkSelAnc}><JobItem  item={item}/></a>
-  //               )}
-  //             </div>
-  //           </div>
-                                                                                                                                    
-  //           <div class="col-md-9">
-  //             <div class="tab-content" id="v-pills-tabContent" >
-  //               {renderData.map( item =>
-  //                   <div class={`tab-pane fade show ${this.state.isActive}`} id={`${item.job_id}`} role="tabpanel" aria-labelledby={`${item.job_id}1`} ><Jobs item={item} /></div>
-  //               )}
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //   )
-  // }
-// }
-
-
-
-
-  // const displayThis = ({curSelectedJob="", renderdata=""}) =>{
-
-  //   return(
-  //   <div class="ui fluid placeholder" id="jobItemId" style={{margin: "auto", padding: "15px" }}>
-  //   <div class="image header">
-  //     <div class="line">{renderdata[curSelectedJob].job_title}<h3></h3></div>
-  //     <div class="line"></div>
-  //   </div>
-  //   <div class="paragraph">
-  //     <div class="line"> </div>
-  //     <div class="line"></div>
-  //     <div class="line"> </div>
-  //   </div>
-  // </div>
-  //   )
-  // }

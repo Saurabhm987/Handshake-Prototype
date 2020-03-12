@@ -10,46 +10,12 @@ export default class Jobs extends Component {
             jobs: {}, 
             id:""
         }
-
-        // this.getData = this.getData.bind();
         
     }
     
     componentDidUpdate(){
     }
 
-    /*
-    getData = () => {
-
-        axios.get("http://localhost:3001/getJobItem", {
-            params: {
-                type: "getJob",
-                job_id: 0
-            }
-        },{ 
-            headers: {
-                Authorization: `JWT ${accessString}`
-            }
-        } ).then(response => {
-                if(response.status === 200){
-                  if(response.data === "jwt expired"){
-                    localStorage.removeItem('JWT');
-                    this.setState({
-                      isLogin: false
-                    })
-                    this.props.history.push("/login");
-                  }
-                    this.setState({
-                        jobs:response.data
-                    })
-                    console.log("JobItem: ", this.state.jobs);
-                }else{
-                    console.log("ERROR");
-                }
-            })
-    }
-
-*/
 componentDidUpdate(nextProps) {
     const id = this.props.selJob;
     if(nextProps.selJob !== id){

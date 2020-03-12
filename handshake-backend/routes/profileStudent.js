@@ -24,7 +24,7 @@ module.exports = app =>{
 
             let userInfo = {
                 student_name: "",
-                col_name: "",
+                student_college_name: "",
                 degree: "",
                 grad_date: " ", 
                 gpa: "",
@@ -50,12 +50,13 @@ module.exports = app =>{
 
                     delete rows[0].student_password;
                     userInfo.student_name = rows[0].student_name;
-                    userInfo.col_name = rows[0].student_college_name;
+                    userInfo.student_college_name = rows[0].student_college_name;
                     userInfo.degree = rows[0].degree;
                     userInfo.major = rows[0].major;
                     userInfo. gpa = rows[0].gpa;
                     userInfo.grad_date = rows[0].grad_date;
                     userInfo.student_objective = rows[0].student_objective;
+                    userInfo.profile_pic = rows[0].profile_pic;
                     res.json(userInfo);
 
                 })
@@ -118,7 +119,7 @@ module.exports = app =>{
 
                     delete rows[0].student_password;
                     userInfo.student_name = rows[0].student_name;
-                    userInfo.col_name = rows[0].student_college_name;
+                    userInfo.student_college_name = rows[0].student_college_name;
                     userInfo.degree = rows[0].degree;
                     userInfo.major = rows[0].major;
                     userInfo. gpa = rows[0].gpa;

@@ -10,26 +10,40 @@ import JobBoard from "./JobBoard/jobboard";
 import StudentProfile from "./profile/studentProfile";
 import JobPost from "./admin/jobpost";
 import CompanyProfile from './profile/companyProfile';
-import StudentAppliedJob from './profile/companyProfile';
+import Applications from './cards/applicationCard';
 import CompanyPostedJob from './profile/AppliedJob/companyPostedJob';
+import EventBoard from './eventBoard/eventBoard';
+import EventPost from './admin/eventPost';
+import CompanyPostedJobCard from './cards/companyPostedJobCard';
+import AppliedEvent from './eventBoard/appliedEvent';
+import CompanyPostedEventCard from "./cards/companyPostedEventCard";
+import DetailsCard from './cards/detailsCard';
+import StudentsCard from './cards/studentsCard';
 
 class Main extends Component {
     render() {
         return(
             <div>
                 {/* <Route path="/" component={Navbar} /> */}
-                <Route   path="/" component = {Header}/>
+                <Route  path="/" component = {Header}/>
                 <Route exact path="/home" component = {Home}/>
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/register" component ={Register}/>
                 <Route exact path="/jobPost" component={JobPost} />
+                <Route exact path="/eventPost" component={EventPost} />
                 <Route exact path="/companyReg" component={CompanyReg}/>
                 <Route exact path="/companyLogin" component={CompanyLogin}/>
                 <Route exact path="/jobBoard" component={JobBoard}/>
+                <Route exact path="/eventBoard" component={EventBoard} />
                 <Route exact path="/studentProfile" component={StudentProfile} />
-                <Route exact path="/studentAppliedJob" component={StudentAppliedJob} />
+                <Route exact path="/studentAppliedJob" component={Applications} />
+                <Route exact path="/appliedEvents" component={AppliedEvent} />
                 <Route exact path="/companyPostedJob" component={CompanyPostedJob} />
+                <Route exact path="/companyPostedJobCard" component={CompanyPostedJobCard} />
+                <Route exact path="/companyPostedEventCard" component={CompanyPostedEventCard} />
                 <Route exact path="/companyProfile" component={CompanyProfile} />
+                <Route exact path="/details" component={DetailsCard} />
+                <Route exact path="/students" component={StudentsCard} />
             </div>
         );
     }

@@ -17,10 +17,10 @@ module.exports = app =>{
                 console.error(info.message);
                     if(info.message == "Email doesn't match"){
                         console.log("Email doesn't match!")
-                        res.status(401).end(info.message);
+                        res.status(200).send({message: info.message});
                     }else{
                         console.log("password doesn't match");
-                        res.status(401).end(info.message);
+                        res.status(200).send({ message: info.message});
                     }
             }else{
                 console.log("session assigning..........");
@@ -36,7 +36,7 @@ module.exports = app =>{
 
                             console.log("user.insertId: ", user.student_email);
 
-                            let token = jwt.sign({id: user.student_email}, jwtSecret.secret, {
+                            let token = jwt.sign({id: user.student_email, access:user.access}, jwtSecret.secret, {
                                 expiresIn: 60*60,
                             });
                             console.log("sending header and token............")

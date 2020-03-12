@@ -43,6 +43,10 @@ export default class SummaryCard extends Component {
             }
         } ).then(response => {
                 if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                        alert("session expired!");
+                        this.props.history.push("/login");
+                    }
                     this.setState({
                         objective: response.data.student_objective
                     })
@@ -56,9 +60,10 @@ export default class SummaryCard extends Component {
 
     cancleChange = (e) => {
         this.setState ({
-            editMode: !this.state.editMode
+            editmode: false
         })
     }
+
     handleChange = (e) => {
         this.setState({
             [e.target.name] : e.target.value
@@ -69,7 +74,6 @@ export default class SummaryCard extends Component {
         e.preventDefault();
 
         console.log("CALLING_SAVE_HANDLER.....");
-        // console.log("EDIT_INFO ", this.state.objective);
 
         const updateInfo =this.state.objective;
         console.log("summaryCard_updateInfo: ",updateInfo);
@@ -79,7 +83,6 @@ export default class SummaryCard extends Component {
         }
 
         console.log("summaryCard_logout_headers: ", this.state.token);
-
         console.log("updateInfo: ", updateInfo);
       
         axios.put("http://localhost:3001/updateUserProfile", {
@@ -134,7 +137,7 @@ export default class SummaryCard extends Component {
                             <h4>What are you passionate about? What are you looking for on Handshake? What are your experiences or skills?</h4>
                  </div>
                 <form className="ui form">
-                    <textarea style={{fontSize:"1.5em"}} name="objective" placeholder="Tell us more" rows="3" onChange = { this.handleChange}></textarea>
+                    <textarea style={{fontSize:"1.5em"}} name="objective" placeholder="Tell us more" rows="3" defaultValue={this.state.objective} onChange = { this.handleChange}></textarea>
                 </form>
                 <br/>
                 <div className="extra content">

@@ -64,7 +64,7 @@ export default class CompanyLogin extends Component{
                           message_psw: "Password doesn't match!"
                         })
                     }else{
-                      this.props.history.push("jobPost");
+                      this.props.history.push("companyProfile");
                     }
                   } else{
                       console.log("response_error!");
@@ -75,12 +75,12 @@ export default class CompanyLogin extends Component{
 
     render(){
       return(
-        <div class="ui middle aligned center aligned grid" style={{marginTop: "8%"}}>
+        <div class="ui middle aligned center aligned grid" style={{marginTop: "5%"}}>
             <div class="column" id="loginStud" >
           <form action=" " method="POST" class="ui large form" >
             <div class="ui stacked secondary  segment login" >
 
-              <div id="logo-id" style= {{marginTop: "10%" , marginBottom: "10%"}}>
+              <div id="logo-id" style= {{marginTop: "8%" , marginBottom: "8%"}}>
                   <img src={logo}   class="logo-class"  />
               </div>
 

@@ -41,36 +41,38 @@ export default class Login extends Component{
             isLogin: false
           });
         }else{
-            try{
+
               axios.post('http://localhost:3001/studentLogin', {
                 email, 
                 password
               }).then((response) =>{
+                    if(
+                      response.data.message === "Email doesn't match"
+                      || response.data.message === 'password doesnt match'
+                    ){
 
-                console.log("responseData: ", response.data);
+                      console.log("login_error: ", response.data.message);
 
-                localStorage.setItem('JWT', response.data.token);
+                      this.setState({
+                        showError: true,
+                        showNullError: false
+                      });
+                    }else{
+                      console.log("responseData: ", response.data);
 
-                this.setState({
-                  isLogin: true,
-                  showNullError: false,
-                  showError: false
-                });
-              })
-            } catch(err) {
-              console.error( "Login_error_response", err.response.data);
-              if(
-                err.response.data === "Email doesn't match"
-                || err.response.data === 'password doesnt match'
-              ){
-                  this.setState({
-                    showError: true,
-                    showNullError: false
-                  });
-              }
+                      localStorage.setItem('JWT', response.data.token);
+  
+                      this.setState({
+                        isLogin: true,
+                        showNullError: false,
+                        showError: false
+                      }, () => {
+                        this.props.history.push("/jobBoard");
+                      });
+                    }
+                  })
             }
         }
-      };
 
     render(){
 
@@ -78,11 +80,11 @@ export default class Login extends Component{
 
       if(!isLogin){
         return(
-          <div class="ui middle aligned center aligned grid" style={{marginTop: "8%"}}>
+          <div class="ui middle aligned center aligned grid" style={{marginTop: "5%"}}>
               <div class="column" id="loginStud">
 
             <form action=" " method="POST" class="ui large form">
-              <div class="ui stacked secondary  segment login" >
+              <div class="ui stacked secondary  segment login" style={{padding: "10px"}}>
 
                 <div id="logo-id" style= {{marginTop: "10%" , marginBottom: "10%"}}>
                     <img src={logo}   class="logo-class"  />
@@ -94,7 +96,7 @@ export default class Login extends Component{
                     </div>
                   </h1>
             
-                <div class="field">
+                <div class="field" >
                  <span class="ui left icon input"><h4>SJSU Email ID</h4></span>
                   <div class="ui left icon input">
                     <i class="user icon"></i>
@@ -104,7 +106,7 @@ export default class Login extends Component{
                       <span style={{color: "red"}}>{this.state.errMsg1}</span>
                   </div> */}
                 </div>
-                <div class="field">
+                <div class="field" >
                 <span class="ui left icon input"><h4>Password</h4></span>
                   <div class="ui left icon input">
                     <i class="lock icon"></i>
@@ -117,7 +119,7 @@ export default class Login extends Component{
                 <div style={{marginBottom:"5%"}}>
                     <span style={{color: "red"}}>{this.state.msg}</span>
                   </div>
-                <div onClick={this.submit} class="ui fluid large blue submit button" style={{fontSize: "1.5em"}}>Login</div>
+                <div onClick={this.submit} class="ui fluid large blue submit button" style={{fontSize: "1.3em"}}>Login</div>
               </div>          
             </form>
             {showNullError && (

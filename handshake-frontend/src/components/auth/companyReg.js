@@ -7,8 +7,8 @@ export default class JobPost extends Component{
 
         this.state = {
             company_name : "",
-            company_email: "",
-            company_psw: "",
+            email: "",
+            password: "",
             company_loc: "",
             company_descr: "",
             company_contact: "",
@@ -22,7 +22,7 @@ export default class JobPost extends Component{
 
     changeHandler = (e) =>{
       this.setState({
-        [e.target.name] : e.targe.value
+        [e.target.name] : e.target.value
       })
     }
 
@@ -36,8 +36,9 @@ export default class JobPost extends Component{
             .then(response => {
                 console.log("responseRegister: ", response );
                 if(response.status === 200){
+                  alert("Posted Job");
                     console.log("successfully regiesterd!!!!!!!!!!");
-                    // this.props.history.push('/login');
+                    this.props.history.push('/companyLogin');
                 }else{
                   console.log("bad response!!!!!!!");
                 }
@@ -59,27 +60,27 @@ export default class JobPost extends Component{
                 <br/>
                 <div className="field">
                     <h5><label>Company Email</label></h5>
-                     <input onChange={this.changeHandler} type="text" name="company_email" placeholder="Company Email"/>
+                     <input onChange={this.changeHandler} type="text" name="email" placeholder="Company Email"/>
                 </div>
                 <br/>
                 <div className="field">
                     <h5><label>Password</label></h5>
-                    <input onChange={this.changeHandler} type="text" name="company_psw" placeholder="Password"/>
+                    <input onChange={this.changeHandler} type="password" name="password" placeholder="Password"/>
                 </div>
                 <br/>
                 <div className="field">
                     <h5><label>Location </label></h5>
-                     <input onChange={this.emailHandler} type="number" name="company_loc" placeholder="Location"/>
+                     <input onChange={this.emailHandler} type="text" name="company_loc" placeholder="Location"/>
                 </div>
                 <br/>
                 <div className="field" >
                     <h5><label>Company Description</label></h5>
-                     <input onChange={this.changeHandler} type="password" name="company_descr" placeholder="Company Description"/>
+                     <input onChange={this.changeHandler} type="text" name="company_descr" placeholder="Company Description"/>
                 </div> 
                 <br/>
                 <div className="field" >
                     <h5><label>Contact Number</label></h5>
-                     <input onChange={this.changeHandler} type="password" name="company_contact" placeholder="Contact Number"/>
+                     <input onChange={this.changeHandler} type="text" name="company_contact" placeholder="Contact Number"/>
                 </div> 
                 <br/>
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Register</button>

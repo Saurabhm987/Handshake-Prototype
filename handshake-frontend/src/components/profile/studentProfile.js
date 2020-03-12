@@ -12,10 +12,20 @@ export default class StudentProfile extends Component {
         super(props);
 
         this.state = {
-            summaryProps: "",
-            eduInfo: "",
-            expInfo: "",
             isLogin: true
+        }
+    }
+
+
+    componentDidMount(){
+        const accessString = localStorage.getItem('JWT');
+        if(accessString === null){
+            this.setState({
+                isLogin: false
+            })
+
+            this.props.history.push("/login");
+            console.log("token is null!....Please Login Again......");
         }
     }
 
@@ -51,7 +61,7 @@ export default class StudentProfile extends Component {
         );  
     }else if(this.state.isLogin === false){
         return(
-            <Redirect to = "/"/>
+            <Redirect to = "/login"/>
         )
     }
     }

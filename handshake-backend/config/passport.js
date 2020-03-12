@@ -10,9 +10,6 @@ const LocalStrategy = require('passport-local').Strategy;
 const jwtSecret = require('./jwtConfig')
 
 
-
-
-
 passport.use(
     'register',
     new LocalStrategy(
@@ -47,11 +44,12 @@ passport.use(
                         
                         var newUserMysql = {
                             email: email,
-                            password: cryptr.encrypt(password)
+                            password: cryptr.encrypt(password),
+                            access:"student"
                         }
 
                         let insertQuery = 'INSERT INTO ?? ( ??, ??) VALUES (?, ?) ';
-                        let query = mysql.format( insertQuery, ["students", "student_email","student_password", newUserMysql.email, newUserMysql.password ]);
+                        let query = mysql.format( insertQuery, ["students", "student_email","student_password", "access", newUserMysql.email, newUserMysql.password, newUserMysql.access ]);
                         
                         pool.query(query, (err, row) => {
                             if(err){
@@ -92,17 +90,21 @@ passport.use(
         }, 
         (req, email, password, done) => {
             try{
+
+                console.log("using register company strategy!");
+                console.log("requested_mail: ", req.body.email);
+
                 let insertQuery = 'SELECT * FROM company_info WHERE ?? = ? ';
                 let query = mysql.format(insertQuery, [ "company_email", email]);
             
                 pool.query(query, (err, rows)=>{
                     if(err){
-                        console.log("PASSPORT: ", err);
+                        console.log("error_pass_while_querying:  ", err);
                         return done(err);
                     } 
                     if(rows.length){
 
-                        console.log("COMPANY_NAME_EXIST!");
+                        console.log("COMPANY_EXIST!");
                         return done(null, false, {
                             message: 'Email already exist'
                         });
@@ -114,11 +116,14 @@ passport.use(
                         
                         var newUserMysql = {
                             email: email,
-                            password: cryptr.encrypt(password)
+                            password: cryptr.encrypt(password),
+                            name: req.body.company_name
                         }
 
-                        let insertQuery = 'INSERT INTO ?? ( ??, ??) VALUES (?, ?) ';
-                        let query = mysql.format( insertQuery, ["students", "student_email","student_password", newUserMysql.email, newUserMysql.password ]);
+                        console.log("passport_obj: ", newUserMysql);
+
+                        let insertQuery = 'INSERT INTO ?? ( ??, ??, ??) VALUES (?, ?, ?) ';
+                        let query = mysql.format( insertQuery, ["company_info", "company_email","company_psw", "company_name", newUserMysql.email, newUserMysql.password, newUserMysql.name ]);
                         
                         pool.query(query, (err, row) => {
                             if(err){

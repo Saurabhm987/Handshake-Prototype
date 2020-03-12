@@ -1,4 +1,3 @@
-
 const passport = require('passport'); 
 var mysql = require('mysql');
 var pool = require('../database/db-connection');
@@ -50,8 +49,12 @@ app.put('/updateUserProfile', (req, res, next) =>{
             }
             console.log("ROWS: ", row);
             console.log("QUERY_SUCCESS!");
-            res.status(200).end();
         })
+        
+        res.status(200).send({
+            message: "Updated"
+        });
+
     }else if(req.body.params.requestInfo ==="EDU"){
 
         console.log("IN_EDU_UPDATE");

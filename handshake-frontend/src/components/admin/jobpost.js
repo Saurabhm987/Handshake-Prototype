@@ -14,7 +14,8 @@ export default class JobPost extends Component{
           job_loc: "",
           job_post_date: "",
           isLogin: true,
-          message: ""
+          message: "", 
+          profile_pic: ""
         }
 
         this.changeHandler = this.changeHandler.bind(this);
@@ -38,20 +39,45 @@ export default class JobPost extends Component{
               message: ""
           })
           console.log("token is null!....Please Login Again......");
+          this.history.push("/companyLogin");
       }
+
+      // const base64Url = accessString.split('.')[1];
+      // const base64 = base64Url.replace('-', '+').replace('_', '/');
+      // const data = JSON.parse(window.atob(base64));
+      // console.log("parsed_token_data: ", data);
 
       this.setState({
           token: accessString
       })
 
-      console.log("summary_card_compdidmnt_accessString: ", accessString);
+      axios.get("http://localhost:3001/profileCompany/companyInfo", { 
+        headers: {
+            Authorization: `JWT ${accessString}`
+        }
+    } ).then(response => {
+            if(response.status === 200){
+                if(response.data === "jwt expired"){
+                  this.props.history.push("/companyLogin");
+                    alert("session expired! ");
+                }
+                const data = response.data;
 
+                this.setState({
+                    company_name : data.company_name,
+                    profile_pic: data.profile_pic
+                })
+
+                console.log("company_InfoCard_RESPONSE_DATA", data);
+
+            }else{
+                console.log("ERROR");
+            }
+        })
     }
 
     submitForm = (e) => {
         e.preventDefault();
-        // const { name, uniName, email, password, access} = this.state;
-
         const jobInfo = Object.assign(this.state); 
         delete jobInfo.isLogin;
         
@@ -72,17 +98,21 @@ export default class JobPost extends Component{
             .then(response => {
                 console.log("responseJobPost: ", response );
                 if(response.status === 200){
+
+                  console.log("response_message: ", response.data.message);
+
                   if(response.data.message ==="jwt expired"){
                     this.setState({
                       isLogin: false
                     })
-                    this.props.history.push("/companyLogin");
+                    // this.props.history.push("/companyLogin");
                   }
 
                   this.setState({
-                   message: "Job Posted!"
+                   message: "Job Posted!",
+                   isLogin: true
                   })
-                    console.log("successfully posted job!!!!!!!!!!");
+                    alert("successfully posted job!!!!!!!!!!");
                 }else{
                   console.log("bad response!!!!!!!");
                 }
@@ -96,6 +126,9 @@ export default class JobPost extends Component{
       if(logStat){
         return(
           <div   style={{margin: "4% 15% 8% 26%", width:"50%"}}>
+          <div className="image" style={{ height:"300px", paddingLeft: "25%", marginTop:"2%"}}>
+              <img src={this.state.profile_pic} style={{width:"350px", height:"280px", objectFit:"cover"}} />
+          </div>
             <div>
               <h3>Enter Job Description</h3>
             </div>
@@ -113,7 +146,7 @@ export default class JobPost extends Component{
                 <br/>
                 <div className="field">
                     <h5><label>Company Name</label></h5>
-                     <input onChange={this.changeHandler} type="text" name="company_name" placeholder="Company Name"/>
+                     <input type="text"  value={this.state.company_name}/>
                 </div>
                 <br/>
                 <div className="field">

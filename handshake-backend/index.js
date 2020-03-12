@@ -20,6 +20,7 @@ app.use(function(req, res, next) {
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
+
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
@@ -32,16 +33,26 @@ require('./routes/loginCompany')(app);
 require('./routes/loginStudent')(app);
 // require('./routes/postEvent')(app);
 require('./routes/postJob')(app);
-// require('./routes/profileCompany')(app);
+require('./routes/profileCompany')(app);
 require('./routes/profileStudent')(app);
 require('./routes/registerCompany')(app);
 require('./routes/registerStudent')(app);
-// require('./routes/updateCompany')(app);
+require('./routes/updateCompany')(app);
 // require('./routes/updateEducation')(app);
 require('./routes/updateStudent')(app);
+require('./routes/addEduExp')(app);
 require('./routes/getJobBoard')(app);
 require('./routes/getJobPosted')(app);
-require('./routes/getJobItem')(app);
+require('./routes/getFile')(app);
+require('./routes/uploadStdProfPic')(app);
+require('./routes/uploadCmpProfPic')(app);
+require('./routes/addSkills')(app);
+require('./routes/getEventBoard')(app);
+require('./routes/applyEvent')(app);
+require('./routes/postEvent')(app);
+require('./routes/getDetails')(app);
+require('./routes/getStudents')(app);
+
 
 app.listen(3001);
 console.log("Server Listening on port 3001")

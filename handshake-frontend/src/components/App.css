@@ -2,7 +2,6 @@ body{
   background:rgb(245, 242, 242);
 }
     
-    
     body > .grid {
       height: 100%;
     }
@@ -47,11 +46,28 @@ body{
 #cardHover:hover {
   background: rgb(245, 241, 241);
   cursor: pointer;
-  text-decoration: underline;
 }
 
 #jobItemId:hover {
   background: rgb(245, 241, 241);
   cursor: pointer;
-  text-decoration: underline;
+}
+
+#eduCard:hover{
+  background: rgb(245, 241, 241);
+  cursor: pointer;
+}
+
+#scroll{
+  margin:6px, 6px; 
+  padding:6px; 
+  width: 500px; 
+  height: 80%; 
+  overflow-x: hidden; 
+  overflow-x: auto; 
+  text-align:justify; 
+}
+
+div.item {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

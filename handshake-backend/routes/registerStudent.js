@@ -1,6 +1,4 @@
-const jwt = require ('jsonwebtoken' );
 const passport = require('passport'); 
-const  jwtSecret  = require( '../config/jwtConfig');
 var mysql = require('mysql');
 var pool = require('../database/db-connection');
 

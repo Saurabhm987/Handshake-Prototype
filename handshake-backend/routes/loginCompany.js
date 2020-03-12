@@ -32,7 +32,7 @@ module.exports = app =>{
 
                         if(user){
                             console.log("user.company_email ", user.company_email);
-                            let token = jwt.sign({id: user.company_email}, jwtSecret.secret, {
+                            let token = jwt.sign({id: user.company_email, access:user.access }, jwtSecret.secret, {
                                 expiresIn: 60*60,
                             });
                             console.log("sending header and token............");

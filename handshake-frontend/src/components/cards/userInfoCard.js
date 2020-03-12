@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import img from './profile.jpg';
+// import img from './profile.jpg';
 import axios from 'axios';
 import {Route, withRouter, Redirect} from 'react-router-dom';
-// import userProfile from '../profile/userProfile';
 
  class UserInfoCard extends Component {
     constructor(props){
@@ -16,66 +15,124 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             major: "",
             gpa: "",
             grad_date: "",
-            details: "LOGIN", 
             reload: false,
             isLogin: true,
-            userInfo: "",
-            token: ""
+            userInfo: {},
+            token: "",
+            file: null,
+            img: ""
         }
         
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.saveInfo = this.saveInfo.bind(this);
-        this.cancleChange = this.cancleChange.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleFileUpload = this.handleFileUpload.bind(this);
 
     }    
 
-    handleSubmit = () => {
+
+    componentDidUpdate(){
+    }
+
+    handleEdit = () => {
         this.setState({
             editMode: !this.state.editMode
         })
     }
 
-    cancleChange = (e) => {
+    handleCancel = (e) => {
         this.setState ({
             editMode: !this.state.editMode
         })
     }
+
     handleChange = (e) => {
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
+
         this.setState ({
-            [e.target.name]: e.target.value
+            [name]: value
         });
     }
 
-    componentDidUpdate(){
-        
+    handleFileUpload = (event) => {
+        this.setState({file: event.target.files[0]});
+      }
+
+    handleFormSubmit = (event) => {
+        if(this.state.file === null){
+            alert("please add file");
+        }else{
+
+        this.setState ({
+            editMode: !this.state.editMode
+        })
+
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('file', this.state.file);
+
+        axios.post("http://localhost:3001/uploadnewFiles", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `JWT ${this.state.token}`
+          }
+        }).then(response => {
+          console.log("file successfully upladed!");
+          this.setState({
+              isLogin: true
+          })
+        }).catch(error => {
+          // handle your error
+        });
+    }
+
     }
 
     componentDidMount(){
 
-        const accessString = localStorage.getItem('JWT');
+        console.log("USER_INFO_CMPDID");
 
+        const accessString = localStorage.getItem('JWT');
         if(accessString === null){
             this.setState({
                 isLogin: false
             })
+
+            alert("No token provided! You are being logged out!");
             console.log("token is null!");
+            this.props.history.push('/login');
         }
 
         this.setState({
             token: accessString
         })
 
-        axios.get("http://localhost:3001/profileStudent/userInfo", { 
+         axios.get("http://localhost:3001/profileStudent/userInfo", { 
             headers: {
                 Authorization: `JWT ${accessString}`
             }
         } ).then(response => {
                 if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                        alert("session expired! ");
+                    }
+
+                    const data = response.data;
+
                     this.setState({
-                        userInfo: response.data
+                        student_name : data.student_name,
+                        student_college_name: data.student_college_name,
+                        col_name : data.col_name,
+                        degree: data.degree,
+                        grad_date: data.grad_date,
+                        gpa: data.gpa,
+                        major: data.major,
+                        img: data.profile_pic
                     })
-                    console.log("UserInfoCard_RESPONSE_DATA", this.state.userInfo);
+                    console.log("UserInfoCard_RESPONSE_DATA", data);
 
                 }else{
                     console.log("ERROR");
@@ -83,7 +140,10 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             })
     }
 
-    saveInfo = (e) => {
+    handleSave = (e) => {
+
+        console.log("handle Save!");
+
         e.preventDefault(); 
 
         const userInfo = {
@@ -93,35 +153,9 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             major: this.state.major,
             gpa: this.state.gpa,
             grad_date: this.state.grad_date,
-            details: this.state.details
-        }
-        
-        if(this.state.student_name === ""){
-                userInfo.student_name = this.state.name;
-        }
-
-        if(this.state.student_college_name === ""){
-            userInfo.student_college_name = this.state.col_name;
-        }
-
-        if(this.state.degree === ""){
-                userInfo.degree = this.state.degree;
-        }
-
-        if(this.state.major === ""){
-            userInfo.major = this.state.major;
-         }
-
-        if(this.state.gpa === ""){
-        userInfo.gpa = this.state.gpa;
-        }
-
-        if(this.state.grad_date === ""){
-            userInfo.grad_date = this.state.grad_date;
         }
 
         console.log("userInfo: ", userInfo);
-
 
         const headers = {
             Authorization: `JWT ${this.state.token}`
@@ -138,7 +172,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
              .then( response => {
                 if(response.status === 200){
                     console.log("RESPONSE: ", response.data);
-                    window.location.reload(false);
+                    // window.location.reload(false);
                     this.setState({
                         editMode: !this.state.editMode,
                         reload: true
@@ -154,40 +188,42 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
         
         return(
         <div class="ui card">
-                <div class="image" style={{overflow:"hidden"}}>
-                    <img src={img}/>
-                </div>
+                <form class="image" style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
+                    <img src={this.state.img}/>
+                    <input type="file" name="demo_file" onChange ={this.handleFileUpload} />
+                    <button type="submit">upload</button>
+                </form>
                     <div class="content">
                     <div class="header">Edit your name</div>
                     <div class="ui input">
-                        <input type="text" name="student_name" defaultvalue={this.state.name} onChange = { this.handleChange}/>
+                        <input type="text" name="student_name" value = {this.state.student_name || ''} onChange = { this.handleChange}/>
                     </div>
                     <div class="description">Edit your university name</div>
                     <div class="ui input">
-                        <input type="text" name="student_college_name" defaultvalue={this.state.col_name} onChange = { this.handleChange}/>
+                        <input type="text" name="student_college_name" value={this.state.student_college_name || ''} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Degree</div>
                     <div class="ui input">
-                        <input type="text" name="degree" defaultvalue={this.state.degree} onChange = { this.handleChange}/>
+                        <input type="text" name="degree" value={this.state.degree || ''} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Major</div>
                     <div class="ui input">
-                        <input type="text" name="major" defaultvalue={this.state.major} onChange = { this.handleChange}/>
+                        <input type="text" name="major" value={this.state.major || ''} onChange = { this.handleChange}/>
                     </div>
                     <div class="description">Graduation Year</div>
                     <div class="ui input">
-                        <input type="number" name="grad_date" defaultvalue={this.state.grad_date} onChange = { this.handleChange}/>
+                        <input type="number" name="grad_date" value={this.state.grad_date || ''} onChange = { this.handleChange}/>
                     </div>
                     <div class="description">GPA</div>
                     <div class="ui input">
-                        <input type="text"name="gpa"  defaultvalue={this.state.gpa} onChange = { this.handleChange}/>
+                        <input type="text"name="gpa"  value={this.state.gpa || " "} onChange = { this.handleChange}/>
                     </div>
                 </div>
                 <div class="extra content">
-                    <div  onClick= {this.saveInfo }className="ui bottom attached center medium button" style={{width:"100px", float: "left"}}>
+                    <div  onClick= {this.handleSave } className="ui bottom attached center medium button" style={{width:"100px", float: "left"}}>
                                     Save 
                     </div>
-                    <div onClick={this.cancleChange} className="ui bottom attached center medium button" style={{width:"100px", float:"right"}}>
+                    <div onClick={this.handleCancel} className="ui bottom attached center medium button" style={{width:"100px", float:"right"}}>
                                     Cancel 
                     </div>
                 </div>
@@ -199,18 +235,18 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
         console.log("renderViewMode: ", this.state);
         return(
             <div class="ui card">
-                <div class="image" style={{overflow:"hidden"}}>
-                    <img src={img}/>
-                </div>
+                    <div className="image">
+                            <img src={this.state.img}/>
+                    </div>
                     <div class="content">
-                    <div class="header">{this.state.userInfo.student_name}</div>
-                    <div class="description">{this.state.userInfo.student_col_name}</div>
-                    <div className="description">{this.state.userInfo.degree} {this.state.userInfo.major}</div>
-                    <div class="description">Graduates {this.state.userInfo.grad_date}</div>
-                    <div class="description">GPA: {this.state.userInfo.gpa}</div>
+                    <div class="header">{this.state.student_name}</div>
+                    <div class="description">{this.state.student_college_name}</div>
+                    <div className="description">{this.state.degree} {this.state.major}</div>
+                    <div class="description">Graduates {this.state.grad_date}</div>
+                    <div class="description">GPA: {this.state.gpa}</div>
                 </div>
                 <div class="extra content">
-                    <div onClick= {this.handleSubmit} className="ui bottom attached center medium button">
+                    <div onClick= {this.handleEdit} className="ui bottom attached center medium button">
                                 <i class="edit icon"></i>
                                     Edit 
                     </div>
@@ -218,6 +254,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             </div>
         )
     }
+    
     render(){
         if(this.state.isLogin === true){
             return (
@@ -225,7 +262,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             )
         }else{
             return(
-                <Redirect to="/"/>
+                <Redirect to="/login"/>
             )
         }
     }
