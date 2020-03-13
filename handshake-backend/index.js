@@ -10,7 +10,7 @@ const passport = require('passport');
 const app = express();
 require('./config/passport');
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '54.193.14.170');
+    res.setHeader('Access-Control-Allow-Origin', '54.193.14.170:3000');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
@@ -18,7 +18,7 @@ app.use(function(req, res, next) {
     next();
   });
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: '54.193.14.170:3000', credentials: true }));
 
 
 app.use(bodyParser.json());
