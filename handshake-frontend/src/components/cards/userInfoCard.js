@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 // import img from './profile.jpg';
 import axios from 'axios';
 import {Route, withRouter, Redirect} from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
  class UserInfoCard extends Component {
     constructor(props){
@@ -22,6 +24,11 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             file: null,
             img: ""
         }
+
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
         
         this.handleEdit = this.handleEdit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -74,7 +81,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
         const formData = new FormData();
         formData.append('file', this.state.file);
 
-        axios.post("http://localhost:3001/uploadnewFiles", formData, {
+        this.instance.post("/uploadnewFiles", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `JWT ${this.state.token}`
@@ -110,7 +117,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             token: accessString
         })
 
-         axios.get("http://localhost:3001/profileStudent/userInfo", { 
+         this.instance.get("/profileStudent/userInfo", { 
             headers: {
                 Authorization: `JWT ${accessString}`
             }
@@ -161,7 +168,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             Authorization: `JWT ${this.state.token}`
         }
 
-        axios.put("http://localhost:3001/updateUserProfile", {
+        this.instance.put("/updateUserProfile", {
             params: {
                 requestInfo: "LOGIN",
                 data: userInfo

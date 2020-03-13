@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import { API_ENDPOINT } from '../controller/endpoint'
 
 export default class EventPost extends Component{
     constructor(props){
@@ -15,6 +16,11 @@ export default class EventPost extends Component{
           profile_pic: "",
           event_eligible: "", 
         }
+
+        this.instance = axios.create({
+          baseURL: API_ENDPOINT,
+          timeout: 1000,
+        });
 
         this.changeHandler = this.changeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
@@ -47,7 +53,7 @@ export default class EventPost extends Component{
         token: accessString
     })
 
-      axios.get("http://localhost:3001/profileCompany/companyInfo", { 
+    this.instance.get("/profileCompany/companyInfo", { 
         headers: {
             Authorization: `JWT ${accessString}`
         }
@@ -86,7 +92,7 @@ export default class EventPost extends Component{
       }
 
         axios.defaults.withCredentials = true;
-         axios.post('http://localhost:3001/postEvent',{
+         this.instance.post('/postEvent',{
           params: {
             data: eventInfo
           }},

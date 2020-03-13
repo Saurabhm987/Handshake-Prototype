@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
 
  class CompanyInfoCard extends Component {
     constructor(props){
@@ -17,6 +18,11 @@ import {withRouter, Redirect} from 'react-router-dom';
             file: null,
             img: "", 
         }
+
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
         
         this.handleEdit = this.handleEdit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -64,7 +70,7 @@ import {withRouter, Redirect} from 'react-router-dom';
         let formData = new FormData();
         formData.append('file', this.state.file);
 
-        axios.post("http://localhost:3001/uploadCmpProfPic", formData, 
+        this.instance.post("/uploadCmpProfPic", formData, 
          {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -101,7 +107,7 @@ import {withRouter, Redirect} from 'react-router-dom';
             token: accessString
         })
 
-         axios.get("http://localhost:3001/profileCompany/companyInfo", { 
+         this.instance.get("/profileCompany/companyInfo", { 
             headers: {
                 Authorization: `JWT ${accessString}`
             }
@@ -139,7 +145,7 @@ import {withRouter, Redirect} from 'react-router-dom';
             Authorization: `JWT ${this.state.token}`
         }
 
-        axios.post("http://localhost:3001/updateCompanyProfile", {
+        this.instance.post("/updateCompanyProfile", {
             params: {
                 requestInfo: "LOGIN",
                 data: companyInfo

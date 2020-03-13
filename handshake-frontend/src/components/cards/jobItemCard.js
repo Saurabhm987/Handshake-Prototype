@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
+import {API_ENDPOINT} from '../controller/endpoint';
 
 
 export default class GetJobItem extends Component {
@@ -11,10 +12,14 @@ constructor(props){
         item: ""
     }
 
+    this.instance = axios.create({
+        baseURL: API_ENDPOINT,
+        timeout: 1000,
+      });
+
 }
 
 componentDidUpdate(){
-
 }
 
 componentDidMount(){
@@ -30,7 +35,7 @@ componentDidMount(){
     }
     console.log("jobboard token: ", accessString);
 
-    axios.get("http://localhost:3001/getJobBoard",{
+    this.instance.get("/getJobBoard",{
         params:{
             type: "getJob",
             job_id: this.props.cardSelected

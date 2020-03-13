@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import {API_ENDPOINT} from '../controller/endpoint'
 
 export default class EventBoard extends Component {
   constructor(props){
@@ -17,6 +18,11 @@ export default class EventBoard extends Component {
       profile_pic: "",
       event_loc:"",
     }
+
+    this.instance = axios.create({
+      baseURL: API_ENDPOINT,
+      timeout: 1000,
+    });
 
     this.cardSelect = this.cardSelect.bind(this);
     this.applied = this.applied.bind(this);
@@ -44,7 +50,7 @@ sendData = async () => {
 
         console.log("apply_event_data: ", this.state);
 
-        await axios.post("http://localhost:3001/applyEvent",{
+        await this.instance.post("/applyEvent",{
           params:{
             event_id: this.state.appliedEventId,
             company_name: this.state.appliedEvCompany,
@@ -99,7 +105,7 @@ sendData = async () => {
 
       console.log("eventBoard -  token: ", accessString);
 
-      axios.get("http://localhost:3001/getEventBoard/board", { 
+      this.instance.get("/getEventBoard/board", { 
           headers: {
               Authorization: `JWT ${accessString}`
           }

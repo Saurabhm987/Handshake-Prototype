@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {Route, withRouter, Redirect} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
  class DetailsCard extends Component {
     constructor(props){
@@ -16,6 +18,11 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             token: "",
         }
 
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
+          
         this.getInfo = this.getInfo.bind(this);
     }    
 
@@ -41,7 +48,7 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
             }
         }
 
-         axios.get("http://localhost:3001/getDetails", config).then(response => {
+         this.instance.get("/getDetails", config).then(response => {
                 if(response.status === 200){
                     if(response.data === "jwt expired"){
                         this.props.history.push("companyLogin");

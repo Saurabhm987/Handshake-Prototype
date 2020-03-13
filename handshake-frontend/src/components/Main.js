@@ -11,7 +11,6 @@ import StudentProfile from "./profile/studentProfile";
 import JobPost from "./admin/jobpost";
 import CompanyProfile from './profile/companyProfile';
 import Applications from './cards/applicationCard';
-import CompanyPostedJob from './profile/AppliedJob/companyPostedJob';
 import EventBoard from './eventBoard/eventBoard';
 import EventPost from './admin/eventPost';
 import CompanyPostedJobCard from './cards/companyPostedJobCard';
@@ -40,7 +39,6 @@ class Main extends Component {
                 <Route exact path="/studentProfile" component={StudentProfile} />
                 <Route exact path="/studentAppliedJob" component={Applications} />
                 <Route exact path="/appliedEvents" component={AppliedEvent} />
-                <Route exact path="/companyPostedJob" component={CompanyPostedJob} />
                 <Route exact path="/companyPostedJobCard" component={CompanyPostedJobCard} />
                 <Route exact path="/companyPostedEventCard" component={CompanyPostedEventCard} />
                 <Route exact path="/companyProfile" component={CompanyProfile} />

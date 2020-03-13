@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class JobAppliedStudents extends Component {
   constructor(props){
@@ -13,6 +15,11 @@ export default class JobAppliedStudents extends Component {
       job_id:"",
       status: ""
     }
+
+    this.instance = axios.create({
+        baseURL: API_ENDPOINT,
+        timeout: 1000,
+      });
 
     this.changeStatus = this.changeStatus.bind(this);
     this.statusHandler = this.statusHandler.bind(this);
@@ -28,7 +35,7 @@ changeStatus =() =>{
 
     console.log("statusBody: ", statusBody);
     
-    axios.post("http://localhost:3001/changeStatus", statusBody )
+    this.instance.post("/changeStatus", statusBody )
         .then(res=>{
             if(res.status === 200){
                 console.log("Status changed!");
@@ -75,7 +82,7 @@ componentDidMount(){
     let company_name = data.name;
 
 
-  axios.get("http://localhost:3001/getJobAppliedStudents", {
+  this.instance.get("/getJobAppliedStudents", {
       params: {
           company_name: company_name
       }

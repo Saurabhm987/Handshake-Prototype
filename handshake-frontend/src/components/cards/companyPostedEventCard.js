@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
 
 export default class CompanyPostedEventCard extends Component {
   constructor(props){
@@ -9,6 +10,12 @@ export default class CompanyPostedEventCard extends Component {
     this.state ={
       applicationData: [],
     }
+
+    this.instance = axios.create({
+        baseURL: API_ENDPOINT,
+        timeout: 1000,
+      });
+    
 }
 
 componentDidUpdate(){}
@@ -22,7 +29,7 @@ componentDidMount(){
       console.log("token is null!");
   }
 
-  axios.get("http://localhost:3001/getJobPosted/postedevent", { 
+  this.instance.get("/getJobPosted/postedevent", { 
       headers: {
           Authorization: `JWT ${accessString}`
       }

@@ -10,6 +10,12 @@ export default class CompanyPostedEvent extends Component{
             isLogin: true,
             eventData: []
         }
+
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
+
     }
 
     componentDidUpdate(){}
@@ -26,7 +32,7 @@ export default class CompanyPostedEvent extends Component{
   
         console.log("jobboard token: ", accessString);
 
-        axios.get("http://localhost:3001/getJobPosted", { 
+        this.instance.get("/getJobPosted", { 
             headers: {
                 Authorization: `JWT ${accessString}`
             }

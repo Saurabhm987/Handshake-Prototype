@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import logo from '../auth/sjsulogo.png';
 import { Redirect } from 'react-router';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class Login extends Component{
     constructor(props){
@@ -16,6 +18,11 @@ export default class Login extends Component{
             showError: false,
             showNullError: false
         };
+
+        this.instance = axios.create({
+          baseURL: API_ENDPOINT,
+          timeout: 1000,
+        });
 
         this.handleChange = this.handleChange.bind(this);
         this.submit = this.submit.bind(this);
@@ -41,8 +48,7 @@ export default class Login extends Component{
             isLogin: false
           });
         }else{
-
-              axios.post('http://localhost:3001/studentLogin', {
+              this.instance.post('/studentLogin', {
                 email, 
                 password
               }).then((response) =>{
@@ -76,7 +82,7 @@ export default class Login extends Component{
 
     render(){
 
-      const {email, password, showError, isLogin, showNullError}= this.state;
+      const {showError, isLogin, showNullError}= this.state;
 
       if(!isLogin){
         return(
@@ -178,7 +184,7 @@ export default class Login extends Component{
 
     //     axios.defaults.withCredentials = true;
 
-    //      await axios.post('http://localhost:3001/studentLogin', userInfo)
+    //      await axios.post('/studentLogin', userInfo)
     //         .then(response => {
 
     //                 this.setState({

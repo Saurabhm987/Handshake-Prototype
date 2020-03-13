@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class SummaryCard extends Component {
     constructor(props){
@@ -12,6 +14,11 @@ export default class SummaryCard extends Component {
             token: "",
             isLogin: true
         }
+
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
 
         this.editHandler = this.editHandler.bind(this);
         this.saveHandler = this.saveHandler.bind(this);
@@ -37,7 +44,7 @@ export default class SummaryCard extends Component {
 
         console.log("summary_card_compdidmnt_accessString: ", accessString);
 
-        axios.get("http://localhost:3001/profileStudent/userInfo", { 
+        this.instance.get("/profileStudent/userInfo", { 
             headers: {
                 Authorization: `JWT ${accessString}`
             }
@@ -72,7 +79,6 @@ export default class SummaryCard extends Component {
 
     saveHandler= (e) => {
         e.preventDefault();
-
         console.log("CALLING_SAVE_HANDLER.....");
 
         const updateInfo =this.state.objective;
@@ -85,7 +91,7 @@ export default class SummaryCard extends Component {
         console.log("summaryCard_logout_headers: ", this.state.token);
         console.log("updateInfo: ", updateInfo);
       
-        axios.put("http://localhost:3001/updateUserProfile", {
+        this.instance.put("/updateUserProfile", {
             params : {
                 requestInfo : "summary" ,
                 data: updateInfo

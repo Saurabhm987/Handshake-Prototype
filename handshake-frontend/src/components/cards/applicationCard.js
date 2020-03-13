@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {API_ENDPOINT} from '../controller/endpoint';
 
 export default class Applications extends Component {
   constructor(props){
@@ -10,6 +11,11 @@ export default class Applications extends Component {
       applicationData: [],
       img: ""
     }
+
+    this.instance = axios.create({
+        baseURL: API_ENDPOINT,
+        timeout: 1000,
+      });
 }
 
 componentDidUpdate(){}
@@ -23,7 +29,7 @@ componentDidMount(){
       console.log("token is null!");
   }
 
-  axios.get("http://localhost:3001/getJobBoard/applications",{ 
+  this.instance.get("/getJobBoard/applications",{ 
       headers: {
           Authorization: `JWT ${accessString}`
       }

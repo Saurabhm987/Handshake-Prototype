@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import {API_ENDPOINT} from '../controller/endpoint';
 
 export default class JobBoard extends Component {
   constructor(props){
@@ -15,6 +16,12 @@ export default class JobBoard extends Component {
       applied_job_title:"",
       applied_profile_pic:""
     }
+
+
+    this.instance = axios.create({
+      baseURL: API_ENDPOINT,
+      timeout: 1000,
+    });
 
     this.cardSelect = this.cardSelect.bind(this);
     this.applied = this.applied.bind(this);
@@ -41,7 +48,7 @@ sendData = async () => {
         console.log( "appliedJobId", this.state.appliedJobId);
         console.log("company",  this.state.appliedCompany);
 
-        await axios.post("http://localhost:3001/applyJob",{
+        await this.instance.post("/applyJob",{
           params:{
             id: this.state.appliedJobId,
             company: this.state.appliedCompany,
@@ -97,7 +104,7 @@ sendData = async () => {
 
       console.log("jobboard token: ", accessString);
 
-      axios.get("http://localhost:3001/getJobBoard/board", { 
+      this.instance.get("/getJobBoard/board", { 
           headers: {
               Authorization: `JWT ${accessString}`
           }

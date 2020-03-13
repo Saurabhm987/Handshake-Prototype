@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Route, withRouter, Redirect} from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
 
 
 export default class EducationCard extends Component {
@@ -22,6 +23,12 @@ export default class EducationCard extends Component {
             addMode:false, 
             reload: true
         }
+
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
+          
 
         this.handleEdit = this.handleEdit.bind(this);
         this.handleCancel= this.handleCancel.bind(this);
@@ -90,7 +97,7 @@ export default class EducationCard extends Component {
 
         console.log("token recieved : ", this.state.token);
 
-       axios.post("http://localhost:3001/addEduExp", {
+       this.instance.post("/addEduExp", {
             params: {
                 requestInfo: "EDU",
                 data: userInfo
@@ -139,7 +146,7 @@ export default class EducationCard extends Component {
             Authorization: `JWT ${this.state.token}`
         }
 
-        await axios.put("http://localhost:3001/updateUserProfile", {
+        await this.instance.put("/updateUserProfile", {
             params: {
                 requestInfo: "EDU",
                 data: userInfo
@@ -178,7 +185,7 @@ export default class EducationCard extends Component {
 
         console.log("summary_card_compdidmnt_accessString: ", accessString);
 
-        axios.get("http://localhost:3001/profileStudent/eduInfo", { 
+        this.instance.get("/profileStudent/eduInfo", { 
             headers: {
                 Authorization: `JWT ${accessString}`
             }

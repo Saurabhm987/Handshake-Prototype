@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class EventAppliedStudents extends Component {
   constructor(props){
@@ -13,6 +15,12 @@ export default class EventAppliedStudents extends Component {
       job_id:"",
       status: ""
     }
+
+    this.instance = axios.create({
+      baseURL: API_ENDPOINT,
+      timeout: 1000,
+    });
+    
 
 }
 
@@ -34,7 +42,7 @@ componentDidMount(){
     let company_name = data.name;
 
 
-  axios.get("http://localhost:3001/getJobAppliedStudents", {
+  this.instance.get("/getJobAppliedStudents", {
       params: {
           requestInfo:"event",
           company_name: company_name

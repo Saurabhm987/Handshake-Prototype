@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import logo from '../auth/sjsulogo.png';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class CompanyLogin extends Component{
     constructor(props){
@@ -14,6 +16,11 @@ export default class CompanyLogin extends Component{
             message_psw: "",
             message_try:""
         }
+
+        this.instance = axios.create({
+          baseURL: API_ENDPOINT,
+          timeout: 1000,
+        });
 
         this.handleChange = this.handleChange.bind(this);
         this.submit = this.submit.bind(this);
@@ -48,7 +55,7 @@ export default class CompanyLogin extends Component{
               message_email:""
             })
         }else{
-          await axios.post('http://localhost:3001/companyLogin', userInfo)
+          await this.instance.post('/companyLogin', userInfo)
           .then(response => {
 
                 console.log("response_data: ", response.data);

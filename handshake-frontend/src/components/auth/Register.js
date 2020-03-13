@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class Register extends Component{
     constructor(props){
@@ -13,6 +15,11 @@ export default class Register extends Component{
             access: "",
             authFlag: false
         }
+
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
 
         this.passwordHandler = this.passwordHandler.bind(this);
         this.uniNameHandler = this.uniNameHandler.bind(this)
@@ -61,7 +68,7 @@ export default class Register extends Component{
 
         axios.defaults.withCredentials = true;
 
-        await axios.post('http://localhost:3001/register', { name,uniName, email, password, access})
+        await this.instance.post('/register', { name,uniName, email, password, access})
             .then(response => {
                 console.log("responseRegister: ", response );
                 if(response.status === 200){

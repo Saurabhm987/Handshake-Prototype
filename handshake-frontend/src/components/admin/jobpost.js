@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import { API_ENDPOINT } from '../controller/endpoint';
 
 export default class JobPost extends Component{
     constructor(props){
@@ -17,6 +18,12 @@ export default class JobPost extends Component{
           message: "", 
           profile_pic: ""
         }
+
+        this.instance = axios.create({
+          baseURL: API_ENDPOINT,
+          timeout: 1000,
+        });
+
 
         this.changeHandler = this.changeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
@@ -51,7 +58,7 @@ export default class JobPost extends Component{
           token: accessString
       })
 
-      axios.get("http://localhost:3001/profileCompany/companyInfo", { 
+      this.instance.get("/profileCompany/companyInfo", { 
         headers: {
             Authorization: `JWT ${accessString}`
         }
@@ -88,7 +95,7 @@ export default class JobPost extends Component{
       }
 
         axios.defaults.withCredentials = true;
-         axios.post('http://localhost:3001/postJob', {
+         this.instance.post('/postJob', {
           params: {
             data: jobInfo
           }},

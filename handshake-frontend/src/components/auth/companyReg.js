@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {API_ENDPOINT} from '../controller/endpoint';
 
 export default class JobPost extends Component{
     constructor(props){
@@ -14,6 +15,11 @@ export default class JobPost extends Component{
             company_contact: "",
             company_profile_photo: ""
         }
+
+        this.instance = axios.create({
+          baseURL: API_ENDPOINT,
+          timeout: 1000,
+        });
 
         this.changeHandler = this.changeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
@@ -32,7 +38,7 @@ export default class JobPost extends Component{
         const regObj = Object.assign(this.state);
 
         axios.defaults.withCredentials = true;
-        await axios.post('http://localhost:3001/registerCompany', regObj)
+        await this.instance.post('/registerCompany', regObj)
             .then(response => {
                 console.log("responseRegister: ", response );
                 if(response.status === 200){

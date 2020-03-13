@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class AppliedEvent extends Component {
   constructor(props){
@@ -10,6 +12,13 @@ export default class AppliedEvent extends Component {
       eventData: [],
       img: ""
     }
+
+
+    this.instance = axios.create({
+        baseURL: API_ENDPOINT,
+        timeout: 1000,
+      });
+
 }
 
 componentDidUpdate(){}
@@ -23,7 +32,7 @@ componentDidMount(){
       console.log("token is null!");
   }
 
-  axios.get("http://localhost:3001/getEventBoard/appliedevents",{ 
+  this.instance.get("/getEventBoard/appliedevents",{ 
       headers: {
           Authorization: `JWT ${accessString}`
       }

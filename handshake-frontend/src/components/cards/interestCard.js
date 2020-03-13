@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import Viewer, { Worker } from '@phuocng/react-pdf-viewer';
-import '@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css';
+import {API_ENDPOINT} from '../controller/endpoint';
+
 
 export default class InterestCard extends Component {
     constructor(props){
@@ -12,6 +12,11 @@ export default class InterestCard extends Component {
             token: "", 
             file:null
         }
+
+        this.instance = axios.create({
+            baseURL: API_ENDPOINT,
+            timeout: 1000,
+          });
 
         this.changeHandler = this.changeHandler.bind(this);
         this.addSkills = this.addSkills.bind(this);
@@ -38,7 +43,7 @@ export default class InterestCard extends Component {
         const formData = new FormData();
         formData.append('file', this.state.file);
 
-        axios.post("http://localhost:3001/uploadResume", formData, {
+        this.instance.post("/uploadResume", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `JWT ${this.state.token}`
@@ -68,7 +73,7 @@ export default class InterestCard extends Component {
         let data = this.state.skills;
         console.log("data: ", data);
 
-        await axios.post("http://localhost:3001/uploadResume", {
+        await this.instance.post("/uploadResume", {
             headers: {
                 Authorization: `JWT ${this.state.token}`
             }
@@ -97,38 +102,9 @@ export default class InterestCard extends Component {
                 this.setState({
                     token: accessString
                 })
-
-
-        // console.log("auth toke in interested card: ", accessString);
-
-        // await axios.get("http://localhost:3001/getResume", {
-        //     headers: {
-        //         Authorization: `JWT ${accessString}`
-        //     }
-        // }).then(res =>{ 
-        //     if(res.status === 200){
-        //         console.log("interested card response: ", res);
-        //          let data = res.data
-
-        //          console.log("pdf url ", data) ;
-
-        //         this.setState({
-        //             resume: data
-        //         })
-        //     }else{
-        //         console.log("error!");
-        //     }
-        // }).catch( err =>{
-        //     console.log("error! ", err);
-        // })
-
-        
     }
 
     render(){
-
-        // let data = this.state.resume || "";
-
         return(
                     <div className="ui cards">
                         <div className="card" style={{fontSize:"1.4em"}}>
@@ -144,18 +120,6 @@ export default class InterestCard extends Component {
                                 </div>
                             </div>
                         </div>
-                  
-                    {/* <div className="ui cards">
-                        <div className="card" style={{fontSize:"1.4em"}}>
-                            <div className="content">
-                            <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.2.228/build/pdf.worker.min.js">
-                                <div style={{ height: '750px' }}>
-                                        <Viewer fileUrl= {data} />
-                                </div>
-                            </Worker>
-                            </div>
-                        </div>
-                    </div> */}
                     </div>
         );
     }
