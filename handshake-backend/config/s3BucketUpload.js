@@ -13,7 +13,7 @@ AWS.config.update({
 
   const s3= new AWS.S3();
 
-  function uploadFile(source,targetName, mimetype, type, emailType, email,  res){
+  function uploadFile(source,targetName, mimetype, type,fileType, emailType, email,  res){
     console.log('preparing to upload...');
     fs.readFile(source, function (err, filedata) {
       if (!err) {
@@ -36,12 +36,14 @@ AWS.config.update({
             console.log('Successfully uploaded the file');
 
             targetName = targetName.replace(/ /g,"+");
+            
+            // console.log("targetName: ", targetName);
 
           let storeURL = keys.pic_url + targetName; 
           console.log("storeURL:" , storeURL);
 
-            insertQuery = 'UPDATE ?? SET profile_pic = ? WHERE ?? = ? '
-            query = mysql.format(insertQuery, [type, storeURL,emailType, email ])
+            insertQuery = 'UPDATE ?? SET ?? = ? WHERE ?? = ? '
+            query = mysql.format(insertQuery, [type, fileType, storeURL,emailType, email ])
 
             pool.query(query, (err, res)=> {
 
@@ -51,7 +53,7 @@ AWS.config.update({
                     console.log("inserted to db!");
                 }
             });
-            console.log("query: ", query);
+            // console.log("query: ", query);
             return res.send({success:true});
           }
         });

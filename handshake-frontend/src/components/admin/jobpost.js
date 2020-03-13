@@ -169,7 +169,7 @@ export default class JobPost extends Component{
                 <br/>
                 <div className="field" >
                     <h5><label>Post Date</label></h5>
-                     <input onChange={this.changeHandler} type="number" name="job_post_date" placeholder="Post Date"/>
+                     <input onChange={this.changeHandler} type="text" name="job_post_date" placeholder="Post Date"/>
                 </div> 
                 <br/>
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Submit</button>

@@ -198,7 +198,7 @@ import {withRouter, Redirect} from 'react-router-dom';
          
                     <div class="ui card"  style={{width: "80%"}}>
                             <div className="image">
-                                    <img src= {this.state.img}/>
+                                    <img src= {this.state.img} style={{width:"443px", height:"300px"}}/>
                             </div>
                             <div class="content">
                                     <div class="header"><h1><b>{this.state.company_name}</b></h1></div>

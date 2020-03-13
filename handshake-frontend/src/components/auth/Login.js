@@ -86,7 +86,7 @@ export default class Login extends Component{
             <form action=" " method="POST" class="ui large form">
               <div class="ui stacked secondary  segment login" style={{padding: "10px"}}>
 
-                <div id="logo-id" style= {{marginTop: "10%" , marginBottom: "10%"}}>
+                <div id="logo-id" style= {{marginTop: "10%" , marginBottom: "8%"}}>
                     <img src={logo}   class="logo-class"  />
                 </div>
                 <div class="ui divider"></div>
@@ -97,7 +97,7 @@ export default class Login extends Component{
                   </h1>
             
                 <div class="field" >
-                 <span class="ui left icon input"><h4>SJSU Email ID</h4></span>
+                 <span class="ui left icon input" style={{margin: "10px"}}><h4>SJSU Email ID</h4></span>
                   <div class="ui left icon input">
                     <i class="user icon"></i>
                       <input onChange={this.handleChange}  id="email" type="text" name="email" placeholder="Email address" />
@@ -107,7 +107,7 @@ export default class Login extends Component{
                   </div> */}
                 </div>
                 <div class="field" >
-                <span class="ui left icon input"><h4>Password</h4></span>
+                <span class="ui left icon input" style={{margin: "10px"}}><h4>Password</h4></span>
                   <div class="ui left icon input">
                     <i class="lock icon"></i>
                     <input onChange={this.handleChange} id="password" type="password" name="password" placeholder="Password" />
@@ -120,6 +120,7 @@ export default class Login extends Component{
                     <span style={{color: "red"}}>{this.state.msg}</span>
                   </div>
                 <div onClick={this.submit} class="ui fluid large blue submit button" style={{fontSize: "1.3em"}}>Login</div>
+                <br/>
               </div>          
             </form>
             {showNullError && (

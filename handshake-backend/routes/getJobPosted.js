@@ -67,7 +67,7 @@ module.exports = app => {
 
                     eventPosted = Object.assign(rows);
 
-                    console.log("job posted..",eventPosted);
+                    console.log("Posted Event.",eventPosted);
 
                     res.json(eventPosted);
                 })

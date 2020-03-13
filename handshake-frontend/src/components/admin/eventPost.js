@@ -10,7 +10,7 @@ export default class EventPost extends Component{
           company_name: "",
           event_descr: "",
           event_loc: "",
-          event_post_date: "",
+          event_time: "",
           isLogin: true,
           profile_pic: "",
           event_eligible: "", 
@@ -164,7 +164,7 @@ export default class EventPost extends Component{
                 <br/>
                 <div className="field" >
                     <h5><label>Event Time</label></h5>
-                     <input onChange={this.changeHandler} type="number" name="event_post_date" placeholder="Post Date"/>
+                     <input onChange={this.changeHandler} type="text" name="event_time" placeholder="Post Date"/>
                 </div> 
                 <br/>
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Submit</button>

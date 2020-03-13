@@ -12,7 +12,8 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage });
   
   module.exports = app => {
-    app.post('/uploadnewFiles', upload.single('file'), function (req, res, next) {
+    app.post('/uploadResume', upload.single('file'), function (req, res, next) {
+        console.log("in upload resume!!!");
         passport.authenticate('jwt', (err, user, info) => {
                 if(err){
                     console.log("passport_error!!", err);
@@ -27,11 +28,11 @@ const storage = multer.diskStorage({
                     let email = user.student_email;
                     let students = "students";
                     let student_email = "student_email";
-                    let profile_pic = "profile_pic";
+                    let resume = "resume";
 
                     // function uploadFile(source,targetName, mimetype, type,fileType, emailType, email,  res)
 
-                    uploadFile(req.file.path, req.file.filename, req.file.mimetype, students, profile_pic , student_email, email, res);
+                    uploadFile(req.file.path, req.file.filename, req.file.mimetype, students,resume, student_email, email, res);
 
                 }
         })(req, res, next);

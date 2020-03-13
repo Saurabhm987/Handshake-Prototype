@@ -1,17 +1,58 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Viewer, { Worker } from '@phuocng/react-pdf-viewer';
+import '@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css';
 
 export default class InterestCard extends Component {
     constructor(props){
         super(props);
 
         this.state ={
-            skills: "",
-            token: ""
+            resume: "",
+            token: "", 
+            file:null
         }
 
         this.changeHandler = this.changeHandler.bind(this);
         this.addSkills = this.addSkills.bind(this);
+        this.handleFileUpload = this.handleFileUpload.bind(this);
+    }
+
+
+
+    handleFileUpload = (event) => {
+        this.setState({file: event.target.files[0]});
+      }
+
+
+      handleFormSubmit = (event) => {
+        if(this.state.file === null){
+            alert("please add file");
+        }else{
+
+        this.setState ({
+            editMode: !this.state.editMode
+        })
+
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('file', this.state.file);
+
+        axios.post("http://localhost:3001/uploadResume", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `JWT ${this.state.token}`
+          }
+        }).then(response => {
+          console.log("file successfully upladed!");
+          this.setState({
+              isLogin: true
+          })
+        }).catch(error => {
+          console.log("error in interest CArd: ", error);
+        });
+    }
+
     }
 
     changeHandler =(e) => {
@@ -27,13 +68,17 @@ export default class InterestCard extends Component {
         let data = this.state.skills;
         console.log("data: ", data);
 
-        await axios.post("http://localhost:3001/addSkills", {data : data}, {
+        await axios.post("http://localhost:3001/uploadResume", {
             headers: {
                 Authorization: `JWT ${this.state.token}`
             }
         }) .then((res) => {
-                    console.log("response: ", res);
-                    console.log("added!");
+            if(res.status === 200){
+                console.log("response: ", res);
+                console.log("added!");
+                alert('Resume Uploaded!');
+            }
+            console.log("cant upload resume!");
             }).catch((err) => {
                 console.log("error! ", err);
             });
@@ -41,57 +86,76 @@ export default class InterestCard extends Component {
 
     async componentDidMount(){
         const accessString = localStorage.getItem('JWT');
-        if(accessString === null){
-            this.setState({
-                isLogin: false
-            })
-            console.log("token is null!");
-        }
 
-        this.setState({
-            token: accessString
-        })
+                if(accessString === null){
+                    this.setState({
+                        isLogin: false
+                    })
+                    console.log("token is null!");
+                }
 
-        await axios.get("http://localhost:3001/getSkills", {
-            headers: {
-                Authorization: `JWT ${this.state.token}`
-            }
-        }).then(res =>{ 
-            if(res.status === 200){
-                console.log("response", res);
                 this.setState({
-                    skills: res.data
+                    token: accessString
                 })
-            }else{
-                console.log("error!");
-            }
-        }).catch( err =>{
-            console.log("error! ", err);
-        })
+
+
+        // console.log("auth toke in interested card: ", accessString);
+
+        // await axios.get("http://localhost:3001/getResume", {
+        //     headers: {
+        //         Authorization: `JWT ${accessString}`
+        //     }
+        // }).then(res =>{ 
+        //     if(res.status === 200){
+        //         console.log("interested card response: ", res);
+        //          let data = res.data
+
+        //          console.log("pdf url ", data) ;
+
+        //         this.setState({
+        //             resume: data
+        //         })
+        //     }else{
+        //         console.log("error!");
+        //     }
+        // }).catch( err =>{
+        //     console.log("error! ", err);
+        // })
+
+        
     }
 
     render(){
 
-        let data = this.state.skills;
+        // let data = this.state.resume || "";
 
         return(
                     <div className="ui cards">
                         <div className="card" style={{fontSize:"1.4em"}}>
                             <div className="content">
-                                <div className="header">Skillset Information</div>
+                                <div className="header">Upload Resume</div>
                                 <div className="description" style={{marginBottom: "10px"}}>
                                 <div class="ui fluid action input" style={{fontSize:"15px"}}>
-                                    <input type="text" name="skills" placeholder="add skills" onChange={this.changeHandler}/>
-                                    <div class="ui button" onClick={this.addSkills}>Add</div>
+                                <form style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
+                                    <input type="file" name="demo-file" placeholder="add skills" onChange={this.handleFileUpload}/>
+                                    <button class="ui button" type='submit' >Upload</button>
+                                </form>
                                 </div>
                                 </div>
-                                {/* <div className ="description">
-                                { data.map( item =>
-                                    <h4><b>{item}</b></h4>
-                                 )}
-                                </div> */}
                             </div>
                         </div>
+                  
+                    {/* <div className="ui cards">
+                        <div className="card" style={{fontSize:"1.4em"}}>
+                            <div className="content">
+                            <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.2.228/build/pdf.worker.min.js">
+                                <div style={{ height: '750px' }}>
+                                        <Viewer fileUrl= {data} />
+                                </div>
+                            </Worker>
+                            </div>
+                        </div>
+                    </div> */}
                     </div>
         );
     }

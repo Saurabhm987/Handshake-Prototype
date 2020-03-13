@@ -144,8 +144,11 @@ render() {
         { renderdata.map( (item, index) =>
           <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
               <img src={item.profile_pic}  style={{width:"170px", height:"110px"}}/>
+
+          <div className="row" style={{width:"100%"}}>
+              <div className="col-md-9">
                 <div class="content" style={{padding: " 5px 5px 5px 35px"}}>
-                        <div className="header" id="cardHover"> {item.event_name}</div>
+                        <div className="header" id="cardHover"><b> {item.event_name}</b></div>
                         <div class="meta">
                             <span>{item.event_loc}</span>
                         </div>
@@ -153,22 +156,26 @@ render() {
                             {item.company_name}
                         </div>
                         <div class="extra">
-                            {item.event_eligible}
+                            Eligibility: {item.event_eligible}
                         </div>
-                        <div className="extra">
+                        {/* <div className="extra">
                             {item.event_descr}
-                        </div>
+                        </div> */}
                 </div>
-                <div class="right floated content" style={{padding: "35px"}}>
-                        <div class="ui large green button" 
-                            onClick={this.applied} 
-                            data-selected_event_id={item.event_id} 
-                            data-event_name = {item.event_name}
-                            data-event_loc = {item.event_loc}
-                            data-company_name = {item.company_name}
-                            data-profile_pic = {item.profile_pic}
-                        >Register</div>
+              </div>
+                <div className="col-md-3">
+                  <div class="right floated content" style={{padding: "35px"}}>
+                          <div class="ui large green button" 
+                              onClick={this.applied} 
+                              data-selected_event_id={item.event_id} 
+                              data-event_name = {item.event_name}
+                              data-event_loc = {item.event_loc}
+                              data-company_name = {item.company_name}
+                              data-profile_pic = {item.profile_pic}
+                          >Register</div>
+                  </div>
                 </div>
+            </div>
 
                 <div ui message > 
                         {item.event_status}

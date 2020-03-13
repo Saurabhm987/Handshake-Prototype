@@ -55,7 +55,11 @@ export default class CompanyLogin extends Component{
                 localStorage.setItem('JWT', response.data.token);
 
                   if(response.status === 200){
-                    if(response.data === "Email doesn't match"){
+                    if(response.data === "jwt expired"){
+
+                      this.props.history.push("companyLogin");
+
+                    } else if(response.data === "Email doesn't match"){
                         this.setState({
                           message_email: "Email doesn't match!"
                         })
@@ -121,7 +125,6 @@ export default class CompanyLogin extends Component{
           </form>
           <div class="ui message">
               <a href="/companyReg">Register</a>
-              {/* <Link to={"/register"}> </Link> */}
           </div>
         </div>
       </div>

@@ -56,18 +56,18 @@ app.post('/updateCompanyProfile',  (req, res, next) =>{
 
         console.log("Description edit!");
 
-        company_email = user.company_email;
-        data = req.body.params.data
+        let company_email = user.company_email;
+        let data = req.body.params.data
     
         console.log("REQUESTED_BODY: ",data);
 
         let insertQuery = 'UPDATE company_info SET ? WHERE company_email = ?';
         let query = mysql.format(insertQuery, [data, company_email]);
         
-        pool.query(query, (err, res)=>{
+        pool.query(query, (err, rows)=>{
             if(err){
                 console.log("QUERY_ERROR", err);
-                res.end();
+                res.status(200).end();
             }   
 
             console.log("QUERY_SUCCESS!");

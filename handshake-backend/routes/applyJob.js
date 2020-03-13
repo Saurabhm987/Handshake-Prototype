@@ -34,13 +34,14 @@ module.exports = app =>{
 
                 let job_status = "Applied";
                 let student_email =  user.student_email;
+                let resume = user.resume;
                 let job_id = req.body.params.id;
                 let company_name = req.body.params.company; 
                 let job_title = req.body.params.job_title;
                 let profile_pic = req.body.params.profile_pic;
 
-                    let insertQuery = 'INSERT INTO applied_job (??,??,??,??,??, ??)  VALUES (?,?,?,?,?,?)';
-                    let query = mysql.format(insertQuery, ["job_status", "student_email","job_id", "company_name", "job_title", "profile_pic", job_status, student_email, job_id, company_name, job_title, profile_pic]);
+                    let insertQuery = 'INSERT INTO applied_job (??,??,??,??,??, ??, ??)  VALUES (?,?,?,?,?,?, ?)';
+                    let query = mysql.format(insertQuery, ["job_status", "student_email","job_id", "company_name", "job_title", "profile_pic", "resume", job_status, student_email, job_id, company_name, job_title, profile_pic, resume]);
                       
                     pool.query(query, (err, response) =>{
                         if(err){

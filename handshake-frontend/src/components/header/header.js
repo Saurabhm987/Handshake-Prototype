@@ -26,7 +26,6 @@ export default class Header extends Component{
             })
 
             console.log("header_token: ", accessString);
-            // this.props.history.push("login");
 
         }else{
 
@@ -48,9 +47,9 @@ export default class Header extends Component{
         localStorage.removeItem('JWT');
         this.setState({
             isLogin: false
-        }, () =>{
-            this.props.history.push("/login")
-        })
+        }, ()=>{
+            this.props.history.push("home");
+        });
     }
 
     render(){
@@ -101,6 +100,9 @@ export default class Header extends Component{
                 <div class="ui blue inverted menu" style={{padding:"10px"}}>
                     <Link to="/companyPostedJobCard" className="item"> Posted Job </Link>                
                     <Link to="/companyPostedEventCard" className="item">Event Posted </Link>
+                    <Link to="/jobAppliedStudent" className="item">Job Applied</Link>
+                    <Link to="/eventAppliedStudent" className="item">Event Registered</Link>
+
                     <div class="right menu">
                         <div className="ui simple dropdown item">
                                 {this.state.email}

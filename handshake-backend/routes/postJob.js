@@ -38,8 +38,8 @@ module.exports = app =>{
 
                     console.log("user_email:", user.company_email);
 
-                    let insertQuery = 'INSERT INTO job_post (??,??,??,??,??,??)  VALUES (?,?,?,?,?,?)';
-                    let query = mysql.format(insertQuery, ["job_title", "job_loc","job_salary", "job_post_date", "job_descr", "company_name",req_body. job_title, req_body.job_loc, req_body.job_salary, req_body.job_post_date, req_body.job_descr, req_body.company_name ]);
+                    let insertQuery = 'INSERT INTO job_post (??,??,??,??,??,??, ??)  VALUES (?,?,?,?,?,?, ?)';
+                    let query = mysql.format(insertQuery, ["job_title", "job_loc","job_salary", "job_post_date", "job_descr", "company_name","profile_pic",req_body. job_title, req_body.job_loc, req_body.job_salary, req_body.job_post_date, req_body.job_descr, req_body.company_name, req_body.profile_pic ]);
                     
                     pool.query(query, (err, response) =>{
                         if(err){

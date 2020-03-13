@@ -36,7 +36,7 @@ export default class JobPost extends Component{
             .then(response => {
                 console.log("responseRegister: ", response );
                 if(response.status === 200){
-                  alert("Posted Job");
+                  alert("Registerd! Being Redirect to login!");
                     console.log("successfully regiesterd!!!!!!!!!!");
                     this.props.history.push('/companyLogin');
                 }else{

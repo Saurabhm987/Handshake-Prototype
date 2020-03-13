@@ -43,7 +43,7 @@ require('./routes/updateStudent')(app);
 require('./routes/addEduExp')(app);
 require('./routes/getJobBoard')(app);
 require('./routes/getJobPosted')(app);
-require('./routes/getFile')(app);
+require('./routes/getResume')(app);
 require('./routes/uploadStdProfPic')(app);
 require('./routes/uploadCmpProfPic')(app);
 require('./routes/addSkills')(app);
@@ -52,6 +52,9 @@ require('./routes/applyEvent')(app);
 require('./routes/postEvent')(app);
 require('./routes/getDetails')(app);
 require('./routes/getStudents')(app);
+require('./routes/uploadRes')(app);
+require('./routes/getJobAppliedStudents')(app);
+require('./routes/changeStatus')(app);
 
 
 app.listen(3001);

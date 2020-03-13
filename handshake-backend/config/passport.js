@@ -48,7 +48,7 @@ passport.use(
                             access:"student"
                         }
 
-                        let insertQuery = 'INSERT INTO ?? ( ??, ??) VALUES (?, ?) ';
+                        let insertQuery = 'INSERT INTO ?? ( ??, ??, ??) VALUES (?, ?, ?) ';
                         let query = mysql.format( insertQuery, ["students", "student_email","student_password", "access", newUserMysql.email, newUserMysql.password, newUserMysql.access ]);
                         
                         pool.query(query, (err, row) => {

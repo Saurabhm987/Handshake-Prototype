@@ -27,10 +27,16 @@ const storage = multer.diskStorage({
                     let email = user.company_email;
                     let company_info = "company_info";
                     let company_email = "company_email"
+                    let fileType = "profile_pic"
 
                     // function uploadFile(source,targetName, mimetype, type, emailType, email,  res)
 
-                    uploadFile(req.file.path, req.file.filename, req.file.mimetype, company_info, company_email, email, res);
+                      // insertQuery = 'UPDATE ?? SET ?? = ? WHERE ?? = ? '
+                      // query = mysql.format(insertQuery, [type, fileType, storeURL,emailType, email ])
+
+                    // function uploadFile(source,targetName, mimetype, type,fileType, emailType, email,  res){
+
+                    uploadFile(req.file.path, req.file.filename, req.file.mimetype, company_info, fileType, company_email, email, res);
 
                 }
         })(req, res, next);

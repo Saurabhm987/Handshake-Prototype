@@ -19,7 +19,13 @@ import {Route, withRouter, Redirect} from 'react-router-dom';
         this.getInfo = this.getInfo.bind(this);
     }    
 
-    componentDidUpdate(){}
+    componentDidUpdate(){
+        // if(prevState !== nextProps){
+        //     this.prevState = this.nextProps;
+        // }else{
+        //     this.state = this.prevState;
+        // }
+    }
 
   getInfo = (token) =>{
         console.log("thisProsp: ", this.state.event_id.id);
@@ -101,7 +107,7 @@ renderViewMode = () => {
                                                     <div className="header" ><h4><b>{event_name}</b></h4></div>
                                                     <div className="extra"><h4><b>{event_loc}</b></h4></div>
                                                     <div className="extra"><b>Eligibility: </b>{event_eligible}</div>
-                                                    <div className="extra"><h4><b>{event_time}</b></h4></div>
+                                                    <div className="extra"><b>Time: {event_time}</b></div>
                                             </div>
                                             {/* <div class="right floated content" style={{padding: "35px"}}>
                                                     <div class="ui large button">
@@ -115,7 +121,8 @@ renderViewMode = () => {
                                 <div class="ui items" style={{width:"100%"}}>
                                         <div className="item" style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
                                             <div className="content"  style={{padding: "10px 5px 5px 50px"}}>
-                                                    {event_descr}
+                                            <div className="header"><b>Description</b></div>
+                                            <div className="extra">{event_descr}</div> 
                                             </div>
                                         </div>
                                 </div>

@@ -57,6 +57,8 @@ export default class Register extends Component{
 
         const { name, uniName, email, password, access} = this.state;
 
+        console.log("studentInfo: ", this.state);
+
         axios.defaults.withCredentials = true;
 
         await axios.post('http://localhost:3001/register', { name,uniName, email, password, access})
@@ -64,6 +66,7 @@ export default class Register extends Component{
                 console.log("responseRegister: ", response );
                 if(response.status === 200){
                     console.log("successfully regiesterd!!!!!!!!!!");
+                    alert("Successfully Registerd! You are being redirected to login!")
                     this.props.history.push('/login');
 
                 }else{

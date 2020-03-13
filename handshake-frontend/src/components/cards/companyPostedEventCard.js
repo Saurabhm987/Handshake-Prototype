@@ -63,7 +63,7 @@ const renderdata = this.state.applicationData;
                                     <div className="header" ><h4><b>{item.event_name}</b></h4></div>
                                     <div className="extra"><h4><b>{item.event_loc}</b></h4></div>
                                     <div className="extra"><b>Eligibility: </b>{item.event_eligible}</div>
-                                    <div className="extra"><h4><b>{item.event_time}</b></h4></div>
+                                    <div className="extra"><b>Time: {item.event_time}</b></div>
                             </div>
                             <div class="right floated content" style={{padding: "35px"}}>
                             <div class="ui large button"><Link to=  {{  
