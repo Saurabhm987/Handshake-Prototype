@@ -1,3 +1,6 @@
 [submodule "Lab1/handshake-frontend"]
 	path = Lab1/handshake-frontend
 	url = https://github.com/Saurabhm987/Handshake-Prototype.git
+[submodule "Lab2/handshake-frontend"]
+	path = Lab2/handshake-frontend
+	url = https://github.com/Saurabhm987/Handshake-Prototype.git
