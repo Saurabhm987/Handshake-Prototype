@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon index.js",
-    "client": "npm run start --prefix ../handshake-frontend",
+    "client": "npm run start --prefix ../Frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Saurabh Mane",
@@ -24,6 +24,7 @@
     "express-session": "^1.17.0",
     "jsonwebtoken": "^8.5.1",
     "mdbreact": "^4.25.2",
+    "mongoose": "^5.9.5",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",

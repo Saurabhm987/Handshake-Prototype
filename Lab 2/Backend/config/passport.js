@@ -1,5 +1,4 @@
 const passport = require('passport');
-var mysql = require('mysql');
 var pool = require('../database/db-connection');
 require('dotenv').config(); 
 const Cryptr = require('cryptr');
@@ -8,6 +7,7 @@ const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
 const jwtSecret = require('./jwtConfig')
+const User = require('../models/userModel');
 
 
 passport.use(
@@ -21,61 +21,45 @@ passport.use(
         }, 
         (req, email, password, done) => {
             try{
-                let insertQuery = 'SELECT * FROM students WHERE ?? = ? ';
-                let query = mysql.format(insertQuery, [ "student_email", email]);
-            
-                pool.query(query, (err, rows)=>{
-                    if(err){
-                        console.log("PASSPORT: ", err);
-                        return done(err);
-                    } 
-                    if(rows.length){
-
-                        console.log("USERNAME_EXIST!");
-
-                        return done(null, false, {
-                            message: 'Email already exist'
-                        });
-
-                    }else{
-
-                        console.log("email: ", email);
-                        console.log("password: ", password);
-                        
-                        var newUserMysql = {
-                            email: email,
-                            password: cryptr.encrypt(password),
-                            access:"student"
+                    console.log("email : ", email);
+                    User.find({username : email}, function(err, user) {
+                        if(err){
+                            console.log("error pass searching! ", err);
+                            return done(err);
                         }
+                        console.log("user: ", user);
+                        if(user === undefined){
+                            console.log("user exist!");
+                            return done(null, false, {
+                                message: 'Email already exist'
+                            });
+                        }else{
 
-                        let insertQuery = 'INSERT INTO ?? ( ??, ??, ??) VALUES (?, ?, ?) ';
-                        let query = mysql.format( insertQuery, ["students", "student_email","student_password", "access", newUserMysql.email, newUserMysql.password, newUserMysql.access ]);
-                        
-                        pool.query(query, (err, row) => {
-                            if(err){
+                            console.log("email: ", email);
+                            console.log("password: ", password);
+                            
+                            var newUser = User( {
+                                email: email,
+                                password: cryptr.encrypt(password),
+                                access:"student"
+                            } );
 
-                                console.log("PASSPORT_DB_ERROR: ", err);
-
-                                return done(null, false, {
-                                    message: 'DB_ERROR'
-                                })
-                            }
-                            newUserMysql.id = row.insertId;
-
-                            console.log("USER_CREATED")
-                            console.log(" ROW: ", newUserMysql);
-                            return done(null, newUserMysql);
-                        })
-                    }
-                });
-
-            } catch (err){
+                            newUser.save(function(err, user) {
+                                if(err) {
+                                    console.log("error while saving! ", err);
+                                    return done(err);
+                                }
+                                console.log("user created");
+                                return done(null, user);
+                            })
+                        }
+                    })
+            } catch(err){
                 return done(err);
             }
         }
     )
 )
-
 
 
 
