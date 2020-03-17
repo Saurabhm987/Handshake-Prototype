@@ -26,10 +26,8 @@ export default class Login extends Component{
 
         this.handleChange = this.handleChange.bind(this);
         this.submit = this.submit.bind(this);
-
     }
 
-    //handle email and name
    handleChange = (e) => {
       this.setState({
         [ e.target.name ] : e.target.value
@@ -38,7 +36,6 @@ export default class Login extends Component{
 
     submit = async (e) => {
         e.preventDefault();
-
         const {email, password} = this.state;
 
         if(email === '' || password === ''){
@@ -108,9 +105,6 @@ export default class Login extends Component{
                     <i class="user icon"></i>
                       <input onChange={this.handleChange}  id="email" type="text" name="email" placeholder="Email address" />
                   </div>
-                  {/* <div  style={{marginTop:"5%"}}>
-                      <span style={{color: "red"}}>{this.state.errMsg1}</span>
-                  </div> */}
                 </div>
                 <div class="field" >
                 <span class="ui left icon input" style={{margin: "10px"}}><h4>Password</h4></span>
@@ -118,9 +112,6 @@ export default class Login extends Component{
                     <i class="lock icon"></i>
                     <input onChange={this.handleChange} id="password" type="password" name="password" placeholder="Password" />
                   </div>
-                  {/* <div style={{marginTop:"5%"}}>
-                      <span style={{color: "red"}}>{this.state.errMsg2}</span>
-                  </div> */}
                 </div>
                 <div style={{marginBottom:"5%"}}>
                     <span style={{color: "red"}}>{this.state.msg}</span>
@@ -152,74 +143,3 @@ export default class Login extends Component{
       }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //     console.log("userInfo",userInfo);
-
-    //     if(this.state.email === ""){
-    //       this.setState({
-    //         errMsg1: "Please enter email!",
-    //         errMsg2: "",
-    //         msg:""
-    //       })
-    //     }else if(this.state.password === ""){
-    //       this.setState({
-    //         errMsg2: "Please enter password!",
-    //         errMsg1:"",
-    //         msg:""
-    //       })
-    //     }else{
-
-    //     axios.defaults.withCredentials = true;
-
-    //      await axios.post('/studentLogin', userInfo)
-    //         .then(response => {
-
-    //                 this.setState({
-    //                   errMsg2: "",
-    //                   errMsg1: "",
-    //                   msg: "",
-    //                 })
-
-    //                 console.log("response: ", response);
-
-    //                if(response.status === 200 && response.data === "Email doesn't match") {
-    //                   this.setState({
-    //                     msg:  response.data,
-    //                     login: false
-    //                   })
-    //                   console.log("SUCCESS: ", response.data);
-    //                 }else if(response.status === 200 && response.data === "password doesnt match" ) {
-    //                   this.setState({
-    //                     msg: response.data,
-    //                     login: false
-    //                   })
-    //                 }else if(response.status === 200 && response.data ==="Missing credentials"){
-    //                     this.setState({
-    //                       msg:response.data,
-    //                       login: false
-    //                     })
-    //                 }
-    //                  else {
-    //                   console.log("response token: ",  response.data.token);
-    //                   localStorage.setItem('JWT', response.data.token);
-    //                   this.setState({
-    //                     msg: response.data.message,
-    //                     isLogin: true
-    //                   })
-    //                 }
-    //         })
-    //       }
-    // }
