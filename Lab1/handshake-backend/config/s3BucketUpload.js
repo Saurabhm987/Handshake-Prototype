@@ -18,7 +18,7 @@ AWS.config.update({
     fs.readFile(source, function (err, filedata) {
       if (!err) {
         const putParams = {
-            Bucket      : 'handshake-imgpdf-bucket',
+            Bucket      : keys.bucket_name,
             Key         : targetName,
             Body        : filedata,
             ContentType: mimetype,

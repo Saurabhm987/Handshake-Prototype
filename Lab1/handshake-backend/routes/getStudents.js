@@ -23,7 +23,7 @@ module.exports = app => {
                 let insertQuery = 'SELECT * FROM students';
                 let query = mysql.format(insertQuery);
 
-                pool.query(query, (err, rows, field) =>{
+                pool.query(query, (err, rows) =>{
                     if(err){
                         console.log("QUERY_ERROR: ", err);
                         res.status(200).send({

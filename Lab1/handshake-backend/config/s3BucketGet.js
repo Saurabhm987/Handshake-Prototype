@@ -11,7 +11,7 @@ const keys = require('./key');
 
 function retrieveFile(filename,res){
     const getParams = {
-      Bucket: 'handshake-imgpdf-bucket',
+      Bucket: keys.bucket_name,
       Key: filename
     };
   
