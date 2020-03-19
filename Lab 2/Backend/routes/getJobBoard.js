@@ -7,6 +7,8 @@ module.exports = app => {
     app.get('/getJobBoard/:requestInfo', (req, res, next) => {
         console.log("GETTING_JOB_DASHBOARD");
         console.log("CALLING_PASS_AUTH");
+
+        /*
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
             console.log("checking pass errors..");
 
@@ -79,6 +81,12 @@ module.exports = app => {
             }
             }
         })(req, res, next);
+        */
+
+        res.status(200).send({
+            message: "Getting Job Board"
+        })
+
     })
 }
 

@@ -1,13 +1,10 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
+const User = require('../models/userModel');
 
 module.exports = app =>{
         app.post('/postJob', (req, res, next)=>{
-
             console.log("INSIDE_POST_JOB");
-
-            passport.authenticate('jwtcompany', (err, user, info) => {
+            passport.authenticate('jwt', (err, user, info) => {
 
             if(err){
                 console.log("post_job_after_passport_error: ", err);
@@ -29,29 +26,41 @@ module.exports = app =>{
                     console.log("No requested body !!", req.body);
                     return  res.status(400).end();
                 }
-                console.log("requested body :", req.body );
+
+                    console.log("requested body :", req.body );
 
                     const req_body = Object.assign(req.body.params.data);
+
                     console.log("copy_object: ", req_body);
                     delete req_body.token;
+
                     console.log("final_ass_object", req_body);
+                    const email = user.email;
 
-                    console.log("user_email:", user.company_email);
-
-                    let insertQuery = 'INSERT INTO job_post (??,??,??,??,??,??, ??)  VALUES (?,?,?,?,?,?, ?)';
-                    let query = mysql.format(insertQuery, ["job_title", "job_loc","job_salary", "job_post_date", "job_descr", "company_name","profile_pic",req_body. job_title, req_body.job_loc, req_body.job_salary, req_body.job_post_date, req_body.job_descr, req_body.company_name, req_body.profile_pic ]);
-                    
-                    pool.query(query, (err, response) =>{
-                        if(err){
-                            console.log("Post job error : ", err);
-                            return res.status(400).end("QUERY_ERROR");
-                        }else{
-                            console.log("successfully posted job!!");
-                        }
-                    })
-                    res.status(200).send({
-                        message: "success!"
-                    });
+                    User.updateOne(  
+                            { email: email }, 
+                            { $push: {"postedJob": {
+                                title: req_body.job_title,
+                                location: req_body.job_loc,
+                                salary: req_body.job_salary,
+                                postedDate: new Date(),
+                                description: req_body.job_descr,
+                                company_name: req_body.company_name,
+                                profile_pic: req_body.profile_pic
+                            }}},
+                            {upsert: true}, 
+                            function(err, user){
+                                if(err){
+                                    console.log("error while inserting!", err);
+                                    res.status(200).send({
+                                        message: "Error While Posting Job!"
+                                    })
+                                }
+                                console.log("record updated ! ");
+                                res.status(200).send({
+                                    message: "Job Posted!"
+                                })
+                    }) 
             }
              })(req, res, next);
         })

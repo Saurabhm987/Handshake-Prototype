@@ -14,6 +14,9 @@ var userSchema = new Schema({
     access : {
         type: String,
         required: true
+    },
+    postedJob:{
+        type: Array,
     }
 }, {strict: false})
 

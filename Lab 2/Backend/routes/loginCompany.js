@@ -1,16 +1,16 @@
 const jwt = require ('jsonwebtoken' );
 const passport = require('passport'); 
 const  jwtSecret  = require( '../config/jwtConfig');
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
 
 module.exports = app =>{
     app.post('/companyLogin', (req, res, next)=>{
         console.log("calling_passport_company_login........")
-        passport.authenticate('companyLogin', (err, user, info) => {
+        passport.authenticate('login', (err, user, info) => {
+            
             console.log("checking auth error........");
+
             if(err){
-                console.error(`error ${err}`);
+                console.log("error: ", err);
             }
 
             if(info !== undefined){
@@ -27,19 +27,19 @@ module.exports = app =>{
                 console.log("session assigning..........");
                 // assigns session to the user 
                 req.logIn(user, () => {
-
-                    console.log("user_info_in_req.logIn_login_company : ", user);
-
+                    console.log("user ", user);
                         if(user){
-                            console.log("user.company_email ", user.company_email);
-                            let token = jwt.sign({id: user.company_email, access:user.access, name:user.company_name, profile_pic:user.profile_pic }, jwtSecret.secret, {
+                            // console.log("company details: ", user);
+                            console.log("assigninName: ", user.name);
+                            console.log("assignDescr: ", user.description)
+                            let token = jwt.sign({id: user.email, access:user.access, name:user.name, profile_pic:user.profile_pic }, jwtSecret.secret, {
                                 expiresIn: 60*60,
                             });
                             console.log("sending header and token............");
                             res.status(200).send({
                                 auth: true,
                                 token,
-                                message: 'user found & logged in'
+                                message: 'success'
                             });
                         }  
                 console.log("token has been assigned.......")

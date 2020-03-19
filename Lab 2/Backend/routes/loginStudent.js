@@ -24,7 +24,6 @@ module.exports = app =>{
                     }
             }else{
                 console.log("session assigning..........");
-
                 // assigns session to the user 
                 req.logIn(user, () => {
 
@@ -33,12 +32,11 @@ module.exports = app =>{
                         if(user){
 
                             console.log("FIND_INSERTED_ID: ", user);
-
-                            console.log("user.insertId: ", user.student_email);
-
-                            let token = jwt.sign({id: user.student_email, access:user.access}, jwtSecret.secret, {
+                            console.log("user.insertId: ", user.email);
+                            let token = jwt.sign({id: user.email, access:user.access}, jwtSecret.secret, {
                                 expiresIn: 60*60,
                             });
+
                             console.log("sending header and token............")
                             res.status(200).send({
                                 auth: true,
@@ -52,7 +50,7 @@ module.exports = app =>{
             });
             console.log("exiting...............");
         }
-        console.log("Possibly callback fun call.........");
+        console.log("callback fun call.........");
     })(req, res, next);
     });
     console.log("route ends..........");

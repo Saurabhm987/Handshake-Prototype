@@ -2,7 +2,7 @@ const passport = require('passport');
 const User = require('../models/userModel');
 
 module.exports = app => {
-    app.post('/register', (req, res, next )=>{
+    app.post('/registerStudent', (req, res, next )=>{
         passport.authenticate('register', (err, user, info) => {
             console.log("IN_REGISTER_PASS_AUTH");
 
@@ -19,16 +19,10 @@ module.exports = app => {
 
                     console.log("USER: ", user);
                     const email =  user.email;
+                    const access = "student"
                     console.log("PASSPORT_EMAIL: ", email);
 
-                    // const reqData = {
-                    //     student_name : req.body.name,
-                    //     student_college_name: req.body.uniName,
-                    // 
-
-                    // console.log("REQ_DATA: ", reqData);
-
-                    User.updateOne({email: email }, { name: req.body.name, college: req.body.uniName }, {upsert: true}, function(err, user){
+                    User.updateOne({email: email }, { name: req.body.name, college: req.body.uniName, access: access }, {upsert: true}, function(err, user){
                         if(err){
                             console.log("error while inserting!", err);
                             res.status(200).send({
