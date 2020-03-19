@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import logo from '../auth/sjsulogo.png';
 import { Redirect } from 'react-router';
-import {API_ENDPOINT} from '../controller/endpoint';
+import {connect} from 'react-redux';
+import {login} from '../../actions/loginAction';
+import PropTypes from 'prop-types';
 
-
-export default class Login extends Component{
+class Login extends Component{
     constructor(props){
         super(props);
 
@@ -19,11 +19,6 @@ export default class Login extends Component{
             showNullError: false
         };
 
-        this.instance = axios.create({
-          baseURL: API_ENDPOINT,
-          timeout: 1000,
-        });
-
         this.handleChange = this.handleChange.bind(this);
         this.submit = this.submit.bind(this);
     }
@@ -32,6 +27,16 @@ export default class Login extends Component{
       this.setState({
         [ e.target.name ] : e.target.value
       });
+   }
+
+   componentWillReceiveProps(nextProps){
+     console.log("calling willrecieveProps");
+      if(nextProps.isLogin){
+        this.setState({
+          isLogin: nextProps.isLogin
+        })
+        console.log("props recieved", nextProps.isLogin);
+      }
    }
 
     submit = async (e) => {
@@ -45,36 +50,12 @@ export default class Login extends Component{
             isLogin: false
           });
         }else{
-              this.instance.post('/studentLogin', {
-                email, 
-                password
-              }).then((response) =>{
-                    if(
-                      response.data.message === "Email doesn't match"
-                      || response.data.message === 'password doesnt match'
-                    ){
+              await this.props.login(email, password);
+         }
 
-                      console.log("login_error: ", response.data.message);
-
-                      this.setState({
-                        showError: true,
-                        showNullError: false
-                      });
-                    }else{
-                      console.log("responseData: ", response.data);
-
-                      localStorage.setItem('JWT', response.data.token);
-  
-                      this.setState({
-                        isLogin: true,
-                        showNullError: false,
-                        showError: false
-                      }, () => {
-                        this.props.history.push("/jobBoard");
-                      });
-                    }
-                  })
-            }
+        //  if(this.state.isLogin){
+        //       this.props.history.push("jobBoard");
+        //  }
         }
 
     render(){
@@ -138,8 +119,21 @@ export default class Login extends Component{
         )
       }else{
         return (
-          <Redirect to="/jobBoard "/>    
+          <Redirect to="jobBoard"/>    
         )
       }
     }
 }
+
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  isLogin : PropTypes.bool.isRequired,
+  loginError: PropTypes.string.isRequired
+}
+
+const mapStateToProps = state => ({
+    isLogin: state.Handshake_User_Info.isLogin,
+    loginError: state.Handshake_User_Info.loginError
+})
+
+export default connect(mapStateToProps, {login})(Login);

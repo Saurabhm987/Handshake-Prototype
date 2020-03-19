@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import {API_ENDPOINT} from '../controller/endpoint';
-
-export default class JobBoard extends Component {
+import {connect } from 'react-redux';
+import {fetchDashboard} from '../../actions/fetchAction'
+class JobBoard extends Component {
   constructor(props){
     super(props);
 
@@ -16,7 +17,6 @@ export default class JobBoard extends Component {
       applied_job_title:"",
       applied_profile_pic:""
     }
-
 
     this.instance = axios.create({
       baseURL: API_ENDPOINT,
@@ -86,6 +86,10 @@ sendData = async () => {
       }, () => {
         this.sendData();
       })  
+  }
+
+  componentWillMount() {
+    this.props.fetchDashboard();
   }
 
   componentDidUpdate(){}
@@ -281,5 +285,6 @@ render() {
 }
 }
 
+export default connect(null, {fetchDashboard})(JobBoard);
 
 

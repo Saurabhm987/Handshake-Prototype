@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import { Redirect } from 'react-router';
 import logo from '../auth/sjsulogo.png';
-import {API_ENDPOINT} from '../controller/endpoint';
+import {connect} from 'react-redux';
+import {companyLogin} from '../../actions/loginAction';
+import PropTypes from 'prop-types';
 
-
-export default class CompanyLogin extends Component{
+class CompanyLogin extends Component{
     constructor(props){
         super(props);
         
@@ -12,15 +13,8 @@ export default class CompanyLogin extends Component{
             email : "",
             password: "",
             isLogin: false,
-            message_email: "",
-            message_psw: "",
-            message_try:""
+            message:""
         }
-
-        this.instance = axios.create({
-          baseURL: API_ENDPOINT,
-          timeout: 1000,
-        });
 
         this.handleChange = this.handleChange.bind(this);
         this.submit = this.submit.bind(this);
@@ -34,57 +28,44 @@ export default class CompanyLogin extends Component{
        })
     }
 
+    componentWillReceiveProps(nextProps){
+      if(nextProps.isLogin){
+
+        console.log("nextPropsIsLogin: ", nextProps.isLogin);
+
+        this.setState({
+          isLogin: nextProps.isLogin
+        })
+      }
+      if(nextProps.loginError){
+        this.setState({
+          message: nextProps.loginError
+        })
+      }
+    }
+
     submit = async (e) => {
         e.preventDefault();
-
-        const userInfo = {
-            email: this.state.email,
-            password: this.state.password
-        }
-
-        console.log("userInfo",userInfo);
+        const {email, password} = this.state;
         
-        axios.defaults.withCredentials = true;
-        if(userInfo.email ===""){
+        if(email ===""){
             this.setState({
-                message_email: "Please enter email!"
+                message: "Please enter email!"
             })
-        }else if(userInfo.password === ""){
+        }else if(password === ""){
             this.setState({
-              message_psw: "Please enter password!",
-              message_email:""
+              message: "Please enter password!",
             })
         }else{
-          await this.instance.post('/companyLogin', userInfo)
-          .then(response => {
-
-                console.log("response_data: ", response.data);
-                localStorage.setItem('JWT', response.data.token);
-
-                  if(response.status === 200){
-                    if(response.data === "jwt expired"){
-
-                      this.props.history.push("companyLogin");
-
-                    } else if(response.data === "Email doesn't match"){
-                        this.setState({
-                          message_email: "Email doesn't match!"
-                        })
-                    }else if(response.data === "password doesnt match"){
-                        this.setState({
-                          message_psw: "Password doesn't match!"
-                        })
-                    }else{
-                      this.props.history.push("companyProfile");
-                    }
-                  } else{
-                      console.log("response_error!");
-                  }
-          })
+            await this.props.companyLogin(email, password);
         }
     }
 
     render(){
+
+      const{isLogin} = this.state;
+
+      if(!isLogin){
       return(
         <div class="ui middle aligned center aligned grid" style={{marginTop: "5%"}}>
             <div class="column" id="loginStud" >
@@ -113,7 +94,6 @@ export default class CompanyLogin extends Component{
                   <span style={{color: "red"}}> {this.state.message_email}</span>
                 </div>
               </div>
-
               <div class="field">
               <span class="ui left icon input"><h4>Password</h4></span>
                 <div class="ui left icon input">
@@ -126,7 +106,7 @@ export default class CompanyLogin extends Component{
               </div>
               <div onClick={this.submit} class="ui fluid large blue submit button" style={{fontSize: "1.5em"}}>Login</div>
               <div>
-                <span  style={{color: "red"}}>{this.state.message_try}</span>
+                <span  style={{color: "red"}}>{this.state.message}</span>
               </div>
             </div>          
           </form>
@@ -135,6 +115,23 @@ export default class CompanyLogin extends Component{
           </div>
         </div>
       </div>
-      )
+      )}else{
+        return (
+          <Redirect to="companyProfile"/>    
+        )
+      }
     }
 }
+
+CompanyLogin.propTypes  = {
+  companyLogin: PropTypes.func.isRequired,
+  isLogin : PropTypes.bool.isRequired,
+  loginError: PropTypes.string.isRequired
+}
+
+const mapStateToProps = state =>({
+    isLogin: state.Handshake_User_Info.isLogin,
+    loginError: state.Handshake_User_Info.loginError
+})
+
+export default connect(mapStateToProps, {companyLogin})(CompanyLogin);

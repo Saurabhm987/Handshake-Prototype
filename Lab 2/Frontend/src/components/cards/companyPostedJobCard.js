@@ -25,17 +25,18 @@ componentDidMount(){
 
     const accessString = localStorage.getItem('JWT');
 
-    const base64Url = accessString.split('.')[1];
-    const base64 = base64Url.replace('-', '+').replace('_', '/');
-    const data = JSON.parse(window.atob(base64));
-    console.log("parsed_token_data: ", data);
-    let profile_pic = data.profile_pic;
-    
-    this.setState({
-      profile_pic: profile_pic
-    })
-
-
+    if(accessString !== null){
+      const base64Url = accessString.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const data = JSON.parse(window.atob(base64));
+      console.log("parsed_token_data: ", data);
+      let profile_pic = data.profile_pic;
+      
+      this.setState({
+        profile_pic: profile_pic
+      })
+    }
+   
   if(accessString === null){
       this.setState({
           isLogin: false

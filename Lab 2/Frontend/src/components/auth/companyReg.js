@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import axios from 'axios';
-import {API_ENDPOINT} from '../controller/endpoint';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {registerCompany} from '../../actions/registerAction'
 
-export default class JobPost extends Component{
+class JobPost extends Component{
     constructor(props){
         super(props);
 
@@ -13,14 +14,10 @@ export default class JobPost extends Component{
             company_loc: "",
             company_descr: "",
             company_contact: "",
-            company_profile_photo: ""
+            company_profile_photo: "",
+            access: "company"
         }
-
-        this.instance = axios.create({
-          baseURL: API_ENDPOINT,
-          timeout: 1000,
-        });
-
+        
         this.changeHandler = this.changeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
         
@@ -32,23 +29,20 @@ export default class JobPost extends Component{
       })
     }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps.isRegistered){
+          if(nextProps.isRegistered === true){
+              this.props.history.push("companyLogin");
+          }
+        }
+    }
+
     submitForm = async (e) => {
         e.preventDefault();
-
-        const regObj = Object.assign(this.state);
-
-        axios.defaults.withCredentials = true;
-        await this.instance.post('/registerCompany', regObj)
-            .then(response => {
-                console.log("responseRegister: ", response );
-                if(response.status === 200){
-                  alert("Registerd! Being Redirect to login!");
-                    console.log("successfully regiesterd!!!!!!!!!!");
-                    this.props.history.push('/companyLogin');
-                }else{
-                  console.log("bad response!!!!!!!");
-                }
-            })
+        
+          const regObj = Object.assign(this.state);
+          this.props.registerCompany(regObj);
+  
     }
 
     render(){
@@ -76,7 +70,7 @@ export default class JobPost extends Component{
                 <br/>
                 <div className="field">
                     <h5><label>Location </label></h5>
-                     <input onChange={this.emailHandler} type="text" name="company_loc" placeholder="Location"/>
+                     <input onChange={this.changeHandler} type="text" name="company_loc" placeholder="Location"/>
                 </div>
                 <br/>
                 <div className="field" >
@@ -95,3 +89,14 @@ export default class JobPost extends Component{
         );
     }
 }
+
+JobPost.propTypes = {
+  registerCompany: PropTypes.func.isRequired,
+  isRegistered: PropTypes.bool.isRequired
+}
+
+const mapStateToProps = state => ({
+  isRegistered: state.Handshake_User_Info.isRegistered
+})
+
+export default connect(mapStateToProps, {registerCompany})(JobPost);

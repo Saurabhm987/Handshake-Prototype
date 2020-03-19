@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { API_ENDPOINT } from '../controller/endpoint';
+import {parseToken} from '../auth/parseToken';
 
 export default class JobPost extends Component{
     constructor(props){
@@ -13,7 +14,6 @@ export default class JobPost extends Component{
           job_descr: "",
           job_salary: "",
           job_loc: "",
-          job_post_date: "",
           isLogin: true,
           message: "", 
           profile_pic: ""
@@ -38,49 +38,48 @@ export default class JobPost extends Component{
     }
 
     componentDidMount(){
-
       const accessString = localStorage.getItem('JWT');
+
       if(accessString === null){
           this.setState({
               isLogin: false,
-              message: ""
+              message: "",
           })
           console.log("token is null!....Please Login Again......");
           this.history.push("/companyLogin");
       }
 
-      // const base64Url = accessString.split('.')[1];
-      // const base64 = base64Url.replace('-', '+').replace('_', '/');
-      // const data = JSON.parse(window.atob(base64));
-      // console.log("parsed_token_data: ", data);
+      const tokenData = parseToken(accessString);
 
       this.setState({
-          token: accessString
+          token: accessString,
+          company_name: tokenData.name
       })
 
-      this.instance.get("/profileCompany/companyInfo", { 
-        headers: {
-            Authorization: `JWT ${accessString}`
-        }
-    } ).then(response => {
-            if(response.status === 200){
-                if(response.data === "jwt expired"){
-                  this.props.history.push("/companyLogin");
-                    alert("session expired! ");
-                }
-                const data = response.data;
+    //   this.instance.get("/profileCompany/companyInfo", { 
+    //     headers: {
+    //         Authorization: `JWT ${accessString}`
+    //     }
+    // } ).then(response => {
+    //         if(response.status === 200){
+    //             if(response.data === "jwt expired"){
+    //               this.props.history.push("/companyLogin");
+    //                 alert("session expired! ");
+    //             }
+    //             const data = response.data;
 
-                this.setState({
-                    company_name : data.company_name,
-                    profile_pic: data.profile_pic
-                })
+    //             this.setState({
+    //                 company_name : data.company_name,
+    //                 profile_pic: data.profile_pic
+    //             })
 
-                console.log("company_InfoCard_RESPONSE_DATA", data);
+    //             console.log("company_InfoCard_RESPONSE_DATA", data);
 
-            }else{
-                console.log("ERROR");
-            }
-        })
+    //         }else{
+    //             console.log("ERROR");
+    //         }
+    //     })
+
     }
 
     submitForm = (e) => {
@@ -112,7 +111,7 @@ export default class JobPost extends Component{
                     this.setState({
                       isLogin: false
                     })
-                    // this.props.history.push("/companyLogin");
+                    this.props.history.push("/companyLogin");
                   }
 
                   this.setState({
@@ -172,11 +171,6 @@ export default class JobPost extends Component{
                 <div className="field" >
                     <h5><label>Job Location</label></h5>
                      <input onChange={this.changeHandler} type="text" name="job_loc" placeholder="Job Location"/>
-                </div> 
-                <br/>
-                <div className="field" >
-                    <h5><label>Post Date</label></h5>
-                     <input onChange={this.changeHandler} type="text" name="job_post_date" placeholder="Post Date"/>
                 </div> 
                 <br/>
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Submit</button>

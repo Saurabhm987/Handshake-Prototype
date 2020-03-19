@@ -25,7 +25,6 @@ class Main extends Component {
     render() {
         return(
             <div>
-                {/* <Route path="/" component={Navbar} /> */}
                 <Route  path="/" component = {Header}/>
                 <Route exact path="/home" component = {Home}/>
                 <Route exact path="/login" component={Login}/>
@@ -46,7 +45,6 @@ class Main extends Component {
                 <Route exact path="/students" component={StudentsCard} />
                 <Route exact path="/jobAppliedStudent" component={JobAppliedStudent} />
                 <Route exact path="/eventAppliedStudent" component={EventAppliedStudents} />
-
             </div>
         );
     }

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import axios from 'axios';
-import {API_ENDPOINT} from '../controller/endpoint';
+import {connect} from 'react-redux';
+import {registerStudent} from '../../actions/registerAction';
+import PropTypes from 'prop-types';
 
-
-export default class Register extends Component{
+class Register extends Component{
     constructor(props){
         super(props);
 
@@ -12,74 +12,31 @@ export default class Register extends Component{
             email: "",
             password: "",
             uniName: "",
-            access: "",
-            authFlag: false
+            access: "student",
         }
 
-        this.instance = axios.create({
-            baseURL: API_ENDPOINT,
-            timeout: 1000,
-          });
-
-        this.passwordHandler = this.passwordHandler.bind(this);
-        this.uniNameHandler = this.uniNameHandler.bind(this)
-        this.nameHandler = this.nameHandler.bind(this);
-        this.submitForm = this.submitForm.bind(this);
-        this.accessControlHandler = this.accessControlHandler.bind(this);
-        
+        this.changeHandler = this.changeHandler.bind(this);
+        this.submitForm = this.submitForm.bind(this);        
     }
 
-    passwordHandler = (e) => {
+    changeHandler = (e) => {
         this.setState({
-            password: e.target.value
+            [e.target.name]: e.target.value
         })
     }
 
-    nameHandler = (e) => {
-        this.setState({
-            name: e.target.value
-        })
-    }
-
-    uniNameHandler = (e) => {
-        this.setState({
-            uniName: e.target.value
-        })
-    }
-
-    emailHandler = (e) => {
-        this.setState({
-            email: e.target.value
-        })
-    }
-    
-    accessControlHandler =(e) => {
-      this.setState({
-        access: e.target.value
-      })
+    componentWillReceiveProps(nextProps){
+        if(nextProps.isRegistered){
+            if(nextProps.isRegistered === true){
+                this.props.history.push('login');
+            }
+        }
     }
 
     submitForm = async (e) => {
         e.preventDefault();
-
-        const { name, uniName, email, password, access} = this.state;
-
-        console.log("studentInfo: ", this.state);
-
-        axios.defaults.withCredentials = true;
-
-        await this.instance.post('/register', { name,uniName, email, password, access})
-            .then(response => {
-                console.log("responseRegister: ", response );
-                if(response.status === 200){
-                    console.log("successfully regiesterd!!!!!!!!!!");
-                    alert("Successfully Registerd! You are being redirected to login!")
-                    this.props.history.push('/login');
-
-                }else{
-                  console.log("bad response!!!!!!!");
-                }
-            })
+        const regObj = Object.assign(this.state);
+        this.props.registerStudent(regObj);
     }
 
     render(){
@@ -100,23 +57,23 @@ export default class Register extends Component{
             <form className="ui form">
               <div className="field">
                     <h5><label>University Name</label></h5>
-                     <input onChange={this.uniNameHandler} type="text" name="uniName" placeholder="University Name"/>
+                     <input onChange={this.changeHandler} type="text" name="uniName" placeholder="University Name"/>
                 </div>
                 <br/>
                 <div className="field">
                     <h5><label>Student Name</label></h5>
-                    <input onChange={this.nameHandler} type="text" name="name" placeholder=" Student Name"/>
+                    <input onChange={this.changeHandler} type="text" name="name" placeholder=" Student Name"/>
                 </div>
                 <br/>
                 <div className="field">
                     <h5><label>Email Adress</label></h5>
                     <label>Please use your school email</label>
-                     <input onChange={this.emailHandler} type="email" name="email" placeholder="Email"/>
+                     <input onChange={this.changeHandler} type="email" name="email" placeholder="Email"/>
                 </div>
                 <br/>
                 <div className="field" >
                     <h5><label>Password</label></h5>
-                     <input onChange={this.passwordHandler} type="password" name="email" placeholder="Email"/>
+                     <input onChange={this.changeHandler} type="password" name="password" placeholder="Email"/>
                 </div> 
                 <br/>
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Submit</button>
@@ -125,3 +82,13 @@ export default class Register extends Component{
         );
     }
 }
+
+Register.propTypes = {
+    registerStudent: PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => ({
+    isRegistered: state.Handshake_User_Info.isRegistered
+})
+
+export default connect(mapStateToProps, {registerStudent})(Register);

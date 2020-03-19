@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import {connect} from 'react-redux';
+import {logout} from '../../actions/loginAction';
+import PropTypes from 'prop-types';
 
-export default class Header extends Component{
+class Header extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -16,19 +18,23 @@ export default class Header extends Component{
     componentDidUpdate(){
     }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps.isLogin){
+                this.setState({
+                    isLogin: nextProps.isLogin
+                })
+        }
+    }
+
    async componentDidMount(){
 
         const accessString = localStorage.getItem('JWT');
         console.log("accessString: ",accessString);
-        if(accessString === null || accessString === "undefined") {
+        if(accessString === null) {
             this.setState({
                 isLogin: false
             })
-
-            console.log("header_token: ", accessString);
-
         }else{
-
             const base64Url = accessString.split('.')[1];
             const base64 = base64Url.replace('-', '+').replace('_', '/');
             const data = JSON.parse(window.atob(base64));
@@ -42,14 +48,11 @@ export default class Header extends Component{
         }
     }
 
-    handleLogout = (e)=>{
+    handleLogout = async (e)=>{
         e.preventDefault();
-        localStorage.removeItem('JWT');
-        this.setState({
-            isLogin: false
-        }, ()=>{
-            this.props.history.push("home");
-        });
+        console.log("calling logout action...");
+        await this.props.logout()
+        this.props.history.push("home")
     }
 
     render(){
@@ -74,7 +77,7 @@ export default class Header extends Component{
              )
 
 
-            let newStudent = (
+            let StudentLogin = (
                 <div class="ui blue inverted menu" style={{padding:"10px"}}>
                     <Link to="/jobBoard" className="item">Jobs </Link>
                     <Link to="/eventBoard" className="item">Events</Link>
@@ -95,7 +98,7 @@ export default class Header extends Component{
                  </div>
             )
 
-            let newCompany = (
+            let CompanyLogin = (
                 
                 <div class="ui blue inverted menu" style={{padding:"10px"}}>
                     <Link to="/companyPostedJobCard" className="item"> Posted Job </Link>                
@@ -120,24 +123,22 @@ export default class Header extends Component{
 
        const {isLogin, access} = this.state;    
 
-        if(isLogin === false){
+        if(!isLogin){
             return(
                 <div>
                         {loginHome}
                  </div>
             )
-
-        }else if(isLogin === true ){
-            if( access === "student"){
+        }else if(isLogin && access === "student"){
                 return (
                     <div>
-                        {newStudent}
+                        {StudentLogin}
                     </div>
                 )
-            }else if(access === "company"){
+            }else if(isLogin && access ==="company"){
                 return(
                         <div>
-                            {newCompany}
+                            {CompanyLogin}
                         </div>
                 )
             }else{
@@ -146,7 +147,17 @@ export default class Header extends Component{
                         {loginHome}
                  </div>
                  )
-            }
         }
     }
 }
+
+Header.propTypes = {
+    logout: PropTypes.func.isRequired,
+    isLogin: PropTypes.bool.isRequired
+}
+
+const mapStateToProps = state => ({
+    isLogin: state.Handshake_User_Info.isLogin
+})
+
+export default connect(mapStateToProps, {logout})(Header);
