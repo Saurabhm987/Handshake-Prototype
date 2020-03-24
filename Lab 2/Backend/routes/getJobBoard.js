@@ -1,92 +1,58 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
-
+const User = require('../models/userModel');
 
 module.exports = app => {
     app.get('/getJobBoard/:requestInfo', (req, res, next) => {
-        console.log("GETTING_JOB_DASHBOARD");
-        console.log("CALLING_PASS_AUTH");
-
-        /*
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
-            console.log("checking pass errors..");
-
             if(err){
                 console.log("errors while authenticating", err);
             }
-
             console.log("getJobBoard_req_body: ", req.body.params);
-
 
             if(info !== undefined){
                 console.log("checking error msg from passport.." , info.message);
                 res.status(200).send(info.message);
                 
-            }else if(user.student_email !== null){
-
+            }else if(user.email !== null){
                 if(req.params.requestInfo === "board"){
-
-                let jobPosted = new Object();
-
-                let insertQuery = 'SELECT * FROM job_post';
-                let query = mysql.format(insertQuery);
-
-                pool.query(query, (err, rows, field) =>{
-
-                    if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.status(200).send({
-                            message: "DB_ERROR"
-                        });
-                    }
-                    console.log("profileStudent_NO_QUERY_ERROR!");
-                    console.log("-----------------rendered student info ---------------------------")
-
-                    jobPosted = Object.assign(rows);
-
-                    console.log("job posted..",jobPosted);
-
-                    res.json(jobPosted);
-                })
-
-
+                    User.find({access: "company"}, {postedJob: 1, _id: 0}, (err, result)=> {
+                        if(err){
+                            console.log('error: ', err);
+                        }
+                        console.log("result: ", result);
+                        let postedResult = [];
+                        result.forEach( jobs =>{
+                               postedResult = [...postedResult ,...jobs.postedJob]
+                        })
+                        res.json(postedResult);
+                    })
             }else if(req.params.requestInfo === "applications"){
-
-                let jobApplied = new Object();
-
-                student_email = user.student_email;
-
-                let insertQuery = 'SELECT * FROM applied_job WHERE student_email = ?';
-                let query = mysql.format(insertQuery, [student_email]);
-
-                pool.query(query, (err, rows) =>{
-
+                User.findOne({ }, {appliedJob: 1}, (err, result)=> {
                     if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.status(200).send({
-                            message: "DB_ERROR"
-                        });
+                        res.status(400).end({message: "Bad Request!"});
                     }
-                    console.log("profileStudent_NO_QUERY_ERROR!");
-                    console.log("-----------------rendered student info ---------------------------")
-
-                    jobApplied = Object.assign(rows);
-
-                    console.log("job posted..",jobApplied);
-
-                    res.json(jobApplied);
+                    res.status(200).json(result.appliedJob);
                 })
-
-            }
+             }
             }
         })(req, res, next);
-        */
-
-        res.status(200).send({
-            message: "Getting Job Board"
-        })
-
     })
 }
 
+
+
+                    // User.find({ }, {postedJob: 1, _id:0}, function(err, result){
+                    //     if(err){
+                    //         console.log('err: ', err);
+                    //     }
+                    //     let postedResult = [];
+                    //     result.forEach( postedJob =>{
+                    //             postedResult.push(Object.values(postedJob.postedJob));
+                    //     })
+                    //     let jobsPost = {};
+                    //     jobsPost = postedResult.filter((jobs)=>{
+                    //          return jobs.length>0;
+                    //     })
+                    //     var merged = [].concat.apply([], jobsPost);
+                    //     res.status(200).json(merged);
+                    // })

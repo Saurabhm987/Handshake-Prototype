@@ -1,18 +1,9 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
-
+const User = require('../models/userModel');
 
 module.exports = app => {
     app.get('/getDetails', (req, res, next) => {
-
-        console.log("-------------------------------------------getDetails--------------------------------------------------")
-        console.log("Getting details....");
-        console.log("requested Details:  ", req.query);
-
-        passport.authenticate('jwtcompany',{session: false}, (err, user, info) => {
-            console.log("checking pass errors..");
-
+        passport.authenticate('jwt',{session: false}, (err, user, info) => {
             if(err){
                 console.log("errors while authenticating", err);
             }
@@ -21,28 +12,19 @@ module.exports = app => {
                 console.log("checking error msg from passport.." , info.message);
                 res.status(200).send(info.message);
                 
-            }else if(user.company_email !== null){
-                console.log("email: ", user.company_email);
-
+            }else if(user.email !== null){
                 if(req.query.info === "getEventDetails"){
-                    console.log("getting event details...");
-                    let event_id = req.query.event_id;
-                    console.log("event_id: ", event_id);
-
-                    let insertQuery = 'SELECT * FROM event_info WHERE event_id = ?';
-                    let query = mysql.format(insertQuery, [event_id]);
-
-                    pool.query(query, (err, rows)=> {
-                        if(err){
-                            console.log("querying error...", err);
-                            res.status(200).send({
-                                message: "query error!"
-                            })
+                    User.find(
+                        {email: user.email}, 
+                        {postedEvent:1, _id:0},
+                        (err, result)=>{
+                            if(err){
+                                console.log("error: ", err);
+                            }
+                            result = result[0].postedEvent;
+                            res.json(result[0]);
                         }
-                        console.log("querid data: ", rows[0]);
-                        res.json(rows[0]);
-    
-                    })
+                    )
                 }
             }
         })(req, res, next);

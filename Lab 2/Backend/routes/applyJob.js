@@ -1,12 +1,11 @@
 const passport = require('passport'); 
 var mysql = require('mysql');
 var pool = require('../database/db-connection');
+const User = require('../models/userModel');
 
 module.exports = app =>{
         app.post('/applyJob', (req, res, next)=>{
-
             console.log("INSIDE_APPLY_JOB");
-
             passport.authenticate('jwt', (err, user, info) => {
 
             if(err){
@@ -29,31 +28,35 @@ module.exports = app =>{
                 }
 
                 console.log("apply job!!!!!");
-                console.log("user: ", user.student_email);
                 console.log("applied_job_details: ", req.body.params);
 
-                let job_status = "Applied";
-                let student_email =  user.student_email;
-                let resume = user.resume;
-                let job_id = req.body.params.id;
-                let company_name = req.body.params.company; 
-                let job_title = req.body.params.job_title;
-                let profile_pic = req.body.params.profile_pic;
+                appliedDetails = new Object();
 
-                    let insertQuery = 'INSERT INTO applied_job (??,??,??,??,??, ??, ??)  VALUES (?,?,?,?,?,?, ?)';
-                    let query = mysql.format(insertQuery, ["job_status", "student_email","job_id", "company_name", "job_title", "profile_pic", "resume", job_status, student_email, job_id, company_name, job_title, profile_pic, resume]);
-                      
-                    pool.query(query, (err, response) =>{
-                        if(err){
-                            console.log("Post job error : ", err);
-                            return res.status(400).end("QUERY_ERROR");
-                        }else{
-                            console.log("successfully applied to job!!");
-                        }
-                    })
-                    res.status(200).send({
-                        message: "success!"
-                    });
+                appliedDetails.status = "Applied";
+                appliedDetails.job_id = req.body.params.id;
+                appliedDetails.company_name = req.body.params.company; 
+                appliedDetails.job_title = req.body.params.title;
+                appliedDetails.profile_pic = req.body.params.profile_pic;
+                appliedDetails.appliedDate = new Date();
+
+                const email = user.email;
+
+                    User.updateOne(  
+                        { email: email }, 
+                        { $push: {"appliedJob": appliedDetails}},
+                        {upsert: true}, 
+                        function(err, user){
+                            if(err){
+                                console.log("error while inserting!", err);
+                                res.status(200).send({
+                                    message: "Error While Posting Job!"
+                                })
+                            }
+                            console.log("record updated ! ");
+                            res.status(200).send({
+                                message: "Job Posted!"
+                            })
+                }) 
             }
              })(req, res, next);
         })

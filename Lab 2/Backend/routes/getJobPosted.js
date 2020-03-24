@@ -1,40 +1,49 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
-const User = require('../models/userModel');
+const User = require("../models/userModel");
 
 module.exports = app => {
     app.get('/getJobPosted/:requestInfo', (req, res, next) => {
-        console.log("GETTING_JOB_POSTED");
-        console.log("CALLING_PASS_AUTH");
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
-            console.log("checking pass errors..");
-
             if(err){
                 console.log("errors while authenticating", err);
             }
-
-            console.log("getJobPosted_req_body: ", req.params);
-
             if(info !== undefined){
                 console.log("checking error msg from passport.." , info.message);
                 res.status(200).send(info.message);
                 
             }else if(user.email !== null){
-                
                 if(req.params.requestInfo === "postedjob"){
+                    User.find( 
+                        { email : user.email},{postedJob: 1, _id:0},  
+                        function(err, result){
+                        if(err){
+                            console.log("error_while_getting_data", err);
+                        }
+                        result= result[0].postedJob;
+                        console.log("result: ", result);
+                        
+                        res.json(result);
+                    })
 
-                // let jobPosted = new Object();
-                const email = user.email;
+                 }else if( req.params.requestInfo === "postedevent"){
+                    User.find(
+                        {email: user.email}, {postedEvent: 1, _id:0},
+                        function(err, result){
+                            if(err){
+                                console.log("err: ", err)
+                                res.status(400).send({msg: "Bad request"})
+                            }
+                            console.log("result: ", result);
+                            result = result[0].postedEvent;
+                            console.log(result);
+                            res.json(result);
+                        }
+                    )
 
-                User.findOne({ }, { postedJob: 1, _id:0 },  function(err, result){
-                    if(err){
-                        console.log("error_while_getting_data", err);
-                    }
-                    console.log("result: ", result);
-                })
 
-                res.end();
+                // let eventPosted = new Object();
+                // let insertQuery = 'SELECT * FROM event_info WHERE company_name = ?';
+                // let query = mysql.format(insertQuery, [user.company_name]);
                 // pool.query(query, (err, rows) =>{
                 //     if(err){
                 //         console.log("QUERY_ERROR: ", err);
@@ -45,37 +54,12 @@ module.exports = app => {
                 //     console.log("getJobPosted_NO_QUERY_ERROR!");
                 //     console.log("-----------------rendered job info ---------------------------")
 
-                //     jobPosted = Object.assign(rows);
+                //     eventPosted = Object.assign(rows);
 
-                //     console.log("job posted..",jobPosted);
+                //     console.log("Posted Event.",eventPosted);
 
-                //     res.json(jobPosted);
+                //     res.json(eventPosted);
                 // })
-
-            }else if( req.params.requestInfo === "postedevent"){
-
-                let eventPosted = new Object();
-
-                let insertQuery = 'SELECT * FROM event_info WHERE company_name = ?';
-                let query = mysql.format(insertQuery, [user.company_name]);
-
-                pool.query(query, (err, rows) =>{
-
-                    if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.status(200).send({
-                            message: "DB_ERROR"
-                        });
-                    }
-                    console.log("getJobPosted_NO_QUERY_ERROR!");
-                    console.log("-----------------rendered job info ---------------------------")
-
-                    eventPosted = Object.assign(rows);
-
-                    console.log("Posted Event.",eventPosted);
-
-                    res.json(eventPosted);
-                })
 
             }else{
                 console.log("no parameters provided!!");
