@@ -16,14 +16,14 @@ export default class JobPost extends Component{
           job_loc: "",
           isLogin: true,
           message: "", 
-          profile_pic: ""
+          profile_pic: "",
+          job_type: ""
         }
 
         this.instance = axios.create({
           baseURL: API_ENDPOINT,
           timeout: 1000,
         });
-
 
         this.changeHandler = this.changeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
@@ -53,7 +53,8 @@ export default class JobPost extends Component{
 
       this.setState({
           token: accessString,
-          company_name: tokenData.name
+          company_name: tokenData.name,
+          profile_pic: tokenData.profile_pic
       })
 
     //   this.instance.get("/profileCompany/companyInfo", { 
@@ -108,6 +109,7 @@ export default class JobPost extends Component{
                   console.log("response_message: ", response.data.message);
 
                   if(response.data.message ==="jwt expired"){
+                    localStorage.removeItem('JWT');
                     this.setState({
                       isLogin: false
                     })

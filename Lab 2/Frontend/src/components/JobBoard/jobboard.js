@@ -12,10 +12,10 @@ class JobBoard extends Component {
       isLogin: true,
       jobData: [],
       cardSelected:"",
-      appliedJobId:"",
-      appliedCompany:"",
-      applied_job_title:"",
-      applied_profile_pic:""
+      JobId:"",
+      company:"",
+      title:"",
+      profile_pic:"",
     }
 
     this.instance = axios.create({
@@ -45,15 +45,14 @@ sendData = async () => {
             console.log("token is null!");
         }
 
-        console.log( "appliedJobId", this.state.appliedJobId);
-        console.log("company",  this.state.appliedCompany);
+        console.log( "appliedDetails: ", this.state);
 
         await this.instance.post("/applyJob",{
           params:{
-            id: this.state.appliedJobId,
-            company: this.state.appliedCompany,
-            job_title: this.state.applied_job_title,
-            profile_pic: this.state.applied_profile_pic
+            id: this.state.JobId,
+            company: this.state.company,
+            title: this.state.title,
+            profile_pic: this.state.profile_pic
           }
         }, { 
             headers: {
@@ -79,10 +78,10 @@ sendData = async () => {
   applied = async (e) => {
       
         this.setState({
-          appliedJobId: e.currentTarget.dataset.selected_job_id,
-          appliedCompany: e.currentTarget.dataset.company_name,
-          applied_job_title : e.currentTarget.dataset.job_title,
-          applied_profile_pic: e.currentTarget.dataset.profile_pic
+          JobId: e.currentTarget.dataset.selected_job_id,
+          company: e.currentTarget.dataset.company_name,
+          title : e.currentTarget.dataset.job_title,
+          profile_pic: e.currentTarget.dataset.profile_pic
       }, () => {
         this.sendData();
       })  
@@ -138,6 +137,8 @@ render() {
   let renderdata ={};
   renderdata = this.state.jobData;
 
+  if(renderdata){
+
   let searchBar = (
     <div className ="row">
               <div class="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
@@ -160,20 +161,20 @@ render() {
     <div class="ui items" id="scroll">
         { renderdata.map( (item, index) =>
           <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
-                <img src={item.profile_pic}  style={{width:"170px", height:"110px"}}/>
+                <img src={item.profile_pic}  style={{width:"170px", height:"125px"}}/>
                 <div class="content" style={{padding: "5px"}}>
-                    <div className="header" > {item.job_title}</div>
+                    <div className="header" > {item.title}</div>
                         <div class="meta">
-                            <span>{item.company_name} {item.job_loc}</span>
+                            <span><b>{item.company_name}</b> ,{item.location}</span>
                         </div>
                         <div class="extra">
-                            {item.job_salary}
+                            $ {item.salary} /hr
                         </div>
                         <div class="extra">
-                            {item.job_post_date}
+                            {item.postedDate}
                         </div>
                         <div class="extra">
-                            {item.job_type}
+                            {item.jobType}
                       </div>
                 </div>
           </div>
@@ -236,9 +237,9 @@ render() {
               <div class="ui fluid" id="jobItemId" style={{margin: "auto", padding: "25px", background: "white" , fontSize: "24px"}}>
                   <div class="image header">
                  
-                    <div class="line"><h3><b>{renderdata[curSelectedJob].job_title}</b></h3></div>
-                    <div class="line"><h4>{renderdata[curSelectedJob].company_name} , {renderdata[curSelectedJob].job_loc}</h4></div>
-                    <div class="line"> {renderdata[curSelectedJob].job_type}</div>
+                    <div class="line"><h3><b>{renderdata[curSelectedJob].title}</b></h3></div>
+                    <div class="line"><h4>{renderdata[curSelectedJob].company_name} , {renderdata[curSelectedJob].location}</h4></div>
+                    <div class="line"> {renderdata[curSelectedJob].jobType}</div>
                     
                   </div>
                   <br/>
@@ -251,7 +252,7 @@ render() {
                       </div>
                       <div className="col-md-1"></div>
                       <div className="col-md-2">
-                            <div className="large ui green button" data-profile_pic={renderdata[curSelectedJob].profile_pic} data-job_title={renderdata[curSelectedJob].job_title}  data-selected_job_id={renderdata[curSelectedJob].job_id} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
+                            <div className="large ui green button" data-profile_pic={renderdata[curSelectedJob].profile_pic} data-job_title={renderdata[curSelectedJob].title}  data-selected_job_id={renderdata[curSelectedJob].jobId} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
                                   Apply 
                             </div>
                       </div>
@@ -261,9 +262,9 @@ render() {
                    <br/>
                   <div class="paragraph" style={{fontSize:"20px"}}>
                   <div class ="line"><b>Description</b></div>
-                  <div class="line">{renderdata[curSelectedJob].job_descr}</div>
-                    <div class="line"> {renderdata[curSelectedJob].job_salary}</div>
-                    <div class="line">{renderdata[curSelectedJob].job_post_date}</div>
+                  <div class="line">{renderdata[curSelectedJob].description}</div>
+                    <div class="line"> {renderdata[curSelectedJob].salary}</div>
+                    <div class="line">{renderdata[curSelectedJob].postedDate}</div>
                   </div>
                   {/* <div className="large ui blue button" style={{margin: "10px"}} data-selected_job_id={renderdata[curSelectedJob].job_id} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
                        Apply 
@@ -279,6 +280,14 @@ render() {
   else{
   return(
     <Redirect to="/jobProfile" />
+  )
+}
+
+}else{
+  return(
+    <div>
+        <h2>No Posted Job!</h2>
+    </div>
   )
 }
 

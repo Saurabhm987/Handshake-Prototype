@@ -56,6 +56,7 @@ componentDidMount(){
 render(){
 
 const renderdata = this.state.applicationData;
+if(renderdata){
     return(
         <div className="container" >
             <div className="row" style={{marginTop:"2%"}}>
@@ -67,9 +68,9 @@ const renderdata = this.state.applicationData;
                         <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
                                     <img src={item.profile_pic} style={{width:"200px", height: "110px" }}/>
                             <div class="content" style={{padding: "10px 5px 5px 50px"}}>
-                                    <div className="header" ><h4><b>{item.event_name}</b></h4></div>
-                                    <div className="extra"><h4><b>{item.event_loc}</b></h4></div>
-                                    <div className="extra"><b>Eligibility: </b>{item.event_eligible}</div>
+                                    <div className="header" ><h4><b>{item.eventName}</b></h4></div>
+                                    <div className="extra"><h4><b>{item.eventlocation}</b></h4></div>
+                                    <div className="extra"><b>Eligibility: </b>{item.eventEligible}</div>
                                     <div className="extra"><b>Time: {item.event_time}</b></div>
                             </div>
                             <div class="right floated content" style={{padding: "35px"}}>
@@ -87,6 +88,12 @@ const renderdata = this.state.applicationData;
             </div>
         </div>
     )
+}else{
+    return(
+        <div>
+            <h2>No event posted!</h2>
+        </div>
+    )
 }
-
+}
 }

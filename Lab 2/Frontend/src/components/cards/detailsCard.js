@@ -3,7 +3,6 @@ import axios from 'axios';
 import {withRouter} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
 
-
  class DetailsCard extends Component {
     constructor(props){
         super(props);
@@ -25,14 +24,6 @@ import {API_ENDPOINT} from '../controller/endpoint';
           
         this.getInfo = this.getInfo.bind(this);
     }    
-
-    componentDidUpdate(){
-        // if(prevState !== nextProps){
-        //     this.prevState = this.nextProps;
-        // }else{
-        //     this.state = this.prevState;
-        // }
-    }
 
   getInfo = (token) =>{
         console.log("thisProsp: ", this.state.event_id.id);
@@ -57,14 +48,13 @@ import {API_ENDPOINT} from '../controller/endpoint';
                     const data = response.data;
 
                     this.setState({
-                        event_name: data.event_name,
-                        event_loc:data.event_loc,
+                        event_name: data.eventName,
+                        event_loc:data.eventLocation,
                         event_time: data.event_time,
-                        event_descr: data.event_descr,
+                        event_descr: data.eventDescription,
                         profile_pic: data.profile_pic,
-                        event_eligible: data.event_eligible
+                        event_eligible: data.eventEligible
                     })
-                    // console.log("details data", data);
                 }else{
                     console.log("ERROR");
                 }
@@ -98,9 +88,7 @@ renderViewMode = () => {
         const { event_name, event_loc , event_time, event_descr, profile_pic, event_eligible} = this.state;
 
         return(
-
             <div className="container">
-                     {/* {renderdata.map( (item, index) =>  */}
                     <div>
                     <br/>
                         <div className="row">
@@ -109,18 +97,13 @@ renderViewMode = () => {
                         <div className="row">
                             <div class="ui items" style={{width:"100%"}}>
                                         <div class="item" onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
-                                                    <img src={profile_pic} style={{width:"200px", height: "110px" }}/>
+                                            <img src={profile_pic} style={{width:"200px", height: "110px" }}/>
                                             <div class="content" style={{padding: "10px 5px 5px 50px"}}>
                                                     <div className="header" ><h4><b>{event_name}</b></h4></div>
                                                     <div className="extra"><h4><b>{event_loc}</b></h4></div>
                                                     <div className="extra"><b>Eligibility: </b>{event_eligible}</div>
                                                     <div className="extra"><b>Time: {event_time}</b></div>
                                             </div>
-                                            {/* <div class="right floated content" style={{padding: "35px"}}>
-                                                    <div class="ui large button">
-                                                            Register
-                                                    </div>
-                                            </div> */}
                                         </div>
                             </div>
                             </div>
@@ -135,18 +118,14 @@ renderViewMode = () => {
                                 </div>
                             </div>
                         </div>
-                     {/* )} */}
             </div>
-
-            
         )
     }
-    
     render(){
             return (
                 this.renderViewMode()
             )
+        }
     }
-}
 
 export default withRouter(DetailsCard);

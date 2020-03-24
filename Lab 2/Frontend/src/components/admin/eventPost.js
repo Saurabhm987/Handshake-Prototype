@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { API_ENDPOINT } from '../controller/endpoint'
+import { parseToken } from '../auth/parseToken';
 
 export default class EventPost extends Component{
     constructor(props){
@@ -47,10 +48,12 @@ export default class EventPost extends Component{
           this.history.push("/companyLogin");
       }
 
-      console.log("cmpdToken: ", accessString);
+      const tokenData = parseToken(accessString);
 
-      this.setState({
-        token: accessString
+      this.setState({ 
+        token: accessString,
+        company_name: tokenData.name,
+        profile_pic: tokenData.profile_pic
     })
 
     this.instance.get("/profileCompany/companyInfo", { 
@@ -60,6 +63,7 @@ export default class EventPost extends Component{
     } ).then(response => {
             if(response.status === 200){
                 if(response.data === "jwt expired"){
+                  localStorage.removeItem('JWT');
                   this.props.history.push("/companyLogin");
                     alert("session expired! ");
                 }

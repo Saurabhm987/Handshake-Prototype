@@ -70,7 +70,7 @@ const renderdata = this.state.applicationData;
 
             <div className="col-md-1"></div>
             <div className="col-md-10">
-            <div class="ui items">
+            <div className="ui items">
                     { renderdata.map( (item, index) =>
                     <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", marginTop:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
                         <img src={item.profile_pic} style={{width:"200px", height:"110px"}}/>
@@ -78,7 +78,7 @@ const renderdata = this.state.applicationData;
                                 <div className="header" id="cardHover" ><h4><b>{item.company_name}</b></h4></div>
                                 <div className="extra" ><h4><b>{item.job_title}</b></h4></div>
                                 <div class="extra">
-                                <i>Status:</i> {item.job_status}
+                                <i>Status:</i> {item.status}
                                 </div>
                         </div>
                     </div>
