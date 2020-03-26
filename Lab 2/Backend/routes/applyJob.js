@@ -21,14 +21,10 @@ module.exports = app =>{
                 });
 
             }else{
-
                 if(req.body.params === ""){
                     console.log("No parameters sent !!", req.body);
                     return  res.status(400).end();
                 }
-
-                console.log("apply job!!!!!");
-                console.log("applied_job_details: ", req.body.params);
 
                 appliedDetails = new Object();
 

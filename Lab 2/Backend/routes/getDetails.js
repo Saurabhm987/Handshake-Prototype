@@ -14,15 +14,22 @@ module.exports = app => {
                 
             }else if(user.email !== null){
                 if(req.query.info === "getEventDetails"){
-                    User.find(
+                    const _id = req.query.event_id;
+                    console.log("id: ", _id);
+                    User.findOne(
                         {email: user.email}, 
-                        {postedEvent:1, _id:0},
+                        {"postedEvent": 1, "_id": 0},
                         (err, result)=>{
                             if(err){
                                 console.log("error: ", err);
                             }
-                            result = result[0].postedEvent;
-                            res.json(result[0]);
+                            result = result.postedEvent;
+                            resultArray = []
+                            resultArray = result.filter( event =>{
+                                return event._id == _id
+                            })
+                            console.log("resultArray: ", resultArray);
+                            res.json(resultArray[0]);
                         }
                     )
                 }

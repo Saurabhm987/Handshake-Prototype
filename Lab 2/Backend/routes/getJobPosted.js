@@ -9,7 +9,7 @@ module.exports = app => {
             }
             if(info !== undefined){
                 console.log("checking error msg from passport.." , info.message);
-                res.status(200).send(info.message);
+                res.status(400).send(info.message);
                 
             }else if(user.email !== null){
                 if(req.params.requestInfo === "postedjob"){
@@ -19,21 +19,19 @@ module.exports = app => {
                         if(err){
                             console.log("error_while_getting_data", err);
                         }
-                        result= result[0].postedJob;
-                        console.log("result: ", result);
-                        
+                        result= result[0].postedJob;                        
                         res.json(result);
                     })
 
                  }else if( req.params.requestInfo === "postedevent"){
                     User.find(
+
                         {email: user.email}, {postedEvent: 1, _id:0},
                         function(err, result){
                             if(err){
                                 console.log("err: ", err)
                                 res.status(400).send({msg: "Bad request"})
                             }
-                            console.log("result: ", result);
                             result = result[0].postedEvent;
                             console.log(result);
                             res.json(result);

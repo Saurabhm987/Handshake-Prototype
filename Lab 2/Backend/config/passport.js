@@ -114,7 +114,6 @@ passport.use(
 passport.use(
     'jwt',
     new JWTstrategy(opts, (jwt_payload, done) => {
-        console.log("USING_JWT_STRATEGY");
         try{
             console.log("JWT_ID: ", jwt_payload.id);
             User.findOne({email:jwt_payload.id},function(err, result){

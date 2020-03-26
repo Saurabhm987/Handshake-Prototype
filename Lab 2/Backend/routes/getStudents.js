@@ -1,6 +1,5 @@
-const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
+const passport = require('passport')
+const User = require('../models/userModel')
 
 module.exports = app => {
     app.get("/getStudents", (req, res, next) => {
@@ -11,33 +10,20 @@ module.exports = app => {
                 console.log("getJobItem_req_body: ", req.body.params);
 
                 if(info !== undefined){
-
                     console.log("checking error msg from passport.." , info.message);
                     res.status(200).send(info.message);
-                    
-                }else if( user.student_email !== null){
-                
-                console.log("inside_get_studentsjob_item...");
-                console.log("req_body: ", req.body);
-
-                let insertQuery = 'SELECT * FROM students';
-                let query = mysql.format(insertQuery);
-
-                pool.query(query, (err, rows) =>{
-                    if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.status(200).send({
-                            message: "DB_ERROR"
-                        });
-                    }
-                    console.log("profileStudent_NO_QUERY_ERROR!");
-                    console.log("-----------------rendered student info ---------------------------")
-
-                    studentsInfo = Object.assign(rows);
-                    console.log("job posted..",studentsInfo);
-
-                    res.json(studentsInfo);
-                })
+                }else if( user.email !== null){
+                    User.find(
+                        {access: "student"},
+                        {name: 1, college: 1},
+                        (err, result)=> {
+                            if(err){
+                                console.log("err: ", err)
+                            }
+                            console.log('result: ', result);
+                            res.json(result);
+                        }
+                    )
             }
             else{
                 console.log("request_body_absent!");

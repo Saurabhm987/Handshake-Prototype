@@ -5,9 +5,9 @@ const mongoose = require('mongoose');
 var url = process.env.MONGOURI;
 var pool; 
 
-mongoose.connect(url, {poolSize : 50}, (err, db) => {
+mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true }, (err, db) => {
     if(err){
-        console.log("something went wrong! ", err);
+        console.log("Mongo Connection err..!", err);
         return
     }
     pool = db;

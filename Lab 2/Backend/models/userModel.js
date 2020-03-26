@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 
 var JobModel = new Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     title: String,
     location: String,
     salary: Number,
@@ -16,12 +17,23 @@ var JobModel = new Schema({
 })
 
 var EventModel = new Schema({
+    _id: mongoose.Types.ObjectId,
     name: String,
     eventName: String,
     eventLocation: String,
     eventDescription: String,
     eventEligible: String,
     profile_pic: String
+})
+
+var AppliedEvent = new Schema({
+    _id: String,
+    name: String,
+    company_name: String,
+    status: String,
+    profile_pic: String,
+    location: String, 
+    date: {type: Date, default: Date.now}
 })
 
 var userSchema = new Schema({
@@ -41,6 +53,7 @@ var userSchema = new Schema({
     postedJob: [JobModel],
     postedEvent: [EventModel],
     appliedJob: Array,
+    appliedEvent:[AppliedEvent],
     profileInfo: {
         type: Object
     }

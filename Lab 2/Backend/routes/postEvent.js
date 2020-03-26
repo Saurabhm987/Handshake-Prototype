@@ -1,4 +1,5 @@
 const passport = require('passport'); 
+var mongoose = require('mongoose');
 const User = require('../models/userModel');
 
 module.exports = app =>{
@@ -30,6 +31,7 @@ module.exports = app =>{
                     User.updateOne(
                         {email: email},
                         {$push: { "postedEvent":{
+                            _id: new mongoose.Types.ObjectId(),
                             name: name,
                             profile_pic: profile_pic,
                             eventName: eventName,
