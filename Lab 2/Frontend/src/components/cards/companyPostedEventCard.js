@@ -26,7 +26,8 @@ componentDidMount(){
       this.setState({
           isLogin: false
       })
-      console.log("token is null!");
+      alert("Token Expired!");
+      this.props.history.push("/companyLogin");
   }
 
   this.instance.get("/getJobPosted/postedevent", { 
@@ -35,7 +36,8 @@ componentDidMount(){
       }
   } ).then(response => {
           if(response.status === 200){
-            if(response.data === "jwt expired"){
+              console.log("data: ", response.data);
+            if(response.data === "jwt expired" && response.data === "jwt malformed"){
               localStorage.removeItem('JWT');
               this.setState({
                 isLogin: false
@@ -50,13 +52,16 @@ componentDidMount(){
               console.log("ERROR");
           }
       })
+      .catch((err)=>{
+          console.error(err);
+      })
 }
 
 
 render(){
 
 const renderdata = this.state.applicationData;
-if(renderdata){
+if(renderdata === undefined){
     return(
         <div className="container" >
             <div className="row" style={{marginTop:"2%"}}>
@@ -77,7 +82,7 @@ if(renderdata){
                             <div class="ui large button"><Link to=  {{  
                                         pathname: '/details',
                                         event_id: {
-                                            id: `${item.event_id}`
+                                            id: `${item._id}`
                                         }
                                     }}  >Details</Link>
                             </div>

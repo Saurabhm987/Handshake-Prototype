@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
-
+import {parseToken} from '../auth/parseToken'
 
 export default class JobAppliedStudents extends Component {
   constructor(props){
@@ -18,7 +18,6 @@ export default class JobAppliedStudents extends Component {
 
     this.instance = axios.create({
         baseURL: API_ENDPOINT,
-        timeout: 1000,
       });
 
     this.changeStatus = this.changeStatus.bind(this);
@@ -72,21 +71,16 @@ componentDidMount(){
           isLogin: false
       })
       console.log("token is null!");
+      this.props.history.push("companyLogin")
   }
+    const data = parseToken(accessString);
+    console.log("token: ", data);
+    console.log("calling didmount")
 
-    const base64Url = accessString.split('.')[1];
-    const base64 = base64Url.replace('-', '+').replace('_', '/');
-    const data = JSON.parse(window.atob(base64));
-    console.log("parsed_token_data: ", data);
-
-    let company_name = data.name;
-
-
-  this.instance.get("/getJobAppliedStudents", {
-      params: {
-          company_name: company_name
-      }
-  } ).then(response => {
+  this.instance.get("/getJobAppliedStudents",{
+  headers: {
+    Authorization: `JWT ${accessString}`
+}} ).then(response => {
           if(response.status === 200){
             if(response.data === "jwt expired"){
               localStorage.removeItem('JWT');

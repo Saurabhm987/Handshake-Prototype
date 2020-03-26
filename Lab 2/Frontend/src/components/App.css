@@ -62,7 +62,17 @@ body{
   margin:6px, 6px; 
   padding:6px; 
   width: 500px; 
-  height: 80%; 
+  height: 70%; 
+  overflow-x: hidden; 
+  overflow-x: auto; 
+  text-align:justify; 
+}
+
+#rightBarScroll {
+  /* margin:6px, 6px; 
+  padding:6px; 
+  width: 500px;  */
+  height: 70%; 
   overflow-x: hidden; 
   overflow-x: auto; 
   text-align:justify; 

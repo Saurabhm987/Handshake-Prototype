@@ -3,7 +3,6 @@ import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
 
-
 export default class EventAppliedStudents extends Component {
   constructor(props){
     super(props);
@@ -20,8 +19,6 @@ export default class EventAppliedStudents extends Component {
       baseURL: API_ENDPOINT,
       timeout: 1000,
     });
-    
-
 }
 
 componentDidUpdate(){}
@@ -35,37 +32,35 @@ componentDidMount(){
       console.log("token is null!");
   }
 
-    const base64Url = accessString.split('.')[1];
-    const base64 = base64Url.replace('-', '+').replace('_', '/');
-    const data = JSON.parse(window.atob(base64));
-    console.log("parsed_token_data: ", data);
-    let company_name = data.name;
-
-
   this.instance.get("/getJobAppliedStudents", {
       params: {
           requestInfo:"event",
-          company_name: company_name
-      }
+      },
+      headers: {
+        Authorization: `JWT ${accessString}`
+    }
   } ).then(response => {
           if(response.status === 200){
-            if(response.data === "jwt expired"){
-              localStorage.removeItem('JWT');
-              this.setState({
-                isLogin: false
-              })
-              this.props.history.push("/companyLogin");
+              let data = response.data;
+              console.log("jobappdata: ", data);
+                this.setState({
+                    eventData:data
+                })
+                console.log("Application_Data: ", this.state.eventData);
+            }else{
+              if(response.data === "jwt expired"){
+                localStorage.removeItem('JWT');
+                this.setState({
+                  isLogin: false
+                })
+                this.props.history.push("/companyLogin");
+              }else{
+                 console.log("error new", response);
+              }
             }
-
-            let data = response.data;
-            console.log("jobappdata: ", data);
-              this.setState({
-                  eventData:data
-              })
-              console.log("Application_Data: ", this.state.eventData);
-          }else{
-              console.log("ERROR");
-          }
+      })
+      .catch( err =>{
+        console.log("error: ", err);
       })
 }
 
@@ -75,6 +70,7 @@ render(){
     let renderdata = {};
     renderdata = this.state.eventData;
 
+    if(renderdata){
     return(
       <div className="container">
             <div className="row" style={{marginTop:"2%"}} >
@@ -107,5 +103,12 @@ render(){
             </div>
         </div>
     )
+  }else{
+    return(
+        <div>
+              No student registered!
+        </div>
+    )
+  }
 }
 }

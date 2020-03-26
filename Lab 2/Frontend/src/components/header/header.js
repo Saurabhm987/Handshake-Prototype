@@ -78,12 +78,19 @@ class Header extends Component{
 
 
             let StudentLogin = (
-                <div class="ui blue inverted menu" style={{padding:"10px"}}>
-                    <Link to="/jobBoard" className="item">Jobs </Link>
-                    <Link to="/eventBoard" className="item">Events</Link>
-                    <Link to="/students" className="item">Students</Link>
+                <div class="ui secondary menu" style={{padding:"10px", marginLeft: "19.5%", marginRight:"20%"}}>
+                    <div className="item">
+                        <div className="ui action left icon input">
+                            <i className="search icon"></i>
+                            <input type="text" placeholder="Search"/>
+                            <button className="ui button">Search</button>
+                        </div>
+                    </div>
 
                     <div class="right menu">
+                        <Link to="/jobBoard" className="item">Jobs </Link>
+                        <Link to="/eventBoard" className="item">Events</Link>
+                        <Link to="/students" className="item">Students</Link>
                         <div className="ui simple dropdown item">
                                 {this.state.email}
                                 <i class="dropdown icon"></i>
@@ -131,7 +138,7 @@ class Header extends Component{
             )
         }else if(isLogin && access === "student"){
                 return (
-                    <div>
+                    <div style={{background:"white"}}>
                         {StudentLogin}
                     </div>
                 )

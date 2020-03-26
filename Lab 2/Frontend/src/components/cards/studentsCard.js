@@ -55,14 +55,14 @@ componentDidMount(){
 
 
 render(){
-
 const renderdata = this.state.studentData;
+  if(renderdata){
     return(
       <div className="container">
             <div className="row" style={{marginTop:"2%"}} >
             <div className="header">
                         <h2>Students</h2>
-               </div>
+              </div>
             <div class="ui items" style={{width:"100%"}}>
                     { renderdata.map( (item, index) =>
                     <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", margin:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
@@ -76,11 +76,11 @@ const renderdata = this.state.studentData;
                                                 email: `${item.student_email}`
                                               }
                           }}>
-                                <div className="header" ><h4><b>{item.student_name}</b></h4></div>
+                                <div className="header" ><h4><b>{item.name}</b></h4></div>
                         </Link>
-                        <div className="extra"><h4><b>{item.student_collge_name}</b></h4></div>
-                        <div className="extra"><h4><b>{item.degree} in {item.major}</b></h4></div>
-                        <div className="extra"><h4><b>GPA: {item.gpa}</b></h4></div>
+                        <div className="extra"><b>{item.college}</b></div>
+                        <div className="extra"><b>{item.degree} in {item.major}</b></div>
+                        <div className="extra"><b>GPA: {item.gpa}</b></div>
                         </div>
                     </div>
                     )}
@@ -88,6 +88,19 @@ const renderdata = this.state.studentData;
             </div>
         </div>
     )
+  }else{
+      return(
+        <div className="container">
+            <div className="row" style={{marginTop:"2%"}} >
+                <div className="header">
+                            <h2>Students</h2>
+                  </div>
+                  <div className="ui items">
+                      No Data!
+                  </div>
+              </div>
+          </div>
+      )
+  }
 }
-
 }

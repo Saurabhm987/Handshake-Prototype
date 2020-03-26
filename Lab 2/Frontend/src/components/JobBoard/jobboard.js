@@ -4,6 +4,9 @@ import axios from 'axios';
 import {API_ENDPOINT} from '../controller/endpoint';
 import {connect } from 'react-redux';
 import {fetchDashboard} from '../../actions/fetchAction'
+import {applyJob} from '../../actions/applyActions'
+import PropTypes from 'prop-types';
+
 class JobBoard extends Component {
   constructor(props){
     super(props);
@@ -16,6 +19,7 @@ class JobBoard extends Component {
       company:"",
       title:"",
       profile_pic:"",
+      message: ""
     }
 
     this.instance = axios.create({
@@ -43,40 +47,12 @@ sendData = async () => {
                 isLogin: false
             })
             console.log("token is null!");
+            this.props.push("login");
         }
-
-        console.log( "appliedDetails: ", this.state);
-
-        await this.instance.post("/applyJob",{
-          params:{
-            id: this.state.JobId,
-            company: this.state.company,
-            title: this.state.title,
-            profile_pic: this.state.profile_pic
-          }
-        }, { 
-            headers: {
-                Authorization: `JWT ${accessString}`
-            }
-        } ).then(response => {
-                if(response.status === 200){
-                  if(response.data === "jwt expired"){
-                    localStorage.removeItem('JWT');
-                    this.setState({
-                      isLogin: false
-                    })
-                    this.props.history.push("/Login");
-                  }
-                   alert("Job Applied");
-                   console.log("job_applied")
-                }else{
-                    console.log("ERROR");
-                }
-            })
-}
+        this.props.applyJob(this.state);
+  }
 
   applied = async (e) => {
-      
         this.setState({
           JobId: e.currentTarget.dataset.selected_job_id,
           company: e.currentTarget.dataset.company_name,
@@ -87,93 +63,170 @@ sendData = async () => {
       })  
   }
 
-  componentWillMount() {
-    this.props.fetchDashboard();
-  }
-
-  componentDidUpdate(){}
-
-    componentDidMount(){
+    async componentDidMount(){
       const accessString = localStorage.getItem('JWT');
-
       if(accessString === null || accessString === ""){
           this.setState({
               isLogin: false
           })
           console.log("token is null!");
-
           this.props.history.push("login");
       }
+      await this.props.fetchDashboard(accessString);
+      if(this.state.message !== ""){
+        alert("Job Applied!");
+      }
+  }
 
-      console.log("jobboard token: ", accessString);
-
-      this.instance.get("/getJobBoard/board", { 
-          headers: {
-              Authorization: `JWT ${accessString}`
-          }
-      } ).then(response => {
-              if(response.status === 200){
-                if(response.data === "jwt expired"){
-                  localStorage.removeItem('JWT');
-                  this.setState({
-                    isLogin: false
-                  })
-                  this.props.history.push("/companyLogin");
-                }
-                  this.setState({
-                      jobData:response.data
-                  })
-                  console.log("jobBoard_jobData: ", this.state.jobData);
-              }else{
-                  console.log("ERROR");
-              }
-          })
+  componentWillReceiveProps(nextProps){
+      if(nextProps.jobDetails){
+        if(nextProps.jobDetails === "jwt expired"){
+          this.props.history.push("login");
+        }
+        this.setState({
+          jobData: nextProps.jobDetails
+        })
+      }
+      if(nextProps.message){
+        this.setState({
+          message: nextProps.message
+        })
+        if(nextProps.message === "jwt expired"){
+          alert(`Job ${nextProps.message}`)
+          this.props.history.push("login");
+        }
+        console.log(`Job ${nextProps.message}`)
+      }
   }
 
 render() {
 
   let curSelectedJob = this.state.cardSelected;
-  console.log("curSelectedJob: ", curSelectedJob);
   let renderdata ={};
   renderdata = this.state.jobData;
-
   if(renderdata){
-
-  let searchBar = (
-    <div className ="row">
-              <div class="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
-                  <input type="text" placeholder="Search opportunities"/>
-                  <div class="ui button">Search</div>
+    if(renderdata[0] !== undefined ){
+      var initialRightBar = (
+        <div className="ui items" id="rightBarScroll">
+          <div className="ui fluid" id="jobItemId" style={{margin: "auto", padding: "25px", background: "white" , fontSize: "24px"}}>
+            <div className="image header">
+                <div className="line"><h3><b>{renderdata[0].title}</b></h3></div>
+                <div className="line"><h4>{renderdata[0].company_name} , {renderdata[0].location}</h4></div>
+                <div className="line"> {renderdata[0].jobType}</div>
+            </div>
+            <br/>
+            <div className="paragraph">
+                <div className="row" style={{border: "0.03em solid rgb(245, 242, 242)"}}>
+                  <div className="col-md-10"></div>
+                  <div className="row" style={{margin: "5px", width: "100%", background:"rgb(245, 242, 242)" }}>
+                      <div className="col-md-8" style={{margin:"5px"}}>
+                            <h4>Application closes on</h4>
+                      </div>
+                      <div className="col-md-1"></div>
+                      <div className="col-md-2">
+                            <div className="large ui green button" data-profile_pic={renderdata[0].profile_pic} data-job_title={renderdata[0].title}  data-selected_job_id={renderdata[0].jobId} data-company_name={renderdata[0].company_name} onClick={this.applied} >
+                                  Apply 
+                            </div>
+                      </div>
+                  </div>
+                </div>
+             </div>
+             <br/>
+              <div className="paragraph" style={{fontSize:"20px"}}>
+                <div className ="line"><b>Description</b></div>
+                <div className="line">{renderdata[0].description}</div>
+                <div className="line"> {renderdata[0].salary}</div>
+                <div className="line">{renderdata[0].postedDate}</div>
               </div>
+          </div>   
       </div>
-  )
-
-
+      )}else{
+        initialRightBar =(
+        <div className="ui items "  style={{background: "white"}}>
+        <div className="ui fluid placeholder" id="jobItemId" style={{margin: "auto", padding: "25px" }}>
+          <div className="image header">
+            <div className="line"></div>
+            <div className="line"></div>
+            <div className="line"></div>
+            <div className="line"></div>
+          </div>
+          <br/>
+          <div className="paragraph">
+                <div className="row" style={{border: "0.03em solid rgb(245, 242, 242)"}}>
+                  <div className="col-md-10"></div>
+                  <div className="row" style={{margin: "5px", width: "100%", background:"rgb(245, 242, 242)" }}>
+                      <div className="col-md-8" style={{margin:"5px"}}>
+                            <h4></h4>
+                      </div>
+                      <div className="col-md-1"></div>
+                      <div className="col-md-2">
+                            <div className="line" >
+                            </div>
+                      </div>
+                  </div>
+                </div>
+             </div>
+             <br/>
+          <div className="paragraph">
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"></div>
+            <div className="line"></div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+            <div className="line"> </div>
+          </div>
+        </div>              
+      </div>
+        )
+      }
+  // let searchBar = (
+  //   <div className ="row">
+  //             <div className="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
+  //                 <input type="text" placeholder="Search opportunities"/>
+  //                 <div className="ui button">Search</div>
+  //             </div>
+  //     </div>
+  // )
   let filters = (
-    <div className="row" style={{ padding:"16px"}}>
-          <button class="ui primary basic button">Full-Time</button>
-          <button class="ui primary basic button">Part-Time</button>
-          <button class="ui primary basic button">Internship</button>
+    <div className="row" style={{ padding:"16px", background:"white", marginLeft: "9px", marginRight:"8px"}}>
+          <button className="ui primary basic button">Full-Time</button>
+          <button className="ui primary basic button">Part-Time</button>
+          <button className="ui primary basic button">Internship</button>
     </div>
   )
 
   let lefBar = (
-    <div class="ui items" id="scroll">
+    <div className="ui items" id="scroll">
         { renderdata.map( (item, index) =>
-          <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
+          <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
                 <img src={item.profile_pic}  style={{width:"170px", height:"125px"}}/>
-                <div class="content" style={{padding: "5px"}}>
+                <div className="content" style={{padding: "5px"}}>
                     <div className="header" > {item.title}</div>
-                        <div class="meta">
+                        <div className="meta">
                             <span><b>{item.company_name}</b> ,{item.location}</span>
                         </div>
-                        <div class="extra">
+                        <div className="extra">
+                        <i class="money bill alternate icon"></i>
                             $ {item.salary} /hr
                         </div>
-                        <div class="extra">
+                        <div className="extra">
                             {item.postedDate}
                         </div>
-                        <div class="extra">
+                        <div className="extra">
                             {item.jobType}
                       </div>
                 </div>
@@ -182,12 +235,11 @@ render() {
   </div>
   )
 
-
   if(this.state.isLogin === true && curSelectedJob === "" && renderdata !== {}){
           return (
             <div className="container" style={{marginRight:"20%", marginLeft: "20%"}}>
-            <br/>
-                {searchBar}
+            {/* <br/>
+                {searchBar} */}
             <br/>
                 {filters}
                 <br/>
@@ -196,24 +248,7 @@ render() {
                           {lefBar}
                     </div>
                     <div className="col-md-7"style={{paddingLeft: "45px"}}>
-                          <div class="ui items"  style={{background: "white"}}>
-                            <div class="ui fluid placeholder" id="jobItemId" style={{margin: "auto", padding: "15px" }}>
-                              <div class="image header">
-                                <div class="line"><h3></h3></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <span className="line">
-
-                                </span>
-
-                              </div>
-                              <div class="paragraph">
-                                <div class="line"> </div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                              </div>
-                            </div>              
-                          </div>
+                          {initialRightBar}
                       </div>
                     <br/> 
                 </div>
@@ -222,30 +257,32 @@ render() {
 }else if( this.state.isLogin === true && curSelectedJob !== ""){
   return (
     <div className="container" style={{marginRight:"20%", marginLeft: "20%"}}>
+    {/* <br/>
+        {searchBar} */}
     <br/>
-        {searchBar}
-    <br/>
+    <div className="row" style={{background:"white"}}>
         {filters}
+        </div>
         <br/>
         <div className="row">
             <div className="col-md-5">
                   {lefBar}
             </div>
             <div className="col-md-7" style={{paddingLeft: "45px"}}>
-            <div class="ui items">
+            <div className="ui items" id="rightBarScroll">
             
-              <div class="ui fluid" id="jobItemId" style={{margin: "auto", padding: "25px", background: "white" , fontSize: "24px"}}>
-                  <div class="image header">
+              <div className="ui fluid" id="jobItemId" style={{margin: "auto", padding: "25px", background: "white" , fontSize: "24px"}}>
+                  <div className="image header">
                  
-                    <div class="line"><h3><b>{renderdata[curSelectedJob].title}</b></h3></div>
-                    <div class="line"><h4>{renderdata[curSelectedJob].company_name} , {renderdata[curSelectedJob].location}</h4></div>
-                    <div class="line"> {renderdata[curSelectedJob].jobType}</div>
+                    <div className="line"><h3><b>{renderdata[curSelectedJob].title}</b></h3></div>
+                    <div className="line"><h4>{renderdata[curSelectedJob].company_name} , {renderdata[curSelectedJob].location}</h4></div>
+                    <div className="line"> {renderdata[curSelectedJob].jobType}</div>
                     
                   </div>
                   <br/>
-                  <div class="paragraph">
-                  <div class="row" style={{border: "0.03em solid rgb(245, 242, 242)"}}>
-                  <div class="col-md-10"></div>
+                  <div className="paragraph">
+                  <div className="row" style={{border: "0.03em solid rgb(245, 242, 242)"}}>
+                  <div className="col-md-10"></div>
                   <div className="row" style={{margin: "5px", width: "100%", background:"rgb(245, 242, 242)" }}>
                       <div className="col-md-8" style={{margin:"5px"}}>
                             <h4>Application closes on</h4>
@@ -260,11 +297,11 @@ render() {
                    </div>
                    </div>
                    <br/>
-                  <div class="paragraph" style={{fontSize:"20px"}}>
-                  <div class ="line"><b>Description</b></div>
-                  <div class="line">{renderdata[curSelectedJob].description}</div>
-                    <div class="line"> {renderdata[curSelectedJob].salary}</div>
-                    <div class="line">{renderdata[curSelectedJob].postedDate}</div>
+                  <div className="paragraph" style={{fontSize:"20px"}}>
+                  <div className ="line"><b>Description</b></div>
+                  <div className="line">{renderdata[curSelectedJob].description}</div>
+                    <div className="line"> {renderdata[curSelectedJob].salary}</div>
+                    <div className="line">{renderdata[curSelectedJob].postedDate}</div>
                   </div>
                   {/* <div className="large ui blue button" style={{margin: "10px"}} data-selected_job_id={renderdata[curSelectedJob].job_id} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
                        Apply 
@@ -283,7 +320,7 @@ render() {
   )
 }
 
-}else{
+}else if(renderdata){
   return(
     <div>
         <h2>No Posted Job!</h2>
@@ -294,6 +331,17 @@ render() {
 }
 }
 
-export default connect(null, {fetchDashboard})(JobBoard);
+JobBoard.propTypes = { 
+  fetchDashboard: PropTypes.func.isRequired,
+  jobDetails: PropTypes.array.isRequired,
+  applyJob : PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => ({
+  jobDetails: state.Handshake_User_Info.jobDetails,
+  message: state.Handshake_User_Info.message
+})
+
+export default connect(mapStateToProps, {fetchDashboard, applyJob})(JobBoard);
 
 

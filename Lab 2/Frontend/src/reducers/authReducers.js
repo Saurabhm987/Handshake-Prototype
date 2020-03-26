@@ -1,9 +1,10 @@
-    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT} from '../actions/types';
+    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT} from '../actions/types';
 
     const initialState = {
         regdetails : {},
         loginDetails: {},
         jobDetails: [],
+        eventDetails: [],
         message: "",
         loginError:"",
         isLogin: false,
@@ -12,12 +13,7 @@
 
     export default function(state = initialState, action){
         switch(action.type){
-            case FETCH_DASHBOARD:
-                return {
-                    ...state,
-                    jobDetails: action.payload
-                }
-            
+           
             case REGISTER:
                 return {
                     ...state,
@@ -38,6 +34,26 @@
                 return {
                     ...state,
                     isLogin: action.isLogin
+                }
+
+            case FETCH_DASHBOARD:
+                return {
+                    ...state,
+                    jobDetails: action.payload,
+                    message: action.message
+                }
+
+            case FETCH_EVENT: 
+                return{
+                    ...state,
+                    eventDetails: action.payload,
+                    message: action.message
+                }
+
+            case JOB_APPLY:
+                return {
+                    ...state,
+                    message: action.message
                 }
 
             default:

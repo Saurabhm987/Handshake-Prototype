@@ -46,7 +46,7 @@ import {API_ENDPOINT} from '../controller/endpoint';
                         alert("session expired! ");
                     }
                     const data = response.data;
-
+                    console.log("data: ", data);
                     this.setState({
                         event_name: data.eventName,
                         event_loc:data.eventLocation,

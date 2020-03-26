@@ -19,7 +19,8 @@ export const  login = (email, password) => dispatch => {
                       isLogin: false
                   });
             }else{
-              localStorage.setItem('JWT', response.data.token);
+                  localStorage.setItem('JWT', response.data.token);
+                  console.log("loginActionToken: ", localStorage.getItem('JWT'))
                   dispatch({
                         type : LOGIN,
                         payload: response.data,

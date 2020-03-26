@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
-import axios from 'axios';
+import React, { Component } from 'react'
+import axios from 'axios'
 import {API_ENDPOINT} from '../controller/endpoint'
+import { connect } from 'react-redux'
+import {fetchEvent} from '../../actions/fetchAction'
+import PropTypes from 'prop-types'
 
-export default class EventBoard extends Component {
+class EventBoard extends Component {
   constructor(props){
     super(props);
 
@@ -17,6 +19,7 @@ export default class EventBoard extends Component {
       event_status:"",
       profile_pic: "",
       event_loc:"",
+      message:""
     }
 
     this.instance = axios.create({
@@ -93,7 +96,7 @@ sendData = async () => {
   }
 
     componentDidUpdate(){}
-    componentDidMount(){
+    async componentDidMount(){
       const accessString = localStorage.getItem('JWT');
 
       if(accessString === null){
@@ -101,40 +104,35 @@ sendData = async () => {
               isLogin: false
           })
           console.log("token is null!");
+          this.props.history.push("login")
       }
+      await this.props.fetchEvent(accessString);
+  }
 
-      console.log("eventBoard -  token: ", accessString);
-
-      this.instance.get("/getEventBoard/board", { 
-          headers: {
-              Authorization: `JWT ${accessString}`
-          }
-      } ).then(response => {
-              if(response.status === 200){
-                if(response.data === "jwt expired"){
-                  localStorage.removeItem('JWT');
-                  this.setState({
-                    isLogin: false
-                  })
-                  this.props.history.push("/companyLogin");
-                }
-                  this.setState({
-                      eventData:response.data
-                  })
-                  console.log("jobBoard_eventData: ", this.state.eventData);
-              }else{
-                  console.log("ERROR");
-              }
-          })
+  componentWillReceiveProps(nextProps){
+    if(nextProps.eventDetails){
+      this.setState({
+        eventData: nextProps.eventDetails
+      })
+    }
+    if(nextProps.message){
+      if(nextProps.message === "jwt expired"){
+        this.props.history.push("login");
+      }
+      this.setState({
+        message: nextProps.message
+      })
+    }
   }
 
 render() {
-
-  let curSelectedJob = this.state.cardSelected;
-  console.log("curSelectedJob: ", curSelectedJob);
+  // let curSelectedJob = this.state.cardSelected;
+  // console.log("curSelectedJob: ", curSelectedJob);
   let renderdata = this.state.eventData;
-
-  let searchBar = (
+  console.log("renderData: ", renderdata);
+  
+  if(renderdata.length > 0){
+  var searchBar = (
     <div className ="row">
               <div class="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
                   <input type="text" placeholder="Search opportunities"/>
@@ -143,74 +141,86 @@ render() {
       </div>
   )
 
-
   let lefBar = (
-
     <div class="ui items" id="scroll" style={{width:"100%"}}>
         { renderdata.map( (item, index) =>
           <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
               <img src={item.profile_pic}  style={{width:"170px", height:"110px"}}/>
-
-          <div className="row" style={{width:"100%"}}>
-              <div className="col-md-9">
-                <div class="content" style={{padding: " 5px 5px 5px 35px"}}>
-                        <div className="header" id="cardHover"><b> {item.event_name}</b></div>
-                        <div class="meta">
-                            <span>{item.event_loc}</span>
-                        </div>
-                        <div class="extra">
-                            {item.company_name}
-                        </div>
-                        <div class="extra">
-                            Eligibility: {item.event_eligible}
-                        </div>
-                        {/* <div className="extra">
-                            {item.event_descr}
-                        </div> */}
-                </div>
-              </div>
-                <div className="col-md-3">
-                  <div class="right floated content" style={{padding: "35px"}}>
-                          <div class="ui large green button" 
-                              onClick={this.applied} 
-                              data-selected_event_id={item.event_id} 
-                              data-event_name = {item.event_name}
-                              data-event_loc = {item.event_loc}
-                              data-company_name = {item.company_name}
-                              data-profile_pic = {item.profile_pic}
-                          >Register</div>
+              <div className="row" style={{width:"100%"}}>
+                  <div className="col-md-9">
+                    <div class="content" style={{padding: " 5px 5px 5px 35px"}}>
+                            <div className="header" id="cardHover"><b> {item.eventName}</b></div>
+                            <div class="meta">
+                                <span>{item.eventLocation}</span>
+                            </div>
+                            <div class="extra">
+                                {item.name}
+                            </div>
+                            <div class="extra">
+                                Eligibility: {item.eventEligible}
+                            </div>
+                            <div className="extra" style={{textDecorationColor:"blue", color:"blue"}}>
+                                  View Details
+                            </div>
+                    </div>
                   </div>
+                    <div className="col-md-3">
+                      <div class="right floated content" style={{padding: "35px"}}>
+                              <div class="ui large green button" 
+                                  onClick={this.applied} 
+                                  data-selected_event_id={item._id} 
+                                  data-event_name = {item.eventName}
+                                  data-event_loc = {item.eventLocation}
+                                  data-company_name = {item.name}
+                                  data-profile_pic = {item.profile_pic}
+                              >Register</div>
+                      </div>
+                    </div>
                 </div>
-            </div>
-
                 <div ui message > 
-                        {item.event_status}
+                        {item.eventStatus}
                 </div>
           </div>
         )}
   </div>
   )
 
-  if(this.state.isLogin === true &&  renderdata !== {}){
-          return (
-            <div className="container" style={{marginRight:"20%", marginLeft: "20%"}}>
-            <br/>
-                {searchBar}
-            <br/>
-                <div className="row">
-                          {lefBar}
-                    <br/> 
-                </div>
+  return (
+    <div className="container" style={{marginRight:"20%", marginLeft: "20%"}}>
+    <br/>
+        {searchBar}   
+    <br/>
+        <div className="row">
+                  {lefBar}
+            <br/> 
         </div>
-  )
-}else{
+</div>
+)
+ }else{
   return(
-    <Redirect to="/jobProfile" />
-  )
+    <div className="container" style={{marginRight:"20%", marginLeft: "20%"}}>
+    <br/>
+                {searchBar}   
+            <br/>
+        <div>
+              <h2>No Event Posted!</h2>
+        </div>
+ </div>
+ )
 }
 
 }
 }
 
+EventBoard.propTypes = {
+  fetchEvent: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired
+}
 
+const mapStateToProps = state =>({
+  eventDetails : state.Handshake_User_Info.eventDetails,
+  message: state.Handshake_User_Info.message
+})
+
+export default connect(mapStateToProps, {fetchEvent})(EventBoard);
 

@@ -1,11 +1,9 @@
-import {FETCH_DASHBOARD} from './types';
+import {FETCH_DASHBOARD, FETCH_EVENT} from './types';
 import {API_ENDPOINT} from '../components/controller/endpoint';
 import axios from 'axios';
 
-const accessString = localStorage.getItem('JWT');
-
-export const  fetchDashboard = () => dispatch => {
-  axios.get(API_ENDPOINT+"/getJobBoard/board", { 
+export const  fetchDashboard = (accessString) => dispatch => {
+    axios.get(API_ENDPOINT+"/getJobBoard/board", { 
         headers: {
             Authorization: `JWT ${accessString}`
         }
@@ -13,12 +11,44 @@ export const  fetchDashboard = () => dispatch => {
             if(response.status === 200){
                     if(response.data === "jwt expired"){
                             localStorage.removeItem('JWT');
-                            this.props.history.push("/companyLogin");
-                    }
-                    dispatch({
+                            dispatch({
                                 type : FETCH_DASHBOARD,
-                                payload: response.data
+                                message: "jwt expired"
                     });
+                    }else{
+                        dispatch({
+                            type : FETCH_DASHBOARD,
+                            payload: response.data,
+                            message:"job fetched!"  
+                         });
+                    }
+            }else{
+                console.log("ERROR");
+            }
+        })
+}
+
+
+export const  fetchEvent = (accessString) => dispatch => {
+    axios.get(API_ENDPOINT+"/getEventBoard/board", { 
+        headers: {
+            Authorization: `JWT ${accessString}`
+        }
+    } ).then(response => {
+            if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                            localStorage.removeItem('JWT');
+                            dispatch({
+                                type: FETCH_EVENT,
+                                message: "jwt expired"
+                            })
+                    }else{
+                        dispatch({
+                            type : FETCH_EVENT,
+                            payload: response.data,
+                            message: "event fetched!"
+                         });
+                    }  
             }else{
                 console.log("ERROR");
             }
