@@ -31,51 +31,22 @@ module.exports = app => {
                             res.json(data);
                         }
                     )
-
-                // let eventPosted = new Object();
-                // let insertQuery = 'SELECT * FROM event_info';
-                // let query = mysql.format(insertQuery);
-                // pool.query(query, (err, rows) =>{
-                //     if(err){
-                //         console.log("QUERY_ERROR: ", err);
-                //         res.status(200).send({
-                //             message: "DB_ERROR"
-                //         });
-                //     }
-                //     console.log("profileStudent_NO_QUERY_ERROR!");
-                //     console.log("-----------------rendered student info ---------------------------")
-                //     eventPosted = Object.assign(rows);
-                //     console.log("job posted..",eventPosted);
-                //     res.json(eventPosted);
-                // })
-
             }else if(req.params.requestInfo === "appliedevents"){
+                const email = user.email
 
-                let eventApplied = new Object();
-
-                student_email = user.student_email;
-
-                let insertQuery = 'SELECT * FROM applied_event WHERE student_email = ?';
-                let query = mysql.format(insertQuery, [student_email]);
-
-                pool.query(query, (err, rows) =>{
-
-                    if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.status(200).send({
-                            message: "DB_ERROR"
-                        });
+                User.findOne(
+                    {email: email},
+                    {appliedEvent: 1, _id:0},
+                    (err, result)=>{
+                        if(err){
+                            console.log("err: ", err);
+                            res.status(400).send({message:"Bad Request!"});
+                        }
+                        console.log("result: ", result.appliedEvent);
+                        const data = result.appliedEvent
+                        res.json(data);
                     }
-                    console.log("profileStudent_NO_QUERY_ERROR!");
-                    console.log("-----------------rendered student info ---------------------------")
-
-                    eventApplied = Object.assign(rows);
-
-                    console.log("event applied.",eventApplied);
-
-                    res.json(eventApplied);
-                })
-
+                )
             }else {
                 console.log("No parameters recieved !");
                 res.end();

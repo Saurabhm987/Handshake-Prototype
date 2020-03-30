@@ -1,13 +1,9 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
+const User = require("../models/userModel");
 
 module.exports = app => {
 app.put('/updateUserProfile', (req, res, next) =>{
-    console.log("CHECKING_AUTH_TOKEN");
     passport.authenticate('jwt', {session: false}, (err, user, info) =>{
-    console.log("IN_UPDATE_USER_PROFILE!");
-
     if(err){
         console.log("updateStudent_ERROR: ",   err);
     }
@@ -16,50 +12,45 @@ app.put('/updateUserProfile', (req, res, next) =>{
         console.log("ERROR_MESSGE_UPDATE_STUDENT",   info.message);
         res.status(200).send(info.message);
 
-    }else if(user.student_email !== ""){
-
-        console.log("updateStudent..user exist!");
-
+    }else if(user.email !== ""){
         if(req.body.params.requestInfo === "LOGIN"){
+            console.log("IN_LOGIN_UPDATE");
+            let reqObj = req.body.params.data;
+            console.log("updateStudent_login_reqObj: ",reqObj)
+    
+                let name=reqObj.student_name
+                let college=reqObj.student_college_name
+                let degree =reqObj.degree
+                let major=reqObj.major
+                let gpa=reqObj.gpa
+                let grad_date=reqObj.grad_date
+            
+                const email = user.email
 
-        console.log("IN_LOGIN_UPDATE");
-        let reqObj = req.body.params.data;
-        console.log("updateStudent_login_reqObj: ",reqObj)
-
-        student_email = user.student_email;
-       
-        let loginObj = {
-            student_name: reqObj.student_name,
-            student_college_name: reqObj.student_college_name,
-            degree : reqObj.degree,
-            major: reqObj.major,
-            gpa: reqObj.gpa,
-            grad_date: reqObj.grad_date
-        }
-
-        let insertQuery = 'UPDATE students SET ? WHERE student_email = ? ';
-        let query = mysql.format(insertQuery, [loginObj, student_email ] );
-
-        console.log("QUERY_FORMED: ", query);
-
-        pool.query(query, (err, row)=>{
-            if(err){
-                console.log("QUERY_ERROR: ", err);
-                res.end();
-            }
-            console.log("ROWS: ", row);
-            console.log("QUERY_SUCCESS!");
-        })
-        
-        res.status(200).send({
-            message: "Updated"
-        });
-
+            User.updateOne(
+                {email: email},
+                {$set: {
+                    "name": name,
+                    "college": college,
+                    "profileInfo.degree":degree,
+                    "profileInfo.major":major,
+                    "profileInfo.gpa": gpa,
+                    "profileInfo.grad_date":grad_date
+                }},
+                {upsert: true},
+                (err, result)=> {
+                    if(err){
+                        console.log("err: ", err)
+                        res.status(400).send({message: "error"})
+                    }
+                    console.log("result: ", result);
+                    res.status(200).send({message: "Profile Updated!"});
+                }
+            )
     }else if(req.body.params.requestInfo ==="EDU"){
-
         console.log("IN_EDU_UPDATE");
 
-        let student_email =user.student_email;
+        let student_email =user.email;
 
         let eduObj = {
             student_college_name: req.body.params.data.student_college_name	,

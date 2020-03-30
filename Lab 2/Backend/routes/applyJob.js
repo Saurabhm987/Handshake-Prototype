@@ -1,6 +1,4 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
 const User = require('../models/userModel');
 
 module.exports = app =>{

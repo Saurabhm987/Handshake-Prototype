@@ -1,5 +1,4 @@
 // MongoDB Connection 
-
 const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 var url = process.env.MONGOURI;
