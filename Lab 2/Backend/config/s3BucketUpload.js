@@ -4,7 +4,6 @@ var mysql = require('mysql');
 var pool = require('../database/db-connection');
 const AWS = require('aws-sdk');
 
-
 AWS.config.update({
     accessKeyId: keys.iam_access_id,
     secretAccessKey: keys.iam_secret,
