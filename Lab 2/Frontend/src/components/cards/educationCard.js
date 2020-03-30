@@ -183,7 +183,7 @@ export default class EducationCard extends Component {
             token: accessString
         })
 
-        console.log("summary_card_compdidmnt_accessString: ", accessString);
+        // console.log("summary_card_compdidmnt_accessString: ", accessString);
 
         this.instance.get("/profileStudent/eduInfo", { 
             headers: {

@@ -25,10 +25,6 @@ export default class SummaryCard extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    //necessary to update the component
-    componentDidUpdate(){
-    }
-
     componentDidMount(){
         const accessString = localStorage.getItem('JWT');
         if(accessString === null){
@@ -42,9 +38,9 @@ export default class SummaryCard extends Component {
             token: accessString
         })
 
-        console.log("summary_card_compdidmnt_accessString: ", accessString);
+        // console.log("summary_card_compdidmnt_accessString: ", accessString);
 
-        this.instance.get("/profileStudent/userInfo", { 
+        this.instance.get("/profileStudent/summary", { 
             headers: {
                 Authorization: `JWT ${accessString}`
             }
@@ -58,7 +54,7 @@ export default class SummaryCard extends Component {
                         objective: response.data.student_objective
                     })
                     // console.log("studentProfile_responseObj: ", response.data);
-                    console.log("summaryCard_updated_objective: ", this.state.objective);
+                    // console.log("summaryCard_updated_objective: ", this.state.objective);
                 }else{
                     console.log("ERROR");
                 }
@@ -82,7 +78,7 @@ export default class SummaryCard extends Component {
         console.log("CALLING_SAVE_HANDLER.....");
 
         const updateInfo =this.state.objective;
-        console.log("summaryCard_updateInfo: ",updateInfo);
+        // console.log("summaryCard_updateInfo: ",updateInfo);
 
         const headers = {
             Authorization: `JWT ${this.state.token}`
@@ -123,7 +119,7 @@ export default class SummaryCard extends Component {
 
         let summary = null;
         const renderSummary = this.state.objective;
-        console.log("summaryCard_SUMMARY_INFO:", this.state.objective);
+        // console.log("summaryCard_SUMMARY_INFO:", this.state.objective);
 
         if(this.state.objective !== null && this.state.editmode === false && this.state.isLogin){
             summary = (

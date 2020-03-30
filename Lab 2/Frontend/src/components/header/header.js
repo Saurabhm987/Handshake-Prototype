@@ -29,7 +29,6 @@ class Header extends Component{
    async componentDidMount(){
 
         const accessString = localStorage.getItem('JWT');
-        console.log("accessString: ",accessString);
         if(accessString === null) {
             this.setState({
                 isLogin: false
@@ -38,7 +37,7 @@ class Header extends Component{
             const base64Url = accessString.split('.')[1];
             const base64 = base64Url.replace('-', '+').replace('_', '/');
             const data = JSON.parse(window.atob(base64));
-            console.log("parsed_token_data: ", data);
+            // console.log("parsed_token_data: ", data);
     
             await this.setState({
                 access: data.access,

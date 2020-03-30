@@ -1,10 +1,12 @@
-    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT} from '../actions/types';
+    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT, FETCH_APPLIED_EVENT, UPDATE_STUDENT_PROFILE, FETCH_STUDENT_PROFILE} from '../actions/types';
 
     const initialState = {
         regdetails : {},
         loginDetails: {},
+        profileInfo: {},
         jobDetails: [],
         eventDetails: [],
+        appliedEvents: [],
         message: "",
         loginError:"",
         isLogin: false,
@@ -47,6 +49,26 @@
                 return{
                     ...state,
                     eventDetails: action.payload,
+                    message: action.message
+                }
+            
+            case FETCH_APPLIED_EVENT:
+                return{
+                    ...state, 
+                    appliedEvents: action.payload,
+                    message:action.message
+                }
+            
+            case FETCH_STUDENT_PROFILE: 
+                return{
+                    ...state,
+                    profileInfo: action.payload,
+                    message: action.message
+                }
+
+            case UPDATE_STUDENT_PROFILE:
+                return{
+                    ...state,
                     message: action.message
                 }
 

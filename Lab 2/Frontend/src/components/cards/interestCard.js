@@ -79,7 +79,7 @@ export default class InterestCard extends Component {
             }
         }) .then((res) => {
             if(res.status === 200){
-                console.log("response: ", res);
+                // console.log("response: ", res);
                 console.log("added!");
                 alert('Resume Uploaded!');
             }

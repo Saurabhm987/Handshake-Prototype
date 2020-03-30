@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-// import img from './profile.jpg';
 import axios from 'axios';
-import {Route, withRouter, Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+import {fetchStudentProfile} from '../../actions/fetchAction';
+import {updateStudentProfile} from '../../actions/updateAction'
 import {API_ENDPOINT} from '../controller/endpoint';
-
 
  class UserInfoCard extends Component {
     constructor(props){
@@ -22,7 +24,8 @@ import {API_ENDPOINT} from '../controller/endpoint';
             userInfo: {},
             token: "",
             file: null,
-            img: ""
+            img: "",
+            message: ""
         }
 
         this.instance = axios.create({
@@ -35,12 +38,7 @@ import {API_ENDPOINT} from '../controller/endpoint';
         this.handleSave = this.handleSave.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFileUpload = this.handleFileUpload.bind(this);
-
     }    
-
-
-    componentDidUpdate(){
-    }
 
     handleEdit = () => {
         this.setState({
@@ -95,62 +93,87 @@ import {API_ENDPOINT} from '../controller/endpoint';
           // handle your error
         });
     }
-
     }
 
     componentDidMount(){
-
-        console.log("USER_INFO_CMPDID");
-
+        console.log("calling did mount!!")
         const accessString = localStorage.getItem('JWT');
         if(accessString === null){
             this.setState({
                 isLogin: false
             })
-
-            alert("No token provided! You are being logged out!");
             console.log("token is null!");
-            this.props.history.push('/login');
+            this.props.history.push('login');
         }
 
         this.setState({
             token: accessString
         })
 
-         this.instance.get("/profileStudent/userInfo", { 
-            headers: {
-                Authorization: `JWT ${accessString}`
+        this.props.fetchStudentProfile(accessString);
+
+        // console.log("new props data: ",this.props.data);
+        //  this.instance.get("/profileStudent/userInfo", { 
+        //     headers: {
+        //         Authorization: `JWT ${accessString}`
+        //     }
+        // } ).then(response => {
+        //         if(response.status === 200){
+        //             if(response.data === "jwt expired"){
+        //                 alert("session expired! ");
+        //             }
+        //             const data = response.data;
+        //             this.setState({
+        //                 student_name : data.student_name,
+        //                 student_college_name: data.student_college_name,
+        //                 col_name : data.col_name,
+        //                 degree: data.degree,
+        //                 grad_date: data.grad_date,
+        //                 gpa: data.gpa,
+        //                 major: data.major,
+        //                 img: data.profile_pic
+        //             })
+        //             console.log("UserInfoCard_RESPONSE_DATA", data);
+        //         }else{
+        //             console.log("ERROR");
+        //         }
+        //     })
+    }
+
+    componentWillReceiveProps(nextProps){
+        console.log("calling will recieve!");
+        if(nextProps.data){
+            if(nextProps.data === "jwt expired"){
+                console.log("token expired!");
+                this.props.history.push("login");
             }
-        } ).then(response => {
-                if(response.status === 200){
-                    if(response.data === "jwt expired"){
-                        alert("session expired! ");
-                    }
 
-                    const data = response.data;
+            if(nextProps.message){
+                this.setState({
+                    message: nextProps.message
+                })
+            }
+            const data = nextProps.data
 
-                    this.setState({
-                        student_name : data.student_name,
-                        student_college_name: data.student_college_name,
-                        col_name : data.col_name,
-                        degree: data.degree,
-                        grad_date: data.grad_date,
-                        gpa: data.gpa,
-                        major: data.major,
-                        img: data.profile_pic
-                    })
-                    console.log("UserInfoCard_RESPONSE_DATA", data);
+            if(nextProps.data.name !== this.props.name){
+                this.setState({
+                    student_name: nextProps.data.name
+                })
+            }
 
-                }else{
-                    console.log("ERROR");
-                }
+            this.setState({
+                    student_college_name: data.college,
+                    degree: data.degree,
+                    grad_date: data.grad_date,
+                    gpa: data.gpa,
+                    major: data.major,
+                    img: data.profile_pic
             })
+        }
     }
 
     handleSave = (e) => {
-
         console.log("handle Save!");
-
         e.preventDefault(); 
 
         const userInfo = {
@@ -163,33 +186,35 @@ import {API_ENDPOINT} from '../controller/endpoint';
         }
 
         console.log("userInfo: ", userInfo);
-
-        const headers = {
-            Authorization: `JWT ${this.state.token}`
-        }
-
-        this.instance.put("/updateUserProfile", {
-            params: {
-                requestInfo: "LOGIN",
-                data: userInfo
-            }
-        }, {
-            headers: headers
+        this.props.updateStudentProfile(userInfo, this.state.token);
+        this.setState({
+            editMode: !this.state.editMode
         })
-             .then( response => {
-                if(response.status === 200){
-                    console.log("RESPONSE: ", response.data);
-                    // window.location.reload(false);
-                    this.setState({
-                        editMode: !this.state.editMode,
-                        reload: true
-                    })
-                }else{
-                    console.log("BAD_REQUEST");
-                }
-            })
-    }
+        // const headers = {
+        //     Authorization: `JWT ${this.state.token}`
+        // }
+        // this.instance.put("/updateUserProfile", {
+        //     params: {
+        //         requestInfo: "LOGIN",
+        //         data: userInfo
+        //     }
+        // }, {
+        //     headers: headers
+        // })
+        //      .then( response => {
+        //         if(response.status === 200){
+        //             console.log("RESPONSE: ", response.data);
+        //             // window.location.reload(false);
+        //             this.setState({
+        //                 editMode: !this.state.editMode,
+        //                 reload: true
+        //             })
+        //         }else{
+        //             console.log("BAD_REQUEST");
+        //         }
+        //     })
 
+    }
 
     renderEditView = () => {
         
@@ -275,4 +300,14 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }
 }
 
-export default withRouter(UserInfoCard);
+UserInfoCard.propTypes = {
+    fetchStudentProfile: PropTypes.func.isRequired,
+    message: PropTypes.string.isRequired
+}
+
+const mapStateToProps = state => ({
+    data: state.Handshake_User_Info.profileInfo,
+    message: state. Handshake_User_Info.message
+})
+
+export default connect(mapStateToProps, {fetchStudentProfile, updateStudentProfile})(UserInfoCard);

@@ -1,4 +1,4 @@
-import {FETCH_DASHBOARD, FETCH_EVENT} from './types';
+import {FETCH_DASHBOARD, FETCH_EVENT, FETCH_APPLIED_EVENT, FETCH_STUDENT_PROFILE} from './types';
 import {API_ENDPOINT} from '../components/controller/endpoint';
 import axios from 'axios';
 
@@ -47,6 +47,60 @@ export const  fetchEvent = (accessString) => dispatch => {
                             type : FETCH_EVENT,
                             payload: response.data,
                             message: "event fetched!"
+                         });
+                    }  
+            }else{
+                console.log("ERROR");
+            }
+        })
+}
+
+
+export const  fetchAppliedEvent = (accessString) => dispatch => {
+    axios.get(API_ENDPOINT+"/getEventBoard/appliedevents", { 
+        headers: {
+            Authorization: `JWT ${accessString}`
+        }
+    } ).then(response => {
+            if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                            localStorage.removeItem('JWT');
+                            dispatch({
+                                type: FETCH_APPLIED_EVENT,
+                                message: "jwt expired"
+                            })
+                    }else{
+                        dispatch({
+                            type : FETCH_APPLIED_EVENT,
+                            payload: response.data,
+                            message: "fetched applied events"
+                         });
+                    }  
+            }else{
+                console.log("ERROR");
+            }
+        })
+}
+
+
+export const  fetchStudentProfile= (accessString) => dispatch => {
+    axios.get(API_ENDPOINT+"/profileStudent/userInfo", { 
+        headers: {
+            Authorization: `JWT ${accessString}`
+        }
+    } ).then(response => {
+            if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                            localStorage.removeItem('JWT');
+                            dispatch({
+                                type: FETCH_STUDENT_PROFILE,
+                                message: "jwt expired"
+                            })
+                    }else{
+                        dispatch({
+                            type : FETCH_STUDENT_PROFILE,
+                            payload: response.data,
+                            message: "fetched student profile!"
                          });
                     }  
             }else{
