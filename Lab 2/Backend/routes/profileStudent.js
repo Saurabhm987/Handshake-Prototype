@@ -21,123 +21,57 @@ module.exports = app =>{
 
                 User.findOne(
                     {email: email},
-                    {profileInfo: 1, _id: 0},
+                    {profileInfo: 1, name:1,college:1, _id: 0},
                     (err, result)=>{
                         if(err){
-                            console.log("err:", errr);
+                            console.log("err:", err);
                         }
-                        res.json(result.profileInfo);
-                    }
-                )
-
-                            // let userInfo = {
-            //     student_name: "",
-            //     student_college_name: "",
-            //     degree: "",
-            //     grad_date: " ", 
-            //     gpa: "",
-            //     major: ""
-            // };
-                // let insertQuery = 'SELECT * FROM students WHERE ?? = ? ';
-                // let query = mysql.format(insertQuery, [ "student_email", user.student_email]);
-                // pool.query(query, (err, rows, field) =>{
-                //     if(err){
-                //         console.log("QUERY_ERROR: ", err);
-                //         res.status(200).send({
-                //             message: "DB_ERROR"
-                //         });
-                //     }
-                //     delete rows[0].student_password;
-                //     userInfo.student_name = rows[0].student_name;
-                //     userInfo.student_college_name = rows[0].student_college_name;
-                //     userInfo.degree = rows[0].degree;
-                //     userInfo.major = rows[0].major;
-                //     userInfo. gpa = rows[0].gpa;
-                //     userInfo.grad_date = rows[0].grad_date;
-                //     userInfo.student_objective = rows[0].student_objective;
-                //     userInfo.profile_pic = rows[0].profile_pic;
-                //     res.json(userInfo);
-                // })
-
+                        console.log("result:", result);
+                        result = result.toObject();
+                        let data = new Object();
+                        data.name = result.name
+                        data.college = result.college
+                        data.degree = result.profileInfo.degree
+                        data.gpa = result.profileInfo.gpa
+                        data.grad_date = result.profileInfo.grad_date
+                        data.major = result.profileInfo.major
+                        data.summary = result.profileInfo.summary
+                        console.log("data; ", data);
+                        res.json(data)
+                    })
                 }else if(req.params.requestInfo === 'expInfo'){
-                    
+                    const email = user.email
                     User.findOne(
                         {email: email},
-                        {experience: 1, _id: 0},
-                        (err, result)=>{
-                            if(err){
-                                console.log("err:", err);
-                            }
-                            console.log("result-expInfo  ",  result);
-                            res.end();
-                        }
+                        {"experience": 1, _id: 0}
                     )
-                    // console.log("geting expinfo........")
-                    // let insertQuery1 = 'SELECT * FROM experience_details WHERE ?? = ? ';
-                    // let query1 = mysql.format(insertQuery1, [ "student_email", user.student_email ]);
-                    // pool.query(query1, (err, rows) =>{
-                    //     if(err){
-                    //         console.log("QUERY_ERROR: ", err);
-                    //         res.status(200).send({
-                    //             message: "Q_ERROR"
-                    //         });
-                    //     }
-                    //     console.log("fetched expinfo!");            
-                    //     console.log('sending back to client.....');
-                    //     console.log("_______________________________________");
-                    //     res.json(rows);
-                    // })
+                    .then(response=>{
+                        console.log("expInfo: ", response)
+                        const data = response.toObject();
+                        const result = data.experience;
+                        res.json(result);
+                    })
+                    .catch(err=>{
+                        console.log("err: ", err);
+                        res.status(400).end();
+                    })
 
                 }else if(req.params.requestInfo === 'eduInfo'){
-
-                    // console.log("getting eduinfo.....")
-                    // let insertQuery2 = 'SELECT * FROM education_details WHERE ?? = ? ';
-                    // let query2 = mysql.format(insertQuery2, [ "student_email",user.student_email ]);
-                    // pool.query(query2, (err, rows) =>{
-                    //     if(err){
-                    //         console.log("QUERY_ERROR: ", err);
-                            
-                    //         res.status(200).send({
-                    //             message: "DB_ERROR!"
-                    //         })
-                    //     }
-                    //     console.log("profileStudent_fetched_eduInfo");
-                    //     console.log("profileStudent_SENDING_EDU_INFO................");
-                    //     console.log("_______________________________________");
-                    //     res.json(rows);
-                    // })  
-                    // res.end()
-                }else if(req.params.requestInfo === 'summary'){
-
-
-                // let insertQuery = 'SELECT * FROM students WHERE ?? = ? ';
-                // let query = mysql.format(insertQuery, [ "student_email", user.student_email]);
-                // pool.query(query, (err, rows, field) =>{
-                //     if(err){
-                //         console.log("QUERY_ERROR: ", err);
-                //         res.status(200).send({
-                //             message: "DB_ERROR"
-                //         });
-                //     }
-                //     console.log("profileStudent_NO_QUERY_ERROR!");
-                //     delete rows[0].student_password;
-                //     userInfo.student_name = rows[0].student_name;
-                //     userInfo.student_college_name = rows[0].student_college_name;
-                //     userInfo.degree = rows[0].degree;
-                //     userInfo.major = rows[0].major;
-                //     userInfo. gpa = rows[0].gpa;
-                //     userInfo.grad_date = rows[0].grad_date;
-                //     userInfo.student_objective = rows[0].student_objective;
-                //     res.json(userInfo);
-                // })
-                res.end()
+                    const email = user.email
+                    User.findOne(
+                        {email:email},
+                        {"education": 1, _id: 0},
+                        (err, response)=>{
+                            if(err){
+                                console.log("err: ", err);
+                            }
+                            const data = response.toObject();
+                            const result = data.education;
+                            console.log("GET_edu_result:", result);
+                            res.json(result);
+                        }
+                    )
                 }
-                else{
-                    console.log("NO_PARAMETERS_SPECIFIED");
-                    req.status(200).send({
-                        message : "NO PARAMETERS"
-                    })
-                }  
             }else{
                 console.log("TOKEN_DOESNT_MATCH");
                 res.status(200).send({

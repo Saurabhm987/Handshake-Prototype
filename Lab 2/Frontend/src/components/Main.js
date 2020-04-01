@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Route} from 'react-router-dom';
+import {Route, BrowserRouter} from 'react-router-dom';
 import Login from './auth/Login';
 import Register from './auth/Register';
 import Home from "./Home/home"
@@ -24,8 +24,9 @@ import EventAppliedStudents from './cards/eventAppliedStudentCard';
 class Main extends Component {
     render() {
         return(
+            <BrowserRouter>
             <div>
-                <Route  path="/" component = {Header}/>
+                <Route   path="/" component = {Header}/>
                 <Route exact path="/home" component = {Home}/>
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/register" component ={Register}/>
@@ -46,6 +47,7 @@ class Main extends Component {
                 <Route exact path="/jobAppliedStudent" component={JobAppliedStudent} />
                 <Route exact path="/eventAppliedStudent" component={EventAppliedStudents} />
             </div>
+            </BrowserRouter>
         );
     }
 }

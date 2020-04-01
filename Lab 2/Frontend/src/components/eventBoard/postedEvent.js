@@ -68,21 +68,21 @@ export default class CompanyPostedEvent extends Component{
             <br/>
              { display.map( (item) =>
            
-            <div class="ui fluid" style={{background: "#F8F8FF", padding: "20px", margin: "2%"}}>
+            <div className="ui fluid" style={{background: "#F8F8FF", padding: "20px", margin: "2%"}}>
             <div className="row">
             <div className="col-md-9">
-                <div class="image header">
-                    <div class="line"><h3>{item.job_title}</h3></div>
-                    <div class="line">{item.job_loc}</div>
+                <div className="image header">
+                    <div className="line"><h3>{item.job_title}</h3></div>
+                    <div className="line">{item.job_loc}</div>
                 </div>
-                <div class="paragraph">
-                    <div class="line">{item.job_salary}</div>
-                    <div class="line">{item.job_post_date}</div>
-                    <div class="line">{item.job_type}</div>
+                <div className="paragraph">
+                    <div className="line">{item.job_salary}</div>
+                    <div className="line">{item.job_post_date}</div>
+                    <div className="line">{item.job_type}</div>
                 </div>
             </div>
             <div className="col-md-3" style={{padding: "10px"}}>
-                <Link to="/detailsApplied" class="large ui button" style={{float: "right"}}>
+                <Link to="/detailsApplied" className="large ui button" style={{float: "right"}}>
                         Details 
                 </Link>
             </div>

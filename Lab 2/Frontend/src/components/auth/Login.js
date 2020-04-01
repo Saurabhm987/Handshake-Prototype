@@ -64,40 +64,40 @@ class Login extends Component{
 
       if(!isLogin){
         return(
-          <div class="ui middle aligned center aligned grid" style={{marginTop: "5%"}}>
-              <div class="column" id="loginStud">
+          <div className="ui middle aligned center aligned grid" style={{marginTop: "5%"}}>
+              <div className="column" id="loginStud">
 
-            <form action=" " method="POST" class="ui large form">
-              <div class="ui stacked secondary  segment login" style={{padding: "10px"}}>
+            <form action=" " method="POST" className="ui large form">
+              <div className="ui stacked secondary  segment login" style={{padding: "10px"}}>
 
                 <div id="logo-id" style= {{marginTop: "10%" , marginBottom: "8%"}}>
-                    <img src={logo}   class="logo-class"  />
+                    <img src={logo}   className="logo-class"  />
                 </div>
-                <div class="ui divider"></div>
-                <h1 class="ui image header">
-                    <div class="content">
+                <div className="ui divider"></div>
+                <h1 className="ui image header">
+                    <div className="content">
                         Sing In
                     </div>
                   </h1>
             
-                <div class="field" >
-                 <span class="ui left icon input" style={{margin: "10px"}}><h4>SJSU Email ID</h4></span>
-                  <div class="ui left icon input">
-                    <i class="user icon"></i>
+                <div className="field" >
+                 <span className="ui left icon input" style={{margin: "10px"}}><h4>SJSU Email ID</h4></span>
+                  <div className="ui left icon input">
+                    <i className="user icon"></i>
                       <input onChange={this.handleChange}  id="email" type="text" name="email" placeholder="Email address" />
                   </div>
                 </div>
-                <div class="field" >
-                <span class="ui left icon input" style={{margin: "10px"}}><h4>Password</h4></span>
-                  <div class="ui left icon input">
-                    <i class="lock icon"></i>
+                <div className="field" >
+                <span className="ui left icon input" style={{margin: "10px"}}><h4>Password</h4></span>
+                  <div className="ui left icon input">
+                    <i className="lock icon"></i>
                     <input onChange={this.handleChange} id="password" type="password" name="password" placeholder="Password" />
                   </div>
                 </div>
                 <div style={{marginBottom:"5%"}}>
                     <span style={{color: "red"}}>{this.state.msg}</span>
                   </div>
-                <div onClick={this.submit} class="ui fluid large blue submit button" style={{fontSize: "1.3em"}}>Login</div>
+                <div onClick={this.submit} className="ui fluid large blue submit button" style={{fontSize: "1.3em"}}>Login</div>
                 <br/>
               </div>          
             </form>
@@ -111,7 +111,7 @@ class Login extends Component{
              <span style={{color: "red"}}> <p>The username or password doesnt match. Please try again</p></span>
             </div>
             )}
-            <div class="ui message regStud">
+            <div className="ui message regStud">
                 <a href="/register">Register</a>
             </div>
           </div>

@@ -111,10 +111,10 @@ export default class InterestCard extends Component {
                             <div className="content">
                                 <div className="header">Upload Resume</div>
                                 <div className="description" style={{marginBottom: "10px"}}>
-                                <div class="ui fluid action input" style={{fontSize:"15px"}}>
+                                <div className="ui fluid action input" style={{fontSize:"15px"}}>
                                 <form style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
                                     <input type="file" name="demo-file" placeholder="add skills" onChange={this.handleFileUpload}/>
-                                    <button class="ui button" type='submit' >Upload</button>
+                                    <button className="ui button" type='submit' >Upload</button>
                                 </form>
                                 </div>
                                 </div>

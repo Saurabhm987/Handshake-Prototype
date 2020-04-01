@@ -134,29 +134,29 @@ render() {
   if(renderdata.length > 0){
   var searchBar = (
     <div className ="row">
-              <div class="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
+              <div className="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
                   <input type="text" placeholder="Search opportunities"/>
-                  <div class="ui button">Search</div>
+                  <div className="ui button">Search</div>
               </div>
       </div>
   )
 
   let lefBar = (
-    <div class="ui items" id="scroll" style={{width:"100%"}}>
+    <div className="ui items" id="scroll" style={{width:"100%"}}>
         { renderdata.map( (item, index) =>
-          <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
+          <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
               <img src={item.profile_pic}  style={{width:"170px", height:"110px"}}/>
               <div className="row" style={{width:"100%"}}>
                   <div className="col-md-9">
-                    <div class="content" style={{padding: " 5px 5px 5px 35px"}}>
+                    <div className="content" style={{padding: " 5px 5px 5px 35px"}}>
                             <div className="header" id="cardHover"><b> {item.eventName}</b></div>
-                            <div class="meta">
+                            <div className="meta">
                                 <span>{item.eventLocation}</span>
                             </div>
-                            <div class="extra">
+                            <div className="extra">
                                 {item.name}
                             </div>
-                            <div class="extra">
+                            <div className="extra">
                                 Eligibility: {item.eventEligible}
                             </div>
                             <div className="extra" style={{textDecorationColor:"blue", color:"blue"}}>
@@ -165,8 +165,8 @@ render() {
                     </div>
                   </div>
                     <div className="col-md-3">
-                      <div class="right floated content" style={{padding: "35px"}}>
-                              <div class="ui large green button" 
+                      <div className="right floated content" style={{padding: "35px"}}>
+                              <div className="ui large green button" 
                                   onClick={this.applied} 
                                   data-selected_event_id={item._id} 
                                   data-event_name = {item.eventName}

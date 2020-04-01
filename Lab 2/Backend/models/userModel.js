@@ -26,6 +26,34 @@ var EventModel = new Schema({
     profile_pic: String
 })
 
+var educationModel = new Schema({
+    education_id : String,
+    college: String,
+    location: String,
+    degree: String,
+    major: String,
+    yop: String,
+    gpa: String
+})
+
+var experienceModel = new Schema({
+    experience_id: String,
+    title: String,
+    company_name: String,
+    position: String, 
+    joined_date: String,
+    description: String
+})
+
+var profileModel = new Schema({
+    degree: String,
+    gpa: String, 
+    grad_date: String, 
+    major: String,
+    education: [educationModel],
+    experience: [experienceModel]
+})
+
 var AppliedEvent = new Schema({
     _id: String,
     name: String,
@@ -46,6 +74,12 @@ var userSchema = new Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String,
+    },
+    college:{
+        type: String
+    },
     access : {
         type: String,
         required: true
@@ -55,7 +89,7 @@ var userSchema = new Schema({
     appliedJob: Array,
     appliedEvent:[AppliedEvent],
     profileInfo: {
-        type: Object
+        profileModel
     }
 }, {strict: false})
 

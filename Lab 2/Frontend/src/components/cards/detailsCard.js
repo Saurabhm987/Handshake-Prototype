@@ -95,10 +95,10 @@ renderViewMode = () => {
                             <img src={profile_pic} style={{width:"1150px", height:"400px"}}/>
                         </div>
                         <div className="row">
-                            <div class="ui items" style={{width:"100%"}}>
-                                        <div class="item" onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
+                            <div className="ui items" style={{width:"100%"}}>
+                                        <div className="item" onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
                                             <img src={profile_pic} style={{width:"200px", height: "110px" }}/>
-                                            <div class="content" style={{padding: "10px 5px 5px 50px"}}>
+                                            <div className="content" style={{padding: "10px 5px 5px 50px"}}>
                                                     <div className="header" ><h4><b>{event_name}</b></h4></div>
                                                     <div className="extra"><h4><b>{event_loc}</b></h4></div>
                                                     <div className="extra"><b>Eligibility: </b>{event_eligible}</div>
@@ -108,7 +108,7 @@ renderViewMode = () => {
                             </div>
                             </div>
                             <div className="row">
-                                <div class="ui items" style={{width:"100%"}}>
+                                <div className="ui items" style={{width:"100%"}}>
                                         <div className="item" style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
                                             <div className="content"  style={{padding: "10px 5px 5px 50px"}}>
                                             <div className="header"><b>Description</b></div>

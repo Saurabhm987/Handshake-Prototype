@@ -102,8 +102,15 @@ sendData = async () => {
 render() {
 
   let curSelectedJob = this.state.cardSelected;
-  let renderdata ={};
-  renderdata = this.state.jobData;
+  let  renderdata = this.state.jobData;
+  var place = (
+    <div className="line"> </div>
+ )
+  var placeHolderline = []
+   for(let i = 0; i < 20; i++){
+     placeHolderline.push(place);
+   }
+
   if(renderdata){
     if(renderdata[0] !== undefined ){
       var initialRightBar = (
@@ -168,26 +175,7 @@ render() {
              </div>
              <br/>
           <div className="paragraph">
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"></div>
-            <div className="line"></div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
-            <div className="line"> </div>
+              {placeHolderline}
           </div>
         </div>              
       </div>
@@ -220,7 +208,7 @@ render() {
                             <span><b>{item.company_name}</b> ,{item.location}</span>
                         </div>
                         <div className="extra">
-                        <i class="money bill alternate icon"></i>
+                        <i className="money bill alternate icon"></i>
                             $ {item.salary} /hr
                         </div>
                         <div className="extra">
@@ -303,9 +291,6 @@ render() {
                     <div className="line"> {renderdata[curSelectedJob].salary}</div>
                     <div className="line">{renderdata[curSelectedJob].postedDate}</div>
                   </div>
-                  {/* <div className="large ui blue button" style={{margin: "10px"}} data-selected_job_id={renderdata[curSelectedJob].job_id} data-company_name={renderdata[curSelectedJob].company_name} onClick={this.applied} >
-                       Apply 
-                   </div> */}
                 </div>   
           </div>
             </div>

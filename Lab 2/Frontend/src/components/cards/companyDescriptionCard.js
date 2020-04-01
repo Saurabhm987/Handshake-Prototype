@@ -126,15 +126,15 @@ import {API_ENDPOINT} from '../controller/endpoint';
 
      
             <div className="ui card" style={{width: "80%"}}>
-                <div class="content">
-                        <div class="description">Description</div>
-                        <div class="ui input">
+                <div className="content">
+                        <div className="description">Description</div>
+                        <div className="ui input">
                             <textarea type="text" name="company_descr" value={this.state.company_descr || ''} onChange = { this.handleChange} />
                         </div>
                 </div>
-                <div class="extra content">
+                <div className="extra content">
                         <div onClick= {this.handleSave} className="ui bottom attached center medium button">
-                                <i class="edit icon"></i>
+                                <i className="edit icon"></i>
                                     Save 
                         </div>
                 </div>
@@ -146,15 +146,15 @@ import {API_ENDPOINT} from '../controller/endpoint';
         return(
 
             
-                <div class="ui card" style={{width: "80%"}}>
-                    <div class="content">
-                                <div class="header"><h3><b>Description</b></h3></div>
+                <div className="ui card" style={{width: "80%"}}>
+                    <div className="content">
+                                <div className="header"><h3><b>Description</b></h3></div>
                                 <br/>
-                                <div class="paragraph"><h4>{this.state.company_descr}</h4></div>
+                                <div className="paragraph"><h4>{this.state.company_descr}</h4></div>
                     </div>
-                    <div class="extra content">
+                    <div className="extra content">
                         <div onClick= {this.handleEdit} data-descriptionEdit = "descriptionEdit" className="ui bottom attached center medium button">
-                                    <i class="edit icon"></i>
+                                    <i className="edit icon"></i>
                                         Edit 
                         </div>
                     </div>

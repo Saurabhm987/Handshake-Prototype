@@ -170,23 +170,23 @@ import {API_ENDPOINT} from '../controller/endpoint';
         return(
 
         
-            <div class="ui card" style={{width: "80%"}}>
-                <form class="image" style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
+            <div className="ui card" style={{width: "80%"}}>
+                <form className="image" style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
                     <img src={this.state.img}/>
                     <input type="file" name="file" onChange ={this.handleFileUpload} />
                     <button type="submit">upload</button>
                 </form>
-                    <div class="content">
-                    <div class="description">Company Loc</div>
-                    <div class="ui input">
+                    <div className="content">
+                    <div className="description">Company Loc</div>
+                    <div className="ui input">
                         <input type="text" name="company_loc" value={this.state.company_loc || ''} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Contact</div>
-                    <div class="ui input">
+                    <div className="ui input">
                         <input type="text" name="company_contact" value={this.state.company_contact || ''} onChange = { this.handleChange}/>
                     </div>
                 </div>
-                <div class="extra content">
+                <div className="extra content">
                     <div  onClick= {this.handleSave } className="ui bottom attached center medium button" style={{width:"100px", float: "left"}}>
                                     Save 
                     </div>
@@ -202,18 +202,18 @@ import {API_ENDPOINT} from '../controller/endpoint';
         console.log("renderViewMode: ", this.state);
         return(
          
-                    <div class="ui card"  style={{width: "80%"}}>
+                    <div className="ui card"  style={{width: "80%"}}>
                             <div className="image">
                                     <img src= {this.state.img} style={{width:"443px", height:"300px"}}/>
                             </div>
-                            <div class="content">
-                                    <div class="header"><h1><b>{this.state.company_name}</b></h1></div>
-                                    <div class="description"><h2>{this.state.company_loc}</h2></div>
+                            <div className="content">
+                                    <div className="header"><h1><b>{this.state.company_name}</b></h1></div>
+                                    <div className="description"><h2>{this.state.company_loc}</h2></div>
                                     <div className="description"><h3>{this.state.company_contact}</h3></div>
                             </div>
-                            <div class="extra content">
+                            <div className="extra content">
                                     <div onClick= {this.handleEdit} className="ui bottom attached center medium button">
-                                                <i class="edit icon"></i>
+                                                <i className="edit icon"></i>
                                                     Edit 
                                     </div>
                             </div>

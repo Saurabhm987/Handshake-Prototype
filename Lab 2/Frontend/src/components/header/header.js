@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { Link } from 'react-router-dom';
+import { Link , withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {logout} from '../../actions/loginAction';
+import {logout, login} from '../../actions/loginAction';
 import PropTypes from 'prop-types';
+import {parseToken} from '../auth/parseToken';
 
 class Header extends Component{
     constructor(props){
@@ -10,35 +11,51 @@ class Header extends Component{
         this.state = {
             isLogin : false,
             access:"",
-            email:""
+            email:"",
+            searchText:""
         }
         this.handleLogout = this.handleLogout.bind(this);
     };
 
-    componentDidUpdate(){
+
+    handleChange = (e) =>{
+        e.preventDefault()
+        this.setState({
+            searchText: e.target.value
+        })
+    }
+
+    handleSearch = () =>{
+        console.log("search handling...");
+        const accessString = localStorage.getItem('JWT');
+        this.props.search(this.state.searchText, accessString);
     }
 
     componentWillReceiveProps(nextProps){
+        const accessString = localStorage.getItem('JWT');
+        if(accessString){
+            var data = parseToken(accessString);
+        }
         if(nextProps.isLogin){
                 this.setState({
-                    isLogin: nextProps.isLogin
+                    isLogin: nextProps.isLogin,
+                    access: data.access,
+                    email: data.id
                 })
         }
     }
 
    async componentDidMount(){
-
+       console.log("componentDidMount...")
         const accessString = localStorage.getItem('JWT');
         if(accessString === null) {
             this.setState({
                 isLogin: false
             })
         }else{
-            const base64Url = accessString.split('.')[1];
-            const base64 = base64Url.replace('-', '+').replace('_', '/');
-            const data = JSON.parse(window.atob(base64));
-            // console.log("parsed_token_data: ", data);
-    
+            console.log("executing componentDidMoutn else cond..");
+            const data = parseToken(accessString);
+            console.log('token_data: ', data);
             await this.setState({
                 access: data.access,
                 email: data.id,
@@ -49,26 +66,31 @@ class Header extends Component{
 
     handleLogout = async (e)=>{
         e.preventDefault();
+        this.setState({
+            isLogin: false
+        })
         console.log("calling logout action...");
         await this.props.logout()
-        this.props.history.push("home")
+        this.props.history.push("/home")
     }
 
     render(){
-
+        console.log("rendering....");
+        console.log("header-isLogin", this.state.isLogin);
+        console.log("header-access: ", this.state.access);
         let loginHome = (
-                        <div class="ui inverted segment">
-                            <div class="ui inverted secondary menu">
-                                <a href="/login" class="item">
+                        <div className="ui inverted segment">
+                            <div className="ui inverted secondary menu">
+                                <a href="/login" className="item">
                                     Student Login
                                 </a>
-                                <a href="/companyLogin" class="item">
+                                <a href="/companyLogin" className="item">
                                 Employer Login
                                 </a>
-                                <a href="/companyReg" class="item">
+                                <a href="/companyReg" className="item">
                                 Employer Registration
                                 </a>
-                                <a href="register" class="item">
+                                <a href="register" className="item">
                                 Student Registration
                                 </a>
                             </div>
@@ -77,22 +99,22 @@ class Header extends Component{
 
 
             let StudentLogin = (
-                <div class="ui secondary menu" style={{padding:"10px", marginLeft: "19.5%", marginRight:"20%"}}>
+                <div className="ui secondary menu" style={{padding:"10px", marginLeft: "19.5%", marginRight:"20%"}}>
                     <div className="item">
                         <div className="ui action left icon input">
                             <i className="search icon"></i>
-                            <input type="text" placeholder="Search"/>
-                            <button className="ui button">Search</button>
+                            <input type="text" placeholder="Search" onChange={this.handleChange}/>
+                            <button className="ui button" onClick={this.handleSearch}>Search</button>
                         </div>
                     </div>
 
-                    <div class="right menu">
+                    <div className="right menu">
                         <Link to="/jobBoard" className="item">Jobs </Link>
                         <Link to="/eventBoard" className="item">Events</Link>
                         <Link to="/students" className="item">Students</Link>
                         <div className="ui simple dropdown item">
                                 {this.state.email}
-                                <i class="dropdown icon"></i>
+                                <i className="dropdown icon"></i>
                                 <div className=" menu">
                                     <Link to="/studentAppliedJob" className="item">Applications</Link>
                                     <Link to="/studentProfile" className="item">Profile</Link>
@@ -106,16 +128,16 @@ class Header extends Component{
 
             let CompanyLogin = (
                 
-                <div class="ui blue inverted menu" style={{padding:"10px"}}>
+                <div className="ui blue inverted menu" style={{padding:"10px"}}>
                     <Link to="/companyPostedJobCard" className="item"> Posted Job </Link>                
                     <Link to="/companyPostedEventCard" className="item">Event Posted </Link>
                     <Link to="/jobAppliedStudent" className="item">Job Applied</Link>
                     <Link to="/eventAppliedStudent" className="item">Event Registered</Link>
 
-                    <div class="right menu">
+                    <div className="right menu">
                         <div className="ui simple dropdown item">
                                 {this.state.email}
-                                <i class="dropdown icon"></i>
+                                <i className="dropdown icon"></i>
                                 <div className=" menu">
                                     <Link to="/companyProfile" className="item">Profile</Link>
                                     <Link to="/jobPost" className="item" >Post Job</Link>
@@ -128,32 +150,28 @@ class Header extends Component{
             )
 
        const {isLogin, access} = this.state;    
-
-        if(!isLogin){
-            return(
-                <div>
-                        {loginHome}
-                 </div>
-            )
-        }else if(isLogin && access === "student"){
-                return (
-                    <div style={{background:"white"}}>
+        
+       if(isLogin){
+            if(access === "student"){
+                return(
+                    <div>
                         {StudentLogin}
                     </div>
                 )
-            }else if(isLogin && access ==="company"){
-                return(
-                        <div>
-                            {CompanyLogin}
-                        </div>
-                )
             }else{
                 return(
-                <div>
-                        {loginHome}
-                 </div>
-                 )
-        }
+                    <div>
+                        {CompanyLogin}
+                    </div>
+                )
+            }
+       }else{
+           return(
+               <div>
+                   {loginHome}
+               </div>
+           )
+       }
     }
 }
 
@@ -166,4 +184,4 @@ const mapStateToProps = state => ({
     isLogin: state.Handshake_User_Info.isLogin
 })
 
-export default connect(mapStateToProps, {logout})(Header);
+export default connect(mapStateToProps, {logout})(withRouter(Header));

@@ -68,17 +68,17 @@ render(){
     let item = this.state.item;
 
     return(
-        <div  class="item">
-            <div class="ui small image">
+        <div  className="item">
+            <div className="ui small image">
                  <img src="/images/wireframe/image.png"/>
             </div>
-            <div class="content">
-                  <div class="header">{item.job_title}</div>
-                    <div class="meta">
-                        <span class="price">{item.company_name} </span>
-                        <span class="stay"> {item.job_loc}</span>
+            <div className="content">
+                  <div className="header">{item.job_title}</div>
+                    <div className="meta">
+                        <span className="price">{item.company_name} </span>
+                        <span className="stay"> {item.job_loc}</span>
                     </div>
-                  <div class="description">
+                  <div className="description">
                         <p>{item.job_descr}</p>
                         <p>{item.job_salary}</p>
                         <p>{item.job_post_date}</p>

@@ -67,50 +67,50 @@ class CompanyLogin extends Component{
 
       if(!isLogin){
       return(
-        <div class="ui middle aligned center aligned grid" style={{marginTop: "5%"}}>
-            <div class="column" id="loginStud" >
-          <form action=" " method="POST" class="ui large form" >
-            <div class="ui stacked secondary  segment login" >
+        <div className="ui middle aligned center aligned grid" style={{marginTop: "5%"}}>
+            <div className="column" id="loginStud" >
+          <form action=" " method="POST" className="ui large form" >
+            <div className="ui stacked secondary  segment login" >
 
               <div id="logo-id" style= {{marginTop: "8%" , marginBottom: "8%"}}>
-                  <img src={logo}   class="logo-class"  />
+                  <img src={logo}   className="logo-class"  />
               </div>
 
-              <div class="ui divider"></div>
+              <div className="ui divider"></div>
 
-              <h1 class="ui image header">
-                  <div class="content">
+              <h1 className="ui image header">
+                  <div className="content">
                       Sing In
                   </div>
                 </h1>
           
-              <div class="field">
-               <span class="ui left icon input"><h4>Employee Email ID</h4></span>
-                <div class="ui left icon input">
-                  <i class="user icon"></i>
+              <div className="field">
+               <span className="ui left icon input"><h4>Employee Email ID</h4></span>
+                <div className="ui left icon input">
+                  <i className="user icon"></i>
                     <input onChange={this.handleChange}  id="email" type="text" name="email" placeholder="E-mail address" />
                 </div>
                 <div>
                   <span style={{color: "red"}}> {this.state.message_email}</span>
                 </div>
               </div>
-              <div class="field">
-              <span class="ui left icon input"><h4>Password</h4></span>
-                <div class="ui left icon input">
-                  <i class="lock icon"></i>
+              <div className="field">
+              <span className="ui left icon input"><h4>Password</h4></span>
+                <div className="ui left icon input">
+                  <i className="lock icon"></i>
                   <input onChange={this.handleChange} id="password" type="password" name="password" placeholder="Password" />
                 </div>
                 <div>
                   <span  style={{color: "red"}}>{this.state.message_psw}</span>
                 </div>
               </div>
-              <div onClick={this.submit} class="ui fluid large blue submit button" style={{fontSize: "1.5em"}}>Login</div>
+              <div onClick={this.submit} className="ui fluid large blue submit button" style={{fontSize: "1.5em"}}>Login</div>
               <div>
                 <span  style={{color: "red"}}>{this.state.message}</span>
               </div>
             </div>          
           </form>
-          <div class="ui message">
+          <div className="ui message">
               <a href="/companyReg">Register</a>
           </div>
         </div>

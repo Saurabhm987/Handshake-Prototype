@@ -23,9 +23,9 @@ export default class Home extends Component {
                      </div>
                      <br/>
                         <h3>Join today to start your career.</h3>
-                        <div class="ui fluid action input" style={{ padding:"4% 0 0 0", width:"50%"}}>
+                        <div className="ui fluid action input" style={{ padding:"4% 0 0 0", width:"50%"}}>
                                 <input type="text" placeholder="Search opportunities"/>
-                        <div class="ui button">Search</div>
+                        <div className="ui button">Search</div>
                     </div>
                 </div>
             </div> 

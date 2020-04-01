@@ -24,10 +24,10 @@ export default class CompanyProfile extends Component {
             <div className="container">
                 <div className="row" style={{marginTop: "5%"}}>
                     <div className="col-md-6">
-                        <div class="ui special cards" >
+                        <div className="ui special cards" >
                             <CompanyInfoCard />
                         </div>
-                        <div class="ui special cards">
+                        <div className="ui special cards">
                             <CompanyDescriptionCard />
                         </div>
                     </div>

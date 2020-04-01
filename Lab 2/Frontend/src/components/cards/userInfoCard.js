@@ -12,20 +12,19 @@ import {API_ENDPOINT} from '../controller/endpoint';
         super(props);
 
         this.state = {
-            editMode: false,
-            student_name: "",
-            student_college_name: "",
+            name: "",
+            college: "",
             degree:"",
             major: "",
             gpa: "",
             grad_date: "",
-            reload: false,
-            isLogin: true,
-            userInfo: {},
             token: "",
-            file: null,
             img: "",
-            message: ""
+            message: "",
+            userInfo: {},
+            editMode: false,
+            isLogin: true,
+            file: null
         }
 
         this.instance = axios.create({
@@ -96,7 +95,7 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }
 
     componentDidMount(){
-        console.log("calling did mount!!")
+        console.log("componentDidMount!!!")
         const accessString = localStorage.getItem('JWT');
         if(accessString === null){
             this.setState({
@@ -105,64 +104,29 @@ import {API_ENDPOINT} from '../controller/endpoint';
             console.log("token is null!");
             this.props.history.push('login');
         }
-
         this.setState({
             token: accessString
         })
-
         this.props.fetchStudentProfile(accessString);
-
-        // console.log("new props data: ",this.props.data);
-        //  this.instance.get("/profileStudent/userInfo", { 
-        //     headers: {
-        //         Authorization: `JWT ${accessString}`
-        //     }
-        // } ).then(response => {
-        //         if(response.status === 200){
-        //             if(response.data === "jwt expired"){
-        //                 alert("session expired! ");
-        //             }
-        //             const data = response.data;
-        //             this.setState({
-        //                 student_name : data.student_name,
-        //                 student_college_name: data.student_college_name,
-        //                 col_name : data.col_name,
-        //                 degree: data.degree,
-        //                 grad_date: data.grad_date,
-        //                 gpa: data.gpa,
-        //                 major: data.major,
-        //                 img: data.profile_pic
-        //             })
-        //             console.log("UserInfoCard_RESPONSE_DATA", data);
-        //         }else{
-        //             console.log("ERROR");
-        //         }
-        //     })
     }
 
     componentWillReceiveProps(nextProps){
-        console.log("calling will recieve!");
+        console.log("componenWillRecieve!!!!");
         if(nextProps.data){
             if(nextProps.data === "jwt expired"){
                 console.log("token expired!");
                 this.props.history.push("login");
             }
-
             if(nextProps.message){
                 this.setState({
                     message: nextProps.message
                 })
             }
             const data = nextProps.data
-
-            if(nextProps.data.name !== this.props.name){
-                this.setState({
-                    student_name: nextProps.data.name
-                })
-            }
-
+    
             this.setState({
-                    student_college_name: data.college,
+                   name: data.name,
+                    college: data.college,
                     degree: data.degree,
                     grad_date: data.grad_date,
                     gpa: data.gpa,
@@ -170,15 +134,15 @@ import {API_ENDPOINT} from '../controller/endpoint';
                     img: data.profile_pic
             })
         }
-    }
+    } 
 
     handleSave = (e) => {
         console.log("handle Save!");
         e.preventDefault(); 
 
         const userInfo = {
-            student_name: this.state.student_name,
-            student_college_name: this.state.student_college_name,
+            name: this.state.name,
+            college: this.state.college,
             degree:this.state.degree,
             major: this.state.major,
             gpa: this.state.gpa,
@@ -190,68 +154,44 @@ import {API_ENDPOINT} from '../controller/endpoint';
         this.setState({
             editMode: !this.state.editMode
         })
-        // const headers = {
-        //     Authorization: `JWT ${this.state.token}`
-        // }
-        // this.instance.put("/updateUserProfile", {
-        //     params: {
-        //         requestInfo: "LOGIN",
-        //         data: userInfo
-        //     }
-        // }, {
-        //     headers: headers
-        // })
-        //      .then( response => {
-        //         if(response.status === 200){
-        //             console.log("RESPONSE: ", response.data);
-        //             // window.location.reload(false);
-        //             this.setState({
-        //                 editMode: !this.state.editMode,
-        //                 reload: true
-        //             })
-        //         }else{
-        //             console.log("BAD_REQUEST");
-        //         }
-        //     })
-
     }
 
     renderEditView = () => {
-        
+        console.log("renderEditView")
         return(
-        <div class="ui card">
-                <form class="image" style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
+        <div className="ui card">
+                <form className="image" style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
                     <img src={this.state.img}/>
                     <input type="file" name="demo_file" onChange ={this.handleFileUpload} />
                     <button type="submit">upload</button>
                 </form>
-                    <div class="content">
-                    <div class="header">Edit your name</div>
-                    <div class="ui input">
-                        <input type="text" name="student_name" value = {this.state.student_name || ''} onChange = { this.handleChange}/>
+                    <div className="content">
+                    <div className="header">Edit your name</div>
+                    <div className="ui input">
+                        <input type="text" name="name" value = {this.state.name || ''} onChange = { this.handleChange}/>
                     </div>
-                    <div class="description">Edit your university name</div>
-                    <div class="ui input">
-                        <input type="text" name="student_college_name" value={this.state.student_college_name || ''} onChange = { this.handleChange}/>
+                    <div className="description">Edit your university name</div>
+                    <div className="ui input">
+                        <input type="text" name="college" value={this.state.college || ''} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Degree</div>
-                    <div class="ui input">
+                    <div className="ui input">
                         <input type="text" name="degree" value={this.state.degree || ''} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Major</div>
-                    <div class="ui input">
+                    <div className="ui input">
                         <input type="text" name="major" value={this.state.major || ''} onChange = { this.handleChange}/>
                     </div>
-                    <div class="description">Graduation Year</div>
-                    <div class="ui input">
+                    <div className="description">Graduation Year</div>
+                    <div className="ui input">
                         <input type="number" name="grad_date" value={this.state.grad_date || ''} onChange = { this.handleChange}/>
                     </div>
-                    <div class="description">GPA</div>
-                    <div class="ui input">
+                    <div className="description">GPA</div>
+                    <div className="ui input">
                         <input type="text"name="gpa"  value={this.state.gpa || " "} onChange = { this.handleChange}/>
                     </div>
                 </div>
-                <div class="extra content">
+                <div className="extra content">
                     <div  onClick= {this.handleSave } className="ui bottom attached center medium button" style={{width:"100px", float: "left"}}>
                                     Save 
                     </div>
@@ -264,22 +204,22 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }
 
     renderViewMode = () => {
-        console.log("renderViewMode: ", this.state);
+        console.log("renderViewMode!");
         return(
-            <div class="ui card">
+            <div className="ui card">
                     <div className="image">
                             <img src={this.state.img}/>
                     </div>
-                    <div class="content">
-                    <div class="header">{this.state.student_name}</div>
-                    <div class="description">{this.state.student_college_name}</div>
+                    <div className="content">
+                    <div className="header">{this.state.name}</div>
+                    <div className="description">{this.state.college}</div>
                     <div className="description">{this.state.degree} {this.state.major}</div>
-                    <div class="description">Graduates {this.state.grad_date}</div>
-                    <div class="description">GPA: {this.state.gpa}</div>
+                    <div className="description">Graduates {this.state.grad_date}</div>
+                    <div className="description">GPA: {this.state.gpa}</div>
                 </div>
-                <div class="extra content">
+                <div className="extra content">
                     <div onClick= {this.handleEdit} className="ui bottom attached center medium button">
-                                <i class="edit icon"></i>
+                                <i className="edit icon"></i>
                                     Edit 
                     </div>
                 </div>

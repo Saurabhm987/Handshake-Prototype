@@ -68,18 +68,18 @@ if(renderdata === undefined){
                 <div className="header">
                         <h2>Posted Events</h2>
                 </div>
-                <div class="ui items" style={{width:"100%"}}>
+                <div className="ui items" style={{width:"100%"}}>
                         { renderdata.map( (item, index) =>
-                        <div class="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
+                        <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
                                     <img src={item.profile_pic} style={{width:"200px", height: "110px" }}/>
-                            <div class="content" style={{padding: "10px 5px 5px 50px"}}>
+                            <div className="content" style={{padding: "10px 5px 5px 50px"}}>
                                     <div className="header" ><h4><b>{item.eventName}</b></h4></div>
                                     <div className="extra"><h4><b>{item.eventlocation}</b></h4></div>
                                     <div className="extra"><b>Eligibility: </b>{item.eventEligible}</div>
                                     <div className="extra"><b>Time: {item.event_time}</b></div>
                             </div>
-                            <div class="right floated content" style={{padding: "35px"}}>
-                            <div class="ui large button"><Link to=  {{  
+                            <div className="right floated content" style={{padding: "35px"}}>
+                            <div className="ui large button"><Link to=  {{  
                                         pathname: '/details',
                                         event_id: {
                                             id: `${item._id}`

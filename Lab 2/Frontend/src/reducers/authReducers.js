@@ -1,10 +1,12 @@
-    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT, FETCH_APPLIED_EVENT, UPDATE_STUDENT_PROFILE, FETCH_STUDENT_PROFILE} from '../actions/types';
+    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT, FETCH_APPLIED_EVENT, UPDATE_STUDENT_PROFILE, FETCH_STUDENT_PROFILE, UPDATE_SUMMARY, ADD_EDUCATION, FETCH_EXPERIENCE, UPDATE_EDUCATION, FETCH_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE} from '../actions/types';
 
     const initialState = {
         regdetails : {},
         loginDetails: {},
         profileInfo: {},
         jobDetails: [],
+        educationInfo: [],
+        experienceInfo:[],
         eventDetails: [],
         appliedEvents: [],
         message: "",
@@ -69,13 +71,65 @@
             case UPDATE_STUDENT_PROFILE:
                 return{
                     ...state,
-                    message: action.message
+                    message: action.message,
+                    profileInfo: action.payload
+                }
+            
+            case UPDATE_SUMMARY:
+                return{
+                    ...state,
+                    message:action.message,
+                    profileInfo : {
+                        ...state.profileInfo,
+                        summary : action.payload
+                    }
+                }
+
+            case ADD_EDUCATION:
+                return{
+                    ...state,
+                    message:action.message,
+                }
+
+            case UPDATE_EDUCATION:
+                return{
+                    ...state,
+                    message:action.message
+                    // educationInfo:[...state.educationInfo, action.payload]
+                }   
+            
+            case FETCH_EDUCATION:
+                return{
+                    ...state,
+                    message : action.message,
+                    educationInfo : action.payload
                 }
 
             case JOB_APPLY:
                 return {
                     ...state,
                     message: action.message
+                }
+
+            case FETCH_EXPERIENCE:
+                return {
+                    ...state,
+                    message: action.message,
+                    experienceInfo: action.payload
+                }
+
+            case ADD_EXPERIENCE:
+                return {
+                    ...state,
+                    message: action.message
+                    // experienceInfo: [...state.experienceInfo, action.payload]
+                }
+            
+            case UPDATE_EXPERIENCE:
+                return {
+                    ...state,
+                    message: action.message
+                    // educationInfo: [...state.experienceInfo, action.payload]
                 }
 
             default:

@@ -1,4 +1,4 @@
-import {FETCH_DASHBOARD, FETCH_EVENT, FETCH_APPLIED_EVENT, FETCH_STUDENT_PROFILE} from './types';
+import {FETCH_DASHBOARD, FETCH_EVENT, FETCH_APPLIED_EVENT, FETCH_STUDENT_PROFILE, FETCH_EXPERIENCE, FETCH_EDUCATION} from './types';
 import {API_ENDPOINT} from '../components/controller/endpoint';
 import axios from 'axios';
 
@@ -83,7 +83,7 @@ export const  fetchAppliedEvent = (accessString) => dispatch => {
 }
 
 
-export const  fetchStudentProfile= (accessString) => dispatch => {
+export const  fetchStudentProfile = (accessString) => dispatch => {
     axios.get(API_ENDPOINT+"/profileStudent/userInfo", { 
         headers: {
             Authorization: `JWT ${accessString}`
@@ -107,4 +107,57 @@ export const  fetchStudentProfile= (accessString) => dispatch => {
                 console.log("ERROR");
             }
         })
+}
+
+
+export const  fetchExperience = (accessString) => dispatch => {
+    axios.get(API_ENDPOINT+"/profileStudent/expInfo", { 
+        headers: {
+            Authorization: `JWT ${accessString}`
+        }
+    } ).then(response => {
+            if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                            localStorage.removeItem('JWT');
+                            dispatch({
+                                type: FETCH_EXPERIENCE,
+                                message: "jwt expired"
+                            })
+                    }else{
+                        dispatch({
+                            type : FETCH_EXPERIENCE,
+                            payload: response.data,
+                            message: "fetched experience!"
+                         });
+                    }  
+            }else{
+                console.log("ERROR");
+            }
+        })
+}
+
+export const  fetchEducation = (accessString) => dispatch => {
+    axios.get(API_ENDPOINT+"/profileStudent/eduInfo", { 
+        headers: {
+            Authorization: `JWT ${accessString}`
+        }
+    } ).then(response => {
+            if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                            localStorage.removeItem('JWT');
+                            dispatch({
+                                type: FETCH_EDUCATION,
+                                message: "jwt expired"
+                            })
+                    }else{
+                        dispatch({
+                            type : FETCH_EDUCATION,
+                            payload: response.data,
+                            message: "fetched student profile!"
+                         });
+                    }  
+            }else{
+                console.log("ERROR");
+            }
+    })
 }
