@@ -27,7 +27,7 @@ app.post('/updateCompanyProfile',  (req, res, next) =>{
 
                 console.log("IN_LOGIN_UPDATE");
                 let reqObj = req.body.params.data;
-                console.log("updateStudent_login_reqObj: ",reqObj)
+                // console.log("updateStudent_login_reqObj: ",reqObj)
                 company_email = user.company_email;
             
                 let loginObj = {

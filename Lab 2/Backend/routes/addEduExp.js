@@ -30,7 +30,7 @@ module.exports = app =>{
                                     gpa	 : reqObj.gpa,
                                 }
                             }
-                            console.log("education_obje: ", eduObj);
+                            // console.log("education_obje: ", eduObj);
                             User.updateOne(
                                 {email: email},
                                 {$push:{

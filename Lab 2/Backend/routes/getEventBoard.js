@@ -27,7 +27,7 @@ module.exports = app => {
                                 return event.postedEvent.length>0
                             })
                             const data = result[0].postedEvent;
-                            console.log("data: ", data);
+                            // console.log("data: ", data);
                             res.json(data);
                         }
                     )
@@ -42,7 +42,7 @@ module.exports = app => {
                             console.log("err: ", err);
                             res.status(400).send({message:"Bad Request!"});
                         }
-                        console.log("result: ", result.appliedEvent);
+                        // console.log("result: ", result.appliedEvent);
                         const data = result.appliedEvent
                         res.json(data);
                     }

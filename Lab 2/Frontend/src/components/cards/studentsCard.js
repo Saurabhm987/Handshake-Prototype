@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
+import {fetchStudent} from '../../actions/fetchAction'
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 
-
-export default class StudentsCard extends Component {
+class StudentsCard extends Component {
   constructor(props){
     super(props);
 
@@ -30,32 +32,36 @@ componentDidMount(){
       console.log("token is null!");
   }
 
-  this.instance.get("/getStudents", { 
-      headers: {
-          Authorization: `JWT ${accessString}`
-      }
-  } ).then(response => {
-          if(response.status === 200){
-            if(response.data === "jwt expired"){
-              localStorage.removeItem('JWT');
-              this.setState({
-                isLogin: false
-              })
-              this.props.history.push("/login");
-            }
-              this.setState({
-                  studentData:response.data
-              })
-              console.log("Application_Data: ", this.state.studentData);
-          }else{
-              console.log("ERROR");
-          }
-      })
+  this.props.fetchStudent(accessString);
+  // this.instance.get("/getStudents", { 
+  //     headers: {
+  //         Authorization: `JWT ${accessString}`
+  //     }
+  // } ).then(response => {
+  //         if(response.status === 200){
+  //           if(response.data === "jwt expired"){
+  //             localStorage.removeItem('JWT');
+  //             this.setState({
+  //               isLogin: false
+  //             })
+  //             this.props.history.push("/login");
+  //           }
+  //             this.setState({
+  //                 studentData:response.data
+  //             })
+  //             console.log("Application_Data: ", this.state.studentData);
+  //         }else{
+  //             console.log("ERROR");
+  //         }
+  //     })
 }
 
 
 render(){
-const renderdata = this.state.studentData;
+
+console.log("student_card_props: ", this.props);
+
+const renderdata = this.props.studentDetails;
   if(renderdata){
     return(
       <div className="container">
@@ -104,3 +110,14 @@ const renderdata = this.state.studentData;
   }
 }
 }
+
+StudentsCard.propTypes = {
+  studentDetails : PropTypes.array.isRequired,
+  fetchStudent : PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => ({
+  studentDetails : state.Handshake_User_Info.studentDetails
+})
+
+export default connect(mapStateToProps, {fetchStudent})(StudentsCard)

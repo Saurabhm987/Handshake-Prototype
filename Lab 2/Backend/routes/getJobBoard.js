@@ -7,7 +7,7 @@ module.exports = app => {
             if(err){
                 console.log("errors while authenticating", err);
             }
-            console.log("getJobBoard_req_body: ", req.body.params);
+            // console.log("getJobBoard_req_body: ", req.body.params);
 
             if(info !== undefined){
                 console.log("checking error msg from passport.." , info.message);
@@ -19,7 +19,7 @@ module.exports = app => {
                         if(err){
                             console.log('error: ', err);
                         }
-                        console.log("result: ", result);
+                        // console.log("result: ", result);
                         let postedResult = [];
                         result.forEach( jobs =>{
                                postedResult = [...postedResult ,...jobs.postedJob]

@@ -22,7 +22,7 @@ module.exports = app => {
                         if(err){
                             res.status(400).end({msg: "error"})
                         }
-                        console.log("result: ", result);
+                        // console.log("result: ", result);
                         // if(result[0].length === null){
                         //     let applied_event = result.filter( event =>{
                         //         return Object.values(event.appliedEvent).length>0

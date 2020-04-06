@@ -22,7 +22,7 @@ module.exports = app => {
                     const access = "student"
                     console.log("PASSPORT_EMAIL: ", email);
 
-                    User.updateOne({email: email }, { "profileInfo.name": req.body.name, "profileInfo.college": req.body.uniName, access: access }, {upsert: true}, function(err, user){
+                    User.updateOne({email: email }, { "name": req.body.name, "college": req.body.uniName, access: access }, {upsert: true}, function(err, user){
                         if(err){
                             console.log("error while inserting!", err);
                             res.status(200).send({

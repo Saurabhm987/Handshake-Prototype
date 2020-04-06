@@ -43,7 +43,7 @@ app.put('/updateUserProfile', (req, res, next) =>{
                         console.log("err: ", err)
                         res.status(400).send({message: "error"})
                     }
-                    console.log("result: ", result);
+                    // console.log("result: ", result);
                     res.status(200).send({message: "Profile Updated!"});
                 }
             )
@@ -144,7 +144,7 @@ app.put('/updateUserProfile', (req, res, next) =>{
                 if(err){
                     console.log("err: ", err);
                 }
-                console.log("result: ", result);
+                // console.log("result: ", result);
                 res.end();
             }
         )

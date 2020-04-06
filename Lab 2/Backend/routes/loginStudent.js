@@ -26,13 +26,11 @@ module.exports = app =>{
                 console.log("session assigning..........");
                 // assigns session to the user 
                 req.logIn(user, () => {
-
-                    console.log("user_info_in_req.logIn : ", user);
-
+                    // console.log("user_info_in_req.logIn : ", user);
                         if(user){
 
-                            console.log("FIND_INSERTED_ID: ", user);
-                            console.log("user.insertId: ", user.email);
+                            // console.log("FIND_INSERTED_ID: ", user);
+                            // console.log("user.insertId: ", user.email);
                             let token = jwt.sign({id: user.email, access:user.access}, jwtSecret.secret, {
                                 expiresIn: 60*60,
                             });

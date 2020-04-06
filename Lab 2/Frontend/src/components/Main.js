@@ -20,6 +20,7 @@ import DetailsCard from './cards/detailsCard';
 import StudentsCard from './cards/studentsCard';
 import JobAppliedStudent from './cards/jobAppliedStudentCard';
 import EventAppliedStudents from './cards/eventAppliedStudentCard';
+import Chat from '../components/message/chat/Chat'
 
 class Main extends Component {
     render() {
@@ -46,6 +47,7 @@ class Main extends Component {
                 <Route exact path="/students" component={StudentsCard} />
                 <Route exact path="/jobAppliedStudent" component={JobAppliedStudent} />
                 <Route exact path="/eventAppliedStudent" component={EventAppliedStudents} />
+                <Route exact path='/chat' component={Chat}></Route>
             </div>
             </BrowserRouter>
         );

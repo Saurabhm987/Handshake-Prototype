@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Link , withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {logout, login} from '../../actions/loginAction';
+import {search} from '../../actions/fetchAction';
 import PropTypes from 'prop-types';
 import {parseToken} from '../auth/parseToken';
 
@@ -75,9 +76,6 @@ class Header extends Component{
     }
 
     render(){
-        console.log("rendering....");
-        console.log("header-isLogin", this.state.isLogin);
-        console.log("header-access: ", this.state.access);
         let loginHome = (
                         <div className="ui inverted segment">
                             <div className="ui inverted secondary menu">
@@ -96,8 +94,7 @@ class Header extends Component{
                             </div>
                     </div>
              )
-
-
+             
             let StudentLogin = (
                 <div className="ui secondary menu" style={{padding:"10px", marginLeft: "19.5%", marginRight:"20%"}}>
                     <div className="item">
@@ -111,6 +108,7 @@ class Header extends Component{
                     <div className="right menu">
                         <Link to="/jobBoard" className="item">Jobs </Link>
                         <Link to="/eventBoard" className="item">Events</Link>
+                        <Link to={`/chat?name=${this.state.email}`} className='item'>Messages</Link>
                         <Link to="/students" className="item">Students</Link>
                         <div className="ui simple dropdown item">
                                 {this.state.email}
@@ -177,6 +175,7 @@ class Header extends Component{
 
 Header.propTypes = {
     logout: PropTypes.func.isRequired,
+    search: PropTypes.func.isRequired,
     isLogin: PropTypes.bool.isRequired
 }
 
@@ -184,4 +183,4 @@ const mapStateToProps = state => ({
     isLogin: state.Handshake_User_Info.isLogin
 })
 
-export default connect(mapStateToProps, {logout})(withRouter(Header));
+export default connect(mapStateToProps, {logout, search})(withRouter(Header));

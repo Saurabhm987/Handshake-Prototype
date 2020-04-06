@@ -5,22 +5,20 @@ module.exports = app => {
     app.get("/getStudents", (req, res, next) => {
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
                 if(err){
-                    console.log("pass_error: ", err);
+                    console.log("passport_error: ", err);
                 }
-                console.log("getJobItem_req_body: ", req.body.params);
-
                 if(info !== undefined){
-                    console.log("checking error msg from passport.." , info.message);
+                    console.log("Info_error" , info.message);
                     res.status(200).send(info.message);
                 }else if( user.email !== null){
                     User.find(
                         {access: "student"},
-                        {name: 1, college: 1},
+                        {name: 1, college: 1,email:1},
                         (err, result)=> {
                             if(err){
                                 console.log("err: ", err)
                             }
-                            console.log('result: ', result);
+                            console.log("student_result: ", result)
                             res.json(result);
                         }
                     )

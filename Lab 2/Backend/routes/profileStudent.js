@@ -26,7 +26,7 @@ module.exports = app =>{
                         if(err){
                             console.log("err:", err);
                         }
-                        console.log("result:", result);
+                        // console.log("result:", result);
                         result = result.toObject();
                         let data = new Object();
                         data.name = result.name
@@ -67,7 +67,7 @@ module.exports = app =>{
                             }
                             const data = response.toObject();
                             const result = data.education;
-                            console.log("GET_edu_result:", result);
+                            // console.log("GET_edu_result:", result);
                             res.json(result);
                         }
                     )

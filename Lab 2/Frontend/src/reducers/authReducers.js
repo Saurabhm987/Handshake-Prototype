@@ -1,10 +1,11 @@
-    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT, FETCH_APPLIED_EVENT, UPDATE_STUDENT_PROFILE, FETCH_STUDENT_PROFILE, UPDATE_SUMMARY, ADD_EDUCATION, FETCH_EXPERIENCE, UPDATE_EDUCATION, FETCH_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE} from '../actions/types';
+    import {LOGIN,REGISTER, FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT, FETCH_APPLIED_EVENT, UPDATE_STUDENT_PROFILE, FETCH_STUDENT_PROFILE, UPDATE_SUMMARY, ADD_EDUCATION, FETCH_EXPERIENCE, UPDATE_EDUCATION, FETCH_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE, SEARCH, FETCH_STUDENT} from '../actions/types';
 
     const initialState = {
         regdetails : {},
         loginDetails: {},
         profileInfo: {},
         jobDetails: [],
+        studentDetails:[],
         educationInfo: [],
         experienceInfo:[],
         eventDetails: [],
@@ -130,6 +131,19 @@
                     ...state,
                     message: action.message
                     // educationInfo: [...state.experienceInfo, action.payload]
+                }
+
+            case FETCH_STUDENT:
+                return {
+                    ...state,
+                    studentDetails: action.payload
+                }
+
+            case SEARCH:
+                return{
+                    ...state,
+                    message: action.message,
+                    jobDetails: action.payload
                 }
 
             default:
