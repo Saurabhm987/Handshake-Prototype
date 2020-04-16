@@ -21,8 +21,6 @@ class StudentsCard extends Component {
     });
 }
 
-componentDidUpdate(){}
-
 componentDidMount(){
   const accessString = localStorage.getItem('JWT');
   if(accessString === null){
@@ -31,40 +29,28 @@ componentDidMount(){
       })
       console.log("token is null!");
   }
-
   this.props.fetchStudent(accessString);
-  // this.instance.get("/getStudents", { 
-  //     headers: {
-  //         Authorization: `JWT ${accessString}`
-  //     }
-  // } ).then(response => {
-  //         if(response.status === 200){
-  //           if(response.data === "jwt expired"){
-  //             localStorage.removeItem('JWT');
-  //             this.setState({
-  //               isLogin: false
-  //             })
-  //             this.props.history.push("/login");
-  //           }
-  //             this.setState({
-  //                 studentData:response.data
-  //             })
-  //             console.log("Application_Data: ", this.state.studentData);
-  //         }else{
-  //             console.log("ERROR");
-  //         }
-  //     })
 }
-
 
 render(){
 
-console.log("student_card_props: ", this.props);
+  var searchBar = (
+    <div className ="row">
+              <div className="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
+                  <input type="text" placeholder="Search students" onChange={this.handleChange}/>
+                  <div className="ui button" onClick={this.handleSearch}>Search</div>
+              </div>
+      </div>
+  )
 
 const renderdata = this.props.studentDetails;
+
   if(renderdata){
     return(
       <div className="container">
+       <br/>
+        {searchBar}   
+        <br/>
             <div className="row" style={{marginTop:"2%"}} >
             <div className="header">
                         <h2>Students</h2>
@@ -72,21 +58,14 @@ const renderdata = this.props.studentDetails;
             <div className="ui items" style={{width:"100%"}}>
                     { renderdata.map( (item, index) =>
                     <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", margin:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
-                        {/* <div className="image">￼ */}
-                                <img src={item.profile_pic} style={{width:"200px", height: "130px" }}/>
-                        {/* </div> */}
+                        <img src={item.profile_pic} style={{width:"200px", height: "130px" }}/>
                         <div className="content" style={{padding: "10px 5px 5px 60px"}}>
-                        <Link to ={{
-                                              pathname: "/studentProfile",
-                                              student_email: {
-                                                email: `${item.student_email}`
-                                              }
-                          }}>
-                                <div className="header" ><h4><b>{item.name}</b></h4></div>
-                        </Link>
-                        <div className="extra"><b>{item.college}</b></div>
-                        <div className="extra"><b>{item.degree} in {item.major}</b></div>
-                        <div className="extra"><b>GPA: {item.gpa}</b></div>
+                          <Link to={`/studentProfile?email=${item.email}`}>
+                                  <div className="header" ><h4><b>{item.name}</b></h4></div>
+                          </Link>
+                          <div className="extra"><b>{item.college}</b></div>
+                          <div className="extra"><b>{item.degree} in {item.major}</b></div>
+                          <div className="extra"><b>GPA: {item.gpa}</b></div>
                         </div>
                     </div>
                     )}

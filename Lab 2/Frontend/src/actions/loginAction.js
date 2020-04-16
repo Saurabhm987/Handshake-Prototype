@@ -3,31 +3,37 @@ import {API_ENDPOINT} from '../components/controller/endpoint';
 import axios from 'axios';
 
 export const  login = (email, password) => dispatch => {
-    axios.post(API_ENDPOINT+'/studentLogin', {
+    axios.post(API_ENDPOINT+'/login', {
         email, 
         password
       }).then((response) =>{
-            if(
-              response.data.message === "Email doesn't match"
-              || response.data.message === 'password doesnt match'
-            ){
-              console.log("login_error: ", response.data.message);
-                dispatch({
-                      type : LOGIN,
-                      payload: response.data,
-                      loginError: response.data.message,
-                      isLogin: false
-                  });
-            }else{
-                  localStorage.setItem('JWT', response.data.token);
-                  console.log("loginActionToken: ", localStorage.getItem('JWT'))
-                  dispatch({
-                        type : LOGIN,
-                        payload: response.data,
-                        loginError: response.data.message,
-                        isLogin: true
-                  });
-        }
+        if(response.data.error){
+              dispatch({
+                type : LOGIN,
+                payload: response.data,
+                loginError: response.data.error,
+                isLogin: false
+            });
+          }else{
+              localStorage.setItem('JWT', response.data.token);
+              console.log("loginActionToken: ", localStorage.getItem('JWT'))
+              const token = localStorage.getItem('JWT')
+              dispatch({
+                    type : LOGIN,
+                    payload: response.data,
+                    loginError: response.data.message,
+                    isLogin: true,
+                    token: token
+              });
+          }
+     })
+    .catch( error => {
+        console.log(`error : ${error}`)
+        dispatch({
+          type : LOGIN,
+          isLogin: false,
+          token: null
+      });
     })
   }
 
@@ -62,6 +68,7 @@ export const  login = (email, password) => dispatch => {
 
   export const logout = () =>dispatch =>{
               localStorage.removeItem('JWT');
+              localStorage.removeItem('profileInfo')
               dispatch({
                   type: LOGOUT,
                   isLogin: false,

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Redirect } from 'react-router';
 import logo from '../auth/sjsulogo.png';
 import {connect} from 'react-redux';
-import {companyLogin} from '../../actions/loginAction';
+import {login} from '../../actions/loginAction';
 import PropTypes from 'prop-types';
 
 class CompanyLogin extends Component{
@@ -30,9 +30,6 @@ class CompanyLogin extends Component{
 
     componentWillReceiveProps(nextProps){
       if(nextProps.isLogin){
-
-        console.log("nextPropsIsLogin: ", nextProps.isLogin);
-
         this.setState({
           isLogin: nextProps.isLogin
         })
@@ -57,7 +54,7 @@ class CompanyLogin extends Component{
               message: "Please enter password!",
             })
         }else{
-            await this.props.companyLogin(email, password);
+            await this.props.login(email, password);
         }
     }
 
@@ -134,4 +131,4 @@ const mapStateToProps = state =>({
     loginError: state.Handshake_User_Info.loginError
 })
 
-export default connect(mapStateToProps, {companyLogin})(CompanyLogin);
+export default connect(mapStateToProps, {login})(CompanyLogin);

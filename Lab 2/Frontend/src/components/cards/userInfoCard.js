@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {fetchStudentProfile} from '../../actions/fetchAction';
 import {updateStudentProfile} from '../../actions/updateAction'
+import queryString from 'query-string';
 import {API_ENDPOINT} from '../controller/endpoint';
 
  class UserInfoCard extends Component {
@@ -78,7 +79,7 @@ import {API_ENDPOINT} from '../controller/endpoint';
         const formData = new FormData();
         formData.append('file', this.state.file);
 
-        this.instance.post("/uploadnewFiles", formData, {
+        this.instance.post("/uploadFile", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `JWT ${this.state.token}`
@@ -89,13 +90,12 @@ import {API_ENDPOINT} from '../controller/endpoint';
               isLogin: true
           })
         }).catch(error => {
-          // handle your error
+            console.log("error: ", error)
         });
-    }
+        }
     }
 
     componentDidMount(){
-        console.log("componentDidMount!!!")
         const accessString = localStorage.getItem('JWT');
         if(accessString === null){
             this.setState({
@@ -107,34 +107,7 @@ import {API_ENDPOINT} from '../controller/endpoint';
         this.setState({
             token: accessString
         })
-        this.props.fetchStudentProfile(accessString);
     }
-
-    componentWillReceiveProps(nextProps){
-        console.log("componenWillRecieve!!!!");
-        if(nextProps.data){
-            if(nextProps.data === "jwt expired"){
-                console.log("token expired!");
-                this.props.history.push("login");
-            }
-            if(nextProps.message){
-                this.setState({
-                    message: nextProps.message
-                })
-            }
-            const data = nextProps.data
-    
-            this.setState({
-                   name: data.name,
-                    college: data.college,
-                    degree: data.degree,
-                    grad_date: data.grad_date,
-                    gpa: data.gpa,
-                    major: data.major,
-                    img: data.profile_pic
-            })
-        }
-    } 
 
     handleSave = (e) => {
         console.log("handle Save!");
@@ -158,6 +131,9 @@ import {API_ENDPOINT} from '../controller/endpoint';
 
     renderEditView = () => {
         console.log("renderEditView")
+        console.log("this.props.profileInfo: ", this.props.profileInfo)
+        const {name, college, degree,major, grad_date, gpa} = this.props.profileInfo
+
         return(
         <div className="ui card">
                 <form className="image" style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
@@ -168,27 +144,27 @@ import {API_ENDPOINT} from '../controller/endpoint';
                     <div className="content">
                     <div className="header">Edit your name</div>
                     <div className="ui input">
-                        <input type="text" name="name" value = {this.state.name || ''} onChange = { this.handleChange}/>
+                        <input type="text" name="name" defaultValue = {name} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Edit your university name</div>
                     <div className="ui input">
-                        <input type="text" name="college" value={this.state.college || ''} onChange = { this.handleChange}/>
+                        <input type="text" name="college" defaultValue={college} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Degree</div>
                     <div className="ui input">
-                        <input type="text" name="degree" value={this.state.degree || ''} onChange = { this.handleChange}/>
+                        <input type="text" name="degree" defaultValue={degree} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Major</div>
                     <div className="ui input">
-                        <input type="text" name="major" value={this.state.major || ''} onChange = { this.handleChange}/>
+                        <input type="text" name="major" defaultValue={major} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Graduation Year</div>
                     <div className="ui input">
-                        <input type="number" name="grad_date" value={this.state.grad_date || ''} onChange = { this.handleChange}/>
+                        <input type="number" name="grad_date" defaultValue={grad_date} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">GPA</div>
                     <div className="ui input">
-                        <input type="text"name="gpa"  value={this.state.gpa || " "} onChange = { this.handleChange}/>
+                        <input type="text"name="gpa"  defaultValue={gpa || " "} onChange = { this.handleChange}/>
                     </div>
                 </div>
                 <div className="extra content">
@@ -205,24 +181,34 @@ import {API_ENDPOINT} from '../controller/endpoint';
 
     renderViewMode = () => {
         console.log("renderViewMode!");
+        // const {email} = queryString.parse(this.props.location.search)
+        // console.log("query_email: ", email)
+        const {name, college, degree,major, grad_date, gpa, profile_pic} = this.props.profileInfo
+        console.log('profile_pic : ', profile_pic)
         return(
             <div className="ui card">
                     <div className="image">
-                            <img src={this.state.img}/>
+                            {/* <img src="http://localhost:3001/file-1586426967363.png" alt=""/> */}
+                        <img src={`${API_ENDPOINT}/${profile_pic}`} alt=""/>
+
                     </div>
                     <div className="content">
-                    <div className="header">{this.state.name}</div>
-                    <div className="description">{this.state.college}</div>
-                    <div className="description">{this.state.degree} {this.state.major}</div>
-                    <div className="description">Graduates {this.state.grad_date}</div>
-                    <div className="description">GPA: {this.state.gpa}</div>
-                </div>
-                <div className="extra content">
-                    <div onClick= {this.handleEdit} className="ui bottom attached center medium button">
-                                <i className="edit icon"></i>
-                                    Edit 
+                        <div className="header">{name}</div>
+                        <div className="description">{college}</div>
+                        <div className="description">{degree} {major}</div>
+                        <div className="description">Graduates {grad_date}</div>
+                        <div className="description">GPA: {gpa}</div>
                     </div>
-                </div>
+                    {   
+                        (this.props.adminView === true)
+                        ? <div className="extra content">
+                                <div onClick= {this.handleEdit} className="ui bottom attached center medium button">
+                                            <i className="edit icon"></i>
+                                                Edit 
+                                </div>
+                            </div>
+                        : null
+                    }
             </div>
         )
     }
@@ -241,13 +227,12 @@ import {API_ENDPOINT} from '../controller/endpoint';
 }
 
 UserInfoCard.propTypes = {
-    fetchStudentProfile: PropTypes.func.isRequired,
+    updateStudentProfile:PropTypes.func.isRequired,
     message: PropTypes.string.isRequired
 }
 
 const mapStateToProps = state => ({
-    data: state.Handshake_User_Info.profileInfo,
     message: state. Handshake_User_Info.message
 })
 
-export default connect(mapStateToProps, {fetchStudentProfile, updateStudentProfile})(UserInfoCard);
+export default connect(mapStateToProps, {updateStudentProfile})(UserInfoCard);

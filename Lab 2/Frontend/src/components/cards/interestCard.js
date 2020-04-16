@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {API_ENDPOINT} from '../controller/endpoint';
+import {Link} from 'react-router-dom'
 
 
 export default class InterestCard extends Component {
@@ -10,7 +11,7 @@ export default class InterestCard extends Component {
         this.state ={
             resume: "",
             token: "", 
-            file:null
+            file:null,
         }
 
         this.instance = axios.create({
@@ -23,13 +24,10 @@ export default class InterestCard extends Component {
         this.handleFileUpload = this.handleFileUpload.bind(this);
     }
 
-
-
     handleFileUpload = (event) => {
         this.setState({file: event.target.files[0]});
       }
-
-
+      
       handleFormSubmit = (event) => {
         if(this.state.file === null){
             alert("please add file");
@@ -43,21 +41,21 @@ export default class InterestCard extends Component {
         const formData = new FormData();
         formData.append('file', this.state.file);
 
-        this.instance.post("/uploadResume", formData, {
+        this.instance.post("/uploadFile", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `JWT ${this.state.token}`
           }
-        }).then(response => {
+        }).then(() => {
           console.log("file successfully upladed!");
           this.setState({
-              isLogin: true
+              isLogin: true,
+              file: null
           })
         }).catch(error => {
           console.log("error in interest CArd: ", error);
         });
     }
-
     }
 
     changeHandler =(e) => {
@@ -65,13 +63,11 @@ export default class InterestCard extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
-
     }
 
     addSkills = async (e) => {
         e.preventDefault();
         let data = this.state.skills;
-        console.log("data: ", data);
 
         await this.instance.post("/uploadResume", {
             headers: {
@@ -79,7 +75,6 @@ export default class InterestCard extends Component {
             }
         }) .then((res) => {
             if(res.status === 200){
-                // console.log("response: ", res);
                 console.log("added!");
                 alert('Resume Uploaded!');
             }
@@ -91,37 +86,49 @@ export default class InterestCard extends Component {
 
     async componentDidMount(){
         const accessString = localStorage.getItem('JWT');
-
-                if(accessString === null){
-                    this.setState({
-                        isLogin: false
-                    })
-                    console.log("token is null!");
-                }
-
+            if(accessString === null){
                 this.setState({
-                    token: accessString
+                    isLogin: false
                 })
+                console.log("token is null!");
+            }
+
+            this.setState({
+                token: accessString
+            })
     }
 
     render(){
-        return(
-                    <div className="ui cards">
-                        <div className="card" style={{fontSize:"1.4em"}}>
-                            <div className="content">
-                                <div className="header">Upload Resume</div>
-                                <div className="description" style={{marginBottom: "10px"}}>
-                                <div className="ui fluid action input" style={{fontSize:"15px"}}>
-                                <form style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
-                                    <input type="file" name="demo-file" placeholder="add skills" onChange={this.handleFileUpload}/>
-                                    <button className="ui button" type='submit' >Upload</button>
-                                </form>
-                                </div>
+        if(this.props.adminView){
+            return(
+                        <div className="ui cards">
+                            <div className="card" style={{fontSize:"1.4em"}}>
+                                <div className="content">
+                                    <div className="header">Upload Resume</div>
+                                    <div className="description" style={{marginBottom: "10px"}}>
+                                    <div className="ui fluid action input" style={{fontSize:"15px"}}>
+                                    <form style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
+                                        <input type="file" name="demo-file" placeholder="add skills" onChange={this.handleFileUpload}/>
+                                        <button className="ui button" type='submit' >Upload</button>
+                                    </form>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div className="card" style={{fontSize:"1.4em"}}> 
+                                <button class="ui button">
+                                <Link to=  {{  
+                                                        pathname: '/viewPdf'
+                                                    }}  >View Pdf</Link>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-        );
+            );
+        }else{
+            return(
+                null
+            )
+        }
     }
 }
 

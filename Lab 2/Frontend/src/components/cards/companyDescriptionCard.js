@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import axios from 'axios';
-import {withRouter, Redirect} from 'react-router-dom';
-import {API_ENDPOINT} from '../controller/endpoint';
+import {Redirect} from 'react-router-dom';
+import {updateDescription} from '../../actions/updateAction'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'
+import {parseToken} from '../auth/parseToken'
 
  class CompanyDescriptionCard extends Component {
     constructor(props){
@@ -9,24 +11,12 @@ import {API_ENDPOINT} from '../controller/endpoint';
 
         this.state = {
             editMode: false,
-            company_descr:"",
+            description:"",
             isLogin: true,
             token: "",
+            adminView: false, 
         }
-
-        this.instance = axios.create({
-            baseURL: API_ENDPOINT,
-            timeout: 1000,
-          });
-
-        this.handleEdit = this.handleEdit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
     }    
-
-    componentDidUpdate(){
-    }
 
     handleEdit = (e) => {
         e.preventDefault();
@@ -51,85 +41,49 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }
 
     componentDidMount(){
-        console.log("Company_description_CMPDID");
-
         const accessString = localStorage.getItem('JWT');
-        if(accessString === null){
+        const token = parseToken(accessString)
+        const email = this.props.email
+
+        if(token.id !== email){
             this.setState({
-                isLogin: false
-            })
-            alert("No token provided! You are being logged out!");
-            this.props.history.push('/login');
+                adminView: false
+            });
+        }else{
+            this.setState({
+                adminView: true
+            });
         }
 
         this.setState({
             token: accessString
         })
 
-         this.instance.get("/profileCompany/companyInfo", { 
-            headers: {
-                Authorization: `JWT ${accessString}`
-            }
-        } ).then(response => {
-                if(response.status === 200){
-                    if(response.data === "jwt expired"){
-                        alert("session expired! ");
-                    }
-
-                    let data = response.data
-
-                    this.setState({
-                        company_descr : data.company_descr,
-                    })
-                }else{
-                    console.log("ERROR");
-                }
-            })
     }
 
     handleSave = (e) => {
-        console.log("handle Save!");
         e.preventDefault(); 
 
-        const companyDescr = {
-            company_descr: this.state.company_descr
-        }
-
-        console.log("userInfo: ", companyDescr);
-
+        const description = this.state.description
         const headers = {
             Authorization: `JWT ${this.state.token}`
         }
-
-        this.instance.post("/updateCompanyProfile", {
-            params: {
-                requestInfo: "DESCR",
-                data: companyDescr
-            }
-        }, {
-            headers: headers
+        const {email} = this.props
+        this.props.updateDescription(email , headers, description)
+        this.setState({
+            editMode: !this.state.editMode,
         })
-             .then( response => {
-                if(response.status === 200){
-                    console.log("RESPONSE: ", response.data);
-                    this.setState({
-                        editMode: !this.state.editMode,
-                    })
-                }else{
-                    console.log("BAD_REQUEST");
-                }
-            })
     }
 
     renderEditView = () => {
-        return(
+        const {description} = this.props
 
-     
+        return(
             <div className="ui card" style={{width: "80%"}}>
                 <div className="content">
                         <div className="description">Description</div>
                         <div className="ui input">
-                            <textarea type="text" name="company_descr" value={this.state.company_descr || ''} onChange = { this.handleChange} />
+                            <textarea type="text" name="description" defaultValue={description || ''} onChange = { this.handleChange} />
                         </div>
                 </div>
                 <div className="extra content">
@@ -143,14 +97,15 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }
 
     renderViewMode = () => {
-        return(
 
-            
+        console.log('cmpdescr - ', this.props.description)
+
+        return(
                 <div className="ui card" style={{width: "80%"}}>
                     <div className="content">
                                 <div className="header"><h3><b>Description</b></h3></div>
                                 <br/>
-                                <div className="paragraph"><h4>{this.state.company_descr}</h4></div>
+                                <div className="paragraph"><h4>{this.props.description}</h4></div>
                     </div>
                     <div className="extra content">
                         <div onClick= {this.handleEdit} data-descriptionEdit = "descriptionEdit" className="ui bottom attached center medium button">
@@ -175,4 +130,8 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }
 }
 
-export default withRouter(CompanyDescriptionCard);
+CompanyDescriptionCard.propTypes = {
+    updateDescription : PropTypes.func.isRequired,
+}
+
+export default connect(null, {updateDescription})(CompanyDescriptionCard);

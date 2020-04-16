@@ -11,6 +11,7 @@ const Message = ({ message: { text, user }, name }) => {
     isSentByCurrentUser = true;
   }
 
+  console.log("Message.js")
   return (
     isSentByCurrentUser
       ? (
@@ -23,10 +24,10 @@ const Message = ({ message: { text, user }, name }) => {
         )
         : (
           <div className="messageContainer justifyStart">
-            <div className="messageBox backgroundLight">
-              <p className="messageText colorDark">{ReactEmoji.emojify(text)}</p>
-            </div>
-            <p className="sentText pl-10 ">{user}</p>
+              <div className="messageBox backgroundLight"  style={{background: "gainsboro"}}>
+                  <p className="messageText colorDark">{ReactEmoji.emojify(text)}</p>
+              </div>
+              <p className="sentText pl-10 ">{user}</p>
           </div>
         )
   );

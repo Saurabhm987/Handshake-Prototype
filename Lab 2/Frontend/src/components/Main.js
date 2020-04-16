@@ -8,11 +8,11 @@ import CompanyLogin from "./auth/companyLogin";
 import Header from "./header/header";
 import JobBoard from "./JobBoard/jobboard";
 import StudentProfile from "./profile/studentProfile";
-import JobPost from "./admin/jobpost";
+import JobPost from "./companyPost/jobpost";
 import CompanyProfile from './profile/companyProfile';
 import Applications from './cards/applicationCard';
 import EventBoard from './eventBoard/eventBoard';
-import EventPost from './admin/eventPost';
+import EventPost from './companyPost/eventPost';
 import CompanyPostedJobCard from './cards/companyPostedJobCard';
 import AppliedEvent from './eventBoard/appliedEvent';
 import CompanyPostedEventCard from "./cards/companyPostedEventCard";
@@ -21,6 +21,7 @@ import StudentsCard from './cards/studentsCard';
 import JobAppliedStudent from './cards/jobAppliedStudentCard';
 import EventAppliedStudents from './cards/eventAppliedStudentCard';
 import Chat from '../components/message/chat/Chat'
+import PdfView from '../components/cards/pdfView'
 
 class Main extends Component {
     render() {
@@ -48,6 +49,7 @@ class Main extends Component {
                 <Route exact path="/jobAppliedStudent" component={JobAppliedStudent} />
                 <Route exact path="/eventAppliedStudent" component={EventAppliedStudents} />
                 <Route exact path='/chat' component={Chat}></Route>
+                <Route exact path='/viewPdf' component={PdfView}></Route>
             </div>
             </BrowserRouter>
         );

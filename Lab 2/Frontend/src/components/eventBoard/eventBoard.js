@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import {API_ENDPOINT} from '../controller/endpoint'
 import { connect } from 'react-redux'
-import {fetchEvent} from '../../actions/fetchAction'
+import {fetchEvent, searchEvent} from '../../actions/fetchAction'
+import {applyEvent} from '../../actions/applyActions'
 import PropTypes from 'prop-types'
 
 class EventBoard extends Component {
@@ -19,7 +20,9 @@ class EventBoard extends Component {
       event_status:"",
       profile_pic: "",
       event_loc:"",
-      message:""
+      message:"",
+      searchText: "",
+      token:""
     }
 
     this.instance = axios.create({
@@ -29,8 +32,34 @@ class EventBoard extends Component {
 
     this.cardSelect = this.cardSelect.bind(this);
     this.applied = this.applied.bind(this);
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
 
   }
+
+  handleChange=(e)=>{
+    e.preventDefault()
+
+    if(!e.target.value){
+      const{token} = this.state
+      this.props.fetchEvent( token)
+    }
+
+    this.setState({
+      searchText: e.target.value
+    });
+  }
+
+handleSearch = () => {
+
+  const{searchText} = this.state
+  const {eventDetails} = this.props
+
+  if(searchText){
+      this.props.searchEvent(searchText, eventDetails)
+  }
+  
+}
 
   cardSelect = (e) => {
     e.preventDefault();
@@ -51,36 +80,9 @@ sendData = async () => {
             console.log("token is null!");
         }
 
-        console.log("apply_event_data: ", this.state);
+        alert('Event Applied!')
 
-        await this.instance.post("/applyEvent",{
-          params:{
-            event_id: this.state.appliedEventId,
-            company_name: this.state.appliedEvCompany,
-            event_name: this.state.appliedEvName, 
-            event_status: "Applied",
-            profile_pic: this.state.profile_pic,
-            event_loc: this.state.event_loc
-          }
-        }, { 
-            headers: {
-                Authorization: `JWT ${accessString}`
-            }
-        } ).then(response => {
-                if(response.status === 200){
-                  if(response.data === "jwt expired"){
-                    localStorage.removeItem('JWT');
-                    this.setState({
-                      isLogin: false
-                    })
-                    this.props.history.push("/Login");
-                  }
-                   alert("Registered!");
-                   console.log("Event Registered!");
-                }else{
-                    console.log("ERROR");
-                }
-            })
+        this.props.applyEvent(accessString, this.state)
 }
 
   applied = async (e) => {
@@ -95,7 +97,6 @@ sendData = async () => {
       })  
   }
 
-    componentDidUpdate(){}
     async componentDidMount(){
       const accessString = localStorage.getItem('JWT');
 
@@ -106,6 +107,11 @@ sendData = async () => {
           console.log("token is null!");
           this.props.history.push("login")
       }
+
+      this.setState({
+        token: accessString
+      });
+
       await this.props.fetchEvent(accessString);
   }
 
@@ -126,22 +132,22 @@ sendData = async () => {
   }
 
 render() {
-  // let curSelectedJob = this.state.cardSelected;
-  // console.log("curSelectedJob: ", curSelectedJob);
-  let renderdata = this.state.eventData;
-  console.log("renderData: ", renderdata);
-  
+
+  let renderdata = this.state.eventData;  
+
+  console.log('event data - ', renderdata)
+
   if(renderdata.length > 0){
   var searchBar = (
     <div className ="row">
               <div className="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
-                  <input type="text" placeholder="Search opportunities"/>
-                  <div className="ui button">Search</div>
+                  <input type="text" placeholder="Search opportunities" onChange={this.handleChange}/>
+                  <div className="ui button" onClick={this.handleSearch}>Search</div>
               </div>
       </div>
   )
 
-  let lefBar = (
+  let eventbar = (
     <div className="ui items" id="scroll" style={{width:"100%"}}>
         { renderdata.map( (item, index) =>
           <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
@@ -151,13 +157,16 @@ render() {
                     <div className="content" style={{padding: " 5px 5px 5px 35px"}}>
                             <div className="header" id="cardHover"><b> {item.eventName}</b></div>
                             <div className="meta">
-                                <span>{item.eventLocation}</span>
+                                <span>{item.name}</span>
                             </div>
                             <div className="extra">
-                                {item.name}
+                                {item.eventLocation}
                             </div>
                             <div className="extra">
                                 Eligibility: {item.eventEligible}
+                            </div>
+                            <div className="extra">
+                                Time: {item.eventTime}
                             </div>
                             <div className="extra" style={{textDecorationColor:"blue", color:"blue"}}>
                                   View Details
@@ -170,8 +179,8 @@ render() {
                                   onClick={this.applied} 
                                   data-selected_event_id={item._id} 
                                   data-event_name = {item.eventName}
-                                  data-event_loc = {item.eventLocation}
                                   data-company_name = {item.name}
+                                  data-event_loc = {item.eventLocation}
                                   data-profile_pic = {item.profile_pic}
                               >Register</div>
                       </div>
@@ -191,7 +200,7 @@ render() {
         {searchBar}   
     <br/>
         <div className="row">
-                  {lefBar}
+                  {eventbar}
             <br/> 
         </div>
 </div>
@@ -214,7 +223,8 @@ render() {
 
 EventBoard.propTypes = {
   fetchEvent: PropTypes.func.isRequired,
-  message: PropTypes.string.isRequired
+  message: PropTypes.string.isRequired,
+  applyEvent: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state =>({
@@ -222,5 +232,5 @@ const mapStateToProps = state =>({
   message: state.Handshake_User_Info.message
 })
 
-export default connect(mapStateToProps, {fetchEvent})(EventBoard);
+export default connect(mapStateToProps, {fetchEvent, applyEvent, searchEvent})(EventBoard);
 

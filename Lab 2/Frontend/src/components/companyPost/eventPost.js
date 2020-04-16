@@ -2,9 +2,13 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { API_ENDPOINT } from '../controller/endpoint'
-import { parseToken } from '../auth/parseToken';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {postEvent} from '../../actions/applyActions'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'
 
-export default class EventPost extends Component{
+class EventPost extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -12,10 +16,10 @@ export default class EventPost extends Component{
           company_name: "",
           event_descr: "",
           event_loc: "",
-          event_time: "",
           isLogin: true,
           profile_pic: "",
           event_eligible: "", 
+          event_time: new Date()
         }
 
         this.instance = axios.create({
@@ -23,10 +27,18 @@ export default class EventPost extends Component{
           timeout: 1000,
         });
 
-        this.changeHandler = this.changeHandler.bind(this);
-        this.submitForm = this.submitForm.bind(this);
+        this.changeHandler = this.changeHandler.bind(this)
+        this.submitForm = this.submitForm.bind(this)
+        this.dateHandler = this.dateHandler.bind(this)
         
     }
+
+
+    dateHandler = date => {
+      this.setState({
+        event_time: date
+      });
+    };
 
     changeHandler = (e) =>{
       e.preventDefault();
@@ -36,9 +48,7 @@ export default class EventPost extends Component{
     }
 
     componentDidMount(){
-
       const accessString = localStorage.getItem('JWT');
-
       if(accessString === null){
           this.setState({
               isLogin: false,
@@ -46,97 +56,38 @@ export default class EventPost extends Component{
           })
           console.log("token is null!....Please Login Again......");
           this.history.push("/companyLogin");
-      }
+      }else{
 
-      const tokenData = parseToken(accessString);
+        const profileData = JSON.parse(localStorage.getItem('profileInfo'))
 
-      this.setState({ 
-        token: accessString,
-        company_name: tokenData.name,
-        profile_pic: tokenData.profile_pic
-    })
+        const { name, profile_pic} = profileData
 
-    this.instance.get("/profileCompany/companyInfo", { 
-        headers: {
-            Authorization: `JWT ${accessString}`
-        }
-    } ).then(response => {
-            if(response.status === 200){
-                if(response.data === "jwt expired"){
-                  localStorage.removeItem('JWT');
-                  this.props.history.push("/companyLogin");
-                    alert("session expired! ");
-                }
-                const data = response.data;
-
-                this.setState({
-                    company_name : data.company_name,
-                    profile_pic: data.profile_pic,
-                })
-
-                console.log("company_InfoCard_RESPONSE_DATA", data);
-
-            }else{
-                console.log("ERROR");
-            }
+          this.setState({ 
+            token: accessString,
+            company_name: name,
+            profile_pic: profile_pic
         })
+      }
     }
 
     submitForm = (e) => {
         e.preventDefault();
         const eventInfo = Object.assign(this.state); 
         delete eventInfo.isLogin;
-        
-        console.log("postJob_eventInfo: ", eventInfo);
-
-        // console.log("eventPosttoken: ", this.state.token);
-
-        const headers = {
-          Authorization: `JWT ${this.state.token}`
-      }
-
-        axios.defaults.withCredentials = true;
-         this.instance.post('/postEvent',{
-          params: {
-            data: eventInfo
-          }},
-          {
-            headers: headers
-          })
-           .then(response => {
-                console.log("responseJobPost: ", response );
-                if(response.status === 200){
-
-                  console.log("response_message: ", response.data.message);
-
-                  if(response.data.message ==="jwt expired"){
-                    this.setState({
-                      isLogin: false
-                    })
-                    this.props.history.push("/login");
-                    alert("Session Expired!");
-                  }
-
-                  this.setState({
-                   message: "Event Posted!",
-                   isLogin: true
-                  })
-                    alert("successfully posted job!!!!!!!!!!");
-                }else{
-                  console.log("bad response!!!!!!!");
-                }
-            })
+        console.log('eventtime - ', this.state.event_time)
+        this.props.postEvent(eventInfo, this.state.token)
+    
     }
 
     render(){
 
       const logStat = this.state.isLogin;
-      
+      const {profile_pic} = this.state
       if(logStat){
         return(
           <div   style={{margin: "4% 15% 8% 26%", width:"50%"}}>
           <div className="image" style={{ height:"300px", paddingLeft: "25%", marginTop:"2%"}}>
-              <img src={this.state.profile_pic} style={{width:"350px", height:"280px", objectFit:"cover"}} />
+              <img src={`${API_ENDPOINT}/${profile_pic}`} style={{width:"350px", height:"280px", objectFit:"cover"}} />
           </div>
             <div>
               <h3>Enter Event Description</h3>
@@ -174,7 +125,7 @@ export default class EventPost extends Component{
                 <br/>
                 <div className="field" >
                     <h5><label>Event Time</label></h5>
-                     <input onChange={this.changeHandler} type="text" name="event_time" placeholder="Post Date"/>
+                    <DatePicker selected={this.state.event_time} onChange={this.dateHandler}/>
                 </div> 
                 <br/>
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Submit</button>
@@ -192,3 +143,18 @@ export default class EventPost extends Component{
       }
     }
 }
+
+
+EventPost.propTypes = {
+  postEvent: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
+}
+
+const mapStateToProps = state => ({
+  error : state.Handshake_User_Infor.error,
+  message: state.Handshake_User_Infor.message
+})
+
+
+export default connect(null, {postEvent})(EventPost)

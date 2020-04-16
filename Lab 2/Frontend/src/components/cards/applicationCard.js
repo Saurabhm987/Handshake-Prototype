@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {API_ENDPOINT} from '../controller/endpoint';
+import { connect } from 'react-redux';
+import {getApplications} from '../../actions/fetchAction'
+import PropTypes from 'prop-types'
 
-export default class Applications extends Component {
+class Applications extends Component {
   constructor(props){
     super(props);
 
@@ -18,8 +21,6 @@ export default class Applications extends Component {
       });
 }
 
-componentDidUpdate(){}
-
 componentDidMount(){
   const accessString = localStorage.getItem('JWT');
   if(accessString === null){
@@ -29,33 +30,20 @@ componentDidMount(){
       console.log("token is null!");
   }
 
-  this.instance.get("/getJobBoard/applications",{ 
-      headers: {
-          Authorization: `JWT ${accessString}`
-      }
-  } ).then(response => {
-          if(response.status === 200){
-            if(response.data === "jwt expired"){
-              localStorage.removeItem('JWT');
-              this.setState({
-                isLogin: false
-              })
-              this.props.history.push("/companyLogin");
-            }
-              this.setState({
-                  applicationData:response.data
-              })
-              console.log("Application_Data: ", this.state.applicationData);
-          }else{
-              console.log("ERROR");
-          }
-      })
+  if(!this.props.loggedIn){
+      this.props.history.push('/login')
+  }
+
+  this.props.getApplications(accessString)
 }
 
 
 render(){
 
-const renderdata = this.state.applicationData;
+const renderdata = this.props.applications;
+console.log("renderData: ", renderdata)
+
+if(renderdata !== null && renderdata !== undefined && renderdata.length > 0){
 
     return(
         <div className="container" style={{ padding:"20px"}}>
@@ -75,8 +63,8 @@ const renderdata = this.state.applicationData;
                     <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", marginTop:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
                         <img src={item.profile_pic} style={{width:"200px", height:"110px"}}/>
                         <div className="content" style={{padding: "10px 5px 5px 30px"}}>
-                                <div className="header" id="cardHover" ><h4><b>{item.company_name}</b></h4></div>
-                                <div className="extra" ><h4><b>{item.job_title}</b></h4></div>
+                                <div className="header" id="cardHover" ><h4><b>{item.name}</b></h4></div>
+                                <div className="extra" ><h4><b>{item.position}</b></h4></div>
                                 <div className="extra">
                                 <i>Status:</i> {item.status}
                                 </div>
@@ -88,7 +76,26 @@ const renderdata = this.state.applicationData;
                 <div className="col-md-1"></div>
             </div>
         </div>
+    )  
+}else{
+    return(
+        <div>
+            No Applied Job!
+        </div>
     )
 }
-
 }
+}
+
+Applications.propTypes = {
+    getApplications: PropTypes.func.isRequired,
+    applications: PropTypes.array.isRequired,
+    loggedIn: PropTypes.bool.isRequired
+}
+
+const mapStateToProps = state => ({
+    applications : state.Handshake_User_Info.applications,
+    loggedIn: state.Handshake_User_Info.loggedIn
+})
+
+export default connect(mapStateToProps, {getApplications})(Applications)

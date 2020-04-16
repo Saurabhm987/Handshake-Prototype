@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import {Redirect} from 'react-router-dom';
-import {API_ENDPOINT} from '../controller/endpoint';
 import {addEducation, updateEducation} from '../../actions/updateAction';
 import {fetchEducation} from '../../actions/fetchAction';
 import { connect } from 'react-redux';
@@ -12,7 +10,6 @@ class EducationCard extends Component {
         super(props);
 
         this.state = {
-            eduInfo: [],
             token: "", 
             college:"",
             location:"",
@@ -24,13 +21,7 @@ class EducationCard extends Component {
             isLogin: true,
             editMode: false,
             addMode:false, 
-            reload: true
         }
-
-        this.instance = axios.create({
-            baseURL: API_ENDPOINT,
-            timeout: 1000,
-          });
     }
 
     handleCancelAdd = () =>{
@@ -63,9 +54,7 @@ class EducationCard extends Component {
     }
 
     handleAdd = (e) => {
-        console.log("adding college");
         e.preventDefault(); 
-
         this.setState({
             addMode: false
         })
@@ -78,18 +67,19 @@ class EducationCard extends Component {
             gpa: this.state.gpa,
             yop: this.state.yop,
         }
-        this.props.addEducation(educationInfo,this.state.token );
+        const {token} = this.state
+        this.props.addEducation(educationInfo,token );
+        const {email} = this.props
+        this.props.fetchEducation(token, email)
     }
 
     setAddMode = () => {
-        console.log("in add mode!")
             this.setState({
                 addMode: true
         })
     }
 
     handleSave = async (e) => {
-        console.log("handle Save!");
         e.preventDefault(); 
         this.setState({
             editMode: !this.state.editMode
@@ -106,75 +96,91 @@ class EducationCard extends Component {
         this.props.updateEducation(userInfo, this.state.token);
         }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.educationInfo){
-            this.setState({
-                eduInfo: nextProps.educationInfo
-            })
-        }
-    }
     componentDidMount(){
         const accessString = localStorage.getItem('JWT');
         if(accessString === null){
             this.setState({
                 isLogin: false
             })
-            console.log("token is null!....Please Login Again......");
         }
-
         this.setState({
             token: accessString
         })
-
-        this.props.fetchEducation(accessString);
     }
 
         renderViewMode = () =>{
-            let data = this.state.eduInfo;
-            console.log("data: ", data);
-            if(data !== undefined){
+            const {educationInfo, adminView} = this.props
+            let data = educationInfo;
+            if(data !== undefined &&  data !== ""){
                 return(
                         <div className="ui cards">
-                        <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
-                        <div className="content">
-                        <div className="header">Education</div>
-                        <br/>
-                        { data.map( edu => 
-                        <div onClick={this.handleEdit} id="eduCard"  data-div_id={edu.education_id}  style={{padding: "20px"}}>
-                                <div className="description">
-                                        <h2>{edu.education_details.college}</h2>
+                            <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
+                                <div className="content">
+                                    <div className="header">Education</div>
+                                    <br/>
+                                    {  data.map( edu => 
+                                            (this.props.adminView)
+                                            ?<div onClick={this.handleEdit} id="eduCard"  data-div_id={edu.education_id}  style={{padding: "20px"}}>
+                                                    <div className="description">
+                                                            <h2>{edu.education_details.college}</h2>
+                                                    </div>
+                                                    <div className ="description">
+                                                    {edu.education_details.degree} in {edu.education_details.major} 
+                                                    </div>
+                                                    <div className="description">
+                                                        Graduate: {edu.education_details.yop} 
+                                                    </div>
+                                                    <div className="description">
+                                                        GPA:  {edu.education_details.gpa} 
+                                                    </div>
+                                                    <div className="ui divider"></div>
+                                            </div>
+                                            :<div id="eduCard"  data-div_id={edu.education_id}  style={{padding: "20px"}}>
+                                                    <div className="description">
+                                                            <h2>{edu.education_details.college}</h2>
+                                                    </div>
+                                                    <div className ="description">
+                                                    {edu.education_details.degree} in {edu.education_details.major} 
+                                                    </div>
+                                                    <div className="description">
+                                                        Graduate: {edu.education_details.yop} 
+                                                    </div>
+                                                    <div className="description">
+                                                        GPA:  {edu.education_details.gpa} 
+                                                    </div>
+                                                    <div className="ui divider"></div>
+                                            </div>
+                                    ) }
                                 </div>
-                                <div className ="description">
-                                {edu.education_details.degree} in {edu.education_details.major} 
+                                { (this.props.adminView)
+                                ?<div  className="extra content">
+                                    <div onClick={this.setAddMode} className="ui bottom attached large button">
+                                        Add 
+                                    </div>
                                 </div>
-                                <div className="description">
-                                    Graduate: {edu.education_details.yop} 
-                                </div>
-                                <div className="description">
-                                     GPA:  {edu.education_details.gpa} 
-                                </div>
-                                <div className="ui divider"></div>
-                        </div>
-                            ) }
+                                : null
+                                }
                             </div>
-                            <div  className="extra content">
-                                <div onClick={this.setAddMode} className="ui bottom attached large button">
-                                    Add 
-                                </div>
-                            </div>
-                        </div>
                         </div>
                     );  
                 }else{
                     return(
                         <div className="ui cards">
-                            <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
-                                <div className="content">
-                                    <div className="header">Education</div>
-                                    <div>No Education Added!</div>
+                        <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
+                            <div className="content">
+                                <div className="header">Experience</div>
+                                <div>No Education Added!</div>
+                            </div>
+                            { (adminView === true)
+                            ?<div className="extra content">
+                                <div onClick={this.setAddMode} className="ui bottom attached large button">
+                                    Add 
                                 </div>
                             </div>
+                            : null
+                            }
                         </div>
+                    </div>
                     )
                 }
             }

@@ -15,7 +15,6 @@ class Login extends Component{
             name:"",
             msg: "",
             isLogin: false,
-            showError: false,
             showNullError: false
         };
 
@@ -30,12 +29,10 @@ class Login extends Component{
    }
 
    componentWillReceiveProps(nextProps){
-     console.log("calling willrecieveProps");
       if(nextProps.isLogin){
         this.setState({
           isLogin: nextProps.isLogin
         })
-        console.log("props recieved", nextProps.isLogin);
       }
    }
 
@@ -45,22 +42,17 @@ class Login extends Component{
 
         if(email === '' || password === ''){
           this.setState({
-            showError: false,
             showNullError: true,
             isLogin: false
           });
         }else{
               await this.props.login(email, password);
          }
-
-        //  if(this.state.isLogin){
-        //       this.props.history.push("jobBoard");
-        //  }
-        }
+    }
 
     render(){
 
-      const {showError, isLogin, showNullError}= this.state;
+      const { isLogin, showNullError}= this.state;
 
       if(!isLogin){
         return(
@@ -106,7 +98,7 @@ class Login extends Component{
               <span style={{color: "red"}}><p>The username or password cannot be null.</p></span>
             </div>
             )}
-            {showError && (
+            {this.props.loginError && (
             <div className="ui large message">
              <span style={{color: "red"}}> <p>The username or password doesnt match. Please try again</p></span>
             </div>

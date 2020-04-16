@@ -3,9 +3,9 @@ import React from 'react';
 import './Input.css';
 
 const Input = ({ setMessage, SEND_MESSAGE, message }) => (
-  <form className="form">
+  <form className="inputform">
     <input
-      className="input"
+      className="inputField"
       type="text"
       placeholder="Type a message..."
       value={message}

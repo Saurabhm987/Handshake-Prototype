@@ -84,18 +84,10 @@ render(){
                                 <img src="" style={{width:"200px", height: "130px" }}/>
                         {/* </div> */}
                         <div className="content" style={{padding: "10px 5px 5px 60px", color:"black"}}>
-                        <Link to ={{
-                                              pathname: "/studentProfile",
-                                              student_email: {
-                                                email: `${item.student_email}`
-                                              }
-                          }}>
-                                <div className="header" ><h4><b>{item.student_email}</b></h4></div>
-                        </Link>
-                        <div className="extra"><h4><b>{item.event_name}</b></h4></div>
-                        <div className="extra">
-                                Status: {item.event_status}
-                        </div>
+                        <Link to={`/studentProfile?email=${item.email}`}>
+                                  <div className="header" ><h4><b>{item.name}</b></h4></div>
+                          </Link>
+                        <div className="extra"><h4><b>Event Applied : {item.title}</b></h4></div>
                         </div>
                     </div>
                     )}
@@ -105,8 +97,8 @@ render(){
     )
   }else{
     return(
-        <div>
-              No student registered!
+        <div className="container" style={{marginTop: "20px"}}>
+             <h2> No student registered!</h2>
         </div>
     )
   }

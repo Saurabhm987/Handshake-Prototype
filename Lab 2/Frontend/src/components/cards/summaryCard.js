@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
-import {fetchStudentProfile} from '../../actions/fetchAction';
 import {updateSummary} from '../../actions/updateAction';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
@@ -21,15 +20,6 @@ class SummaryCard extends Component {
             baseURL: API_ENDPOINT,
             timeout: 1000,
           });
-    }
-
-    componentWillReceiveProps(nextProps){
-        if(nextProps.data){
-            console.log("summary: ", nextProps.data.summary);
-            this.setState({
-                objective: nextProps.data.summary
-            })
-        }
     }
 
     componentDidMount(){
@@ -58,26 +48,6 @@ class SummaryCard extends Component {
             editmode: false
         })
         await this.props.updateSummary(updateInfo, this.state.token);
-        
-        // const headers = {
-        //     Authorization: `JWT ${this.state.token}`
-        // }
-        // this.instance.put("/updateUserProfile", {
-        //     params : {
-        //         requestInfo : "summary" ,
-        //         data: updateInfo
-        //     }
-        // } , {
-        //     headers: headers
-        // })
-        //     .then(res => {
-        //         if(res.status === 200){
-        //             this.setState({
-        //                 editmode:false
-        //             })
-        //             console.log("SUMMARY_UPDATED");
-        //         }
-        //     })
     }
     editHandler = (e) => {
         e.preventDefault();
@@ -88,27 +58,30 @@ class SummaryCard extends Component {
     
     render(){
         let summary = null;
-        const renderSummary = this.state.objective;
+        const renderSummary = this.props.data.summary;
 
-        if(this.state.objective !== null && this.state.editmode === false && this.state.isLogin){
+        if(this.props.data.summary !== null && this.state.editmode === false && this.state.isLogin){
             summary = (
                 <div>
                 <div style={{marginBottom: "20px"}}> 
                     <h4>{renderSummary}</h4>
                 </div>
-                <div onClick={this.editHandler} className="ui bottom attached small button">
+                { (this.props.adminView)
+                ?<div onClick={this.editHandler} className="ui bottom attached small button">
                         Edit Summary 
                 </div>
+                : null
+                }
             </div>
             )
-        }else if((this.state.editmode === true || this.state.objective=== null) && this.state.isLogin ){
+        }else if((this.state.editmode === true || this.props.data.summary=== null) && this.state.isLogin ){
             summary =(
                 <div>
                     <div className="description" style={{marginBottom: "10px"}}>
                                 <h4>What are you passionate about? What are you looking for on Handshake? What are your experiences or skills?</h4>
                     </div>
                     <form className="ui form">
-                        <textarea style={{fontSize:"1.5em"}} name="objective" placeholder="Tell us more" rows="3" defaultValue={this.state.objective} onChange = { this.handleChange}></textarea>
+                        <textarea style={{fontSize:"1.5em"}} name="objective" placeholder="Tell us more" rows="3" defaultValue={this.props.data.summary} onChange = { this.handleChange}></textarea>
                     </form>
                     <br/>
                     <div className="extra content">
@@ -143,7 +116,6 @@ class SummaryCard extends Component {
 }
 
 SummaryCard.propTypes = {
-    fetchStudentProfile: PropTypes.func.isRequired,
     updateSummary: PropTypes.func.isRequired
 }
 
@@ -151,4 +123,4 @@ const mapStateToProps = state => ({
     data: state.Handshake_User_Info.profileInfo,
 })
 
-export default connect(mapStateToProps, {fetchStudentProfile, updateSummary})(SummaryCard);
+export default connect(mapStateToProps, { updateSummary})(SummaryCard);

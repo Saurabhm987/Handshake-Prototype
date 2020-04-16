@@ -3,17 +3,22 @@ import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
 import {parseToken} from '../auth/parseToken'
+import { connect } from 'react-redux';
+import {changeStatus} from '../../actions/updateAction'
+import {getJobAppliedStudents} from '../../actions/fetchAction'
+import PropTypes from 'prop-types'
 
-export default class JobAppliedStudents extends Component {
+class JobAppliedStudents extends Component {
   constructor(props){
     super(props);
 
     this.state ={
       isLogin: true,
       studentData: [],
-      student_email: "",
-      job_id:"",
-      status: ""
+      email: "",
+      _id:"",
+      status: "",
+      token: ""
     }
 
     this.instance = axios.create({
@@ -24,26 +29,18 @@ export default class JobAppliedStudents extends Component {
     this.statusHandler = this.statusHandler.bind(this);
 }
 
-changeStatus =() =>{
+changeStatus = () =>{
 
     let statusBody = new Object();
 
-    statusBody.student_email = this.state.student_email;
-    statusBody.job_id = this.state.job_id;
+    statusBody.email = this.state.email;
+    statusBody._id = this.state._id;
     statusBody.status = this.state.status;
-
     console.log("statusBody: ", statusBody);
-    
-    this.instance.post("/changeStatus", statusBody )
-        .then(res=>{
-            if(res.status === 200){
-                console.log("Status changed!");
-                alert("Status changed");
-            }else{
-                console.log("error!");
-                alert("Can't change status!");
-            }
-        })
+
+    this.props.changeStatus(statusBody)
+    this.props.getJobAppliedStudents(this.state.token)
+
 }
 
 
@@ -51,8 +48,8 @@ statusHandler = (e) => {
     e.preventDefault();
 
     this.setState({
-        student_email: e.currentTarget.dataset.student_email,
-        job_id: e.currentTarget.dataset.job_id,
+        email: e.currentTarget.dataset.email,
+        _id: e.currentTarget.dataset._id,
         status : e.currentTarget.dataset.status
     }, ()=> {
 
@@ -61,14 +58,12 @@ statusHandler = (e) => {
     })
 }
 
-
-componentDidUpdate(){}
-
 componentDidMount(){
   const accessString = localStorage.getItem('JWT');
   if(accessString === null){
       this.setState({
-          isLogin: false
+          isLogin: false,
+          token: accessString
       })
       console.log("token is null!");
       this.props.history.push("companyLogin")
@@ -77,29 +72,7 @@ componentDidMount(){
     console.log("token: ", data);
     console.log("calling didmount")
 
-  this.instance.get("/getJobAppliedStudents",{
-  headers: {
-    Authorization: `JWT ${accessString}`
-}} ).then(response => {
-          if(response.status === 200){
-            if(response.data === "jwt expired"){
-              localStorage.removeItem('JWT');
-              this.setState({
-                isLogin: false
-              })
-              this.props.history.push("/login");
-            }
-
-            let data = response.data;
-            console.log("jobappdata: ", data);
-              this.setState({
-                  studentData:data
-              })
-              console.log("Application_Data: ", this.state.studentData);
-          }else{
-              console.log("ERROR");
-          }
-      })
+    this.props.getJobAppliedStudents(accessString)
 }
 
 
@@ -107,14 +80,16 @@ render(){
 
     let renderdata = {};
 
-    renderdata = this.state.studentData;
+    renderdata = this.props.job_applied_student;
+    console.log('renderdata - ',renderdata)
 
+    if(renderdata){
     return(
       <div className="container">
             <div className="row" style={{marginTop:"2%"}} >
             <div className="header">
                         <h2>Students</h2>
-               </div>
+            </div>
             <div className="ui items" style={{width:"100%"}}>
                     { renderdata.map( (item, index) =>
                     <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", margin:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
@@ -122,22 +97,17 @@ render(){
                                 <img src="" style={{width:"200px", height: "130px" }}/>
                         {/* </div> */}
                         <div className="content" style={{padding: "10px 5px 5px 60px", color:"black"}}>
-                        <Link to ={{
-                                              pathname: "/studentProfile",
-                                              student_email: {
-                                                email: `${item.student_email}`
-                                              }
-                          }}>
-                                <div className="header" ><h4><b>{item.student_email}</b></h4></div>
-                        </Link>
-                        <div className="extra"><h4><b>{item.job_title}</b></h4></div>
+                        <Link to={`/studentProfile?email=${item.email}`}>
+                                  <div className="header" ><h4><b>{item.name}</b></h4></div>
+                          </Link>
+                        <div className="extra"><h4><b>{item.title}</b></h4></div>
                         <div className="extra">
-                                Status: {item.job_status}
+                                Status: {item.status}
                         </div>
                         <div className="extra">
-                            <div  className="ui green button" data-status= "Reviewed" data-job_id={item.job_id} data-student_email={item.student_email} onClick={this.statusHandler}> Application Reviewed</div>
-                            <div  className="ui yellow button" data-status ="Screening" data-job_id={item.job_id} data-student_email={item.student_email} onClick={this.statusHandler}> Initial Screening </div>                            
-                            <div  className="ui red button" data-status="Reject"  data-job_id={item.job_id} data-student_email={item.student_email} onClick={this.statusHandler}>  Reject </div>
+                            <div  className="ui green button" data-status= "Reviewed" data-_id={item._id} data-email={item.email} onClick={this.statusHandler}> Application Reviewed</div>
+                            <div  className="ui yellow button" data-status ="Screening" data-_id={item._id} data-email={item.email} onClick={this.statusHandler}> Initial Screening </div>                            
+                            <div  className="ui red button" data-status="Reject"  data-_id={item._id} data-email={item.email} onClick={this.statusHandler}>  Reject </div>
                         </div>
                         </div>
                     </div>
@@ -146,5 +116,34 @@ render(){
             </div>
         </div>
     )
+    }else{
+      return(
+        <div className="container">
+          <div className="row" style={{marginTop:"2%"}}>
+          <div className="header">
+                        <h2>Students</h2>
+            </div>
+            <div className="ui items">
+               <div className="item" style={{marginTop: "20px"}}>
+                    <h3>No students have applied yet!</h3>               
+                </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
 }
 }
+
+
+JobAppliedStudents.propTypes  = {
+  changeStatus : PropTypes.func.isRequired,
+  getJobAppliedStudents: PropTypes.func.isRequired,
+  job_applied_student: PropTypes.array.isRequired
+}
+
+const mapStateToProps = state => ({
+  job_applied_student: state.Handshake_User_Info.job_applied_student
+})
+
+export default connect(mapStateToProps, {changeStatus, getJobAppliedStudents})(JobAppliedStudents)

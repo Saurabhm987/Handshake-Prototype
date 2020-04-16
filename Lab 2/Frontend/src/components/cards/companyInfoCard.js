@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
+import {updateProfileInfo} from '../../actions/updateAction';
+import { connect } from 'react-redux';
 
  class CompanyInfoCard extends Component {
     constructor(props){
@@ -9,31 +11,20 @@ import {API_ENDPOINT} from '../controller/endpoint';
 
         this.state = {
             editMode: false,
-            company_name: "",
-            company_loc: "",
-            company_contact: "",
+            location: "",
+            contact: "",
             isLogin: true,
-            userInfo: {},
             token: "",
             file: null,
-            img: "", 
         }
+
+        this.handleChange = this.handleChange.bind(this)
 
         this.instance = axios.create({
             baseURL: API_ENDPOINT,
             timeout: 1000,
           });
-        
-        this.handleEdit = this.handleEdit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleFileUpload = this.handleFileUpload.bind(this);
-
     }    
-
-    componentDidUpdate(){
-    }
 
     handleEdit = (e) => {
         e.preventDefault();
@@ -63,127 +54,106 @@ import {API_ENDPOINT} from '../controller/endpoint';
 
     handleFormSubmit = (event) => {
         if(this.state.file === null){
-            alert("please add file");
+            alert("Please selecte file");
         }else{
 
         event.preventDefault();
         let formData = new FormData();
         formData.append('file', this.state.file);
 
-        this.instance.post("/uploadCmpProfPic", formData, 
+        this.instance.post("/uploadFile", formData, 
          {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `JWT ${this.state.token}`
           }
-        }).then(response => {
-          console.log("file successfully upladed!");
+        }).then( () => {
           this.setState({
               isLogin: true,
               editMode: !this.state.editMode
           })
-        }).catch(error => {
-          console.log("error_rate: ", error);
+          alert('File Uploaded')
+        }).catch(() => {
+          alert('Error while uploading file!')
         });
     }
-
     }
 
     componentDidMount(){
-
-        console.log("Company_INFO_CMPDID");
         const accessString = localStorage.getItem('JWT');
         if(accessString === null){
             this.setState({
                 isLogin: false
             })
-
-            alert("No token provided! You are being logged out!");
-            console.log("token is null!");
+            alert("Session Expired");
             this.props.history.push('/login');
         }
-
         this.setState({
             token: accessString
         })
-
-         this.instance.get("/profileCompany/companyInfo", { 
-            headers: {
-                Authorization: `JWT ${accessString}`
-            }
-        } ).then(response => {
-                if(response.status === 200){
-                    if(response.data === "jwt expired"){
-                        alert("session expired! ");
-                    }
-                    const data = response.data;
-
-                    this.setState({
-                        company_name : data.company_name,
-                        company_loc: data.company_loc,
-                        company_contact: data.company_contact,
-                        img: data.profile_pic
-                    })
-
-                    console.log("company_InfoCard_RESPONSE_DATA", data);
-
-                }else{
-                    console.log("ERROR");
-                }
-            })
     }
 
     handleSave = (e) => {
-        console.log("handle Save cmp info card!");
         e.preventDefault(); 
-
         const companyInfo = {
-            company_loc: this.state.company_loc,
-            company_contact:this.state.company_contact,
+            location: this.state.location,
+            contact:this.state.contact,
         }
+
+        console.log('save data - ', companyInfo)
+
         const headers = {
             Authorization: `JWT ${this.state.token}`
         }
+    
+        this.props.updateProfileInfo(companyInfo, headers)
 
-        this.instance.post("/updateCompanyProfile", {
-            params: {
-                requestInfo: "LOGIN",
-                data: companyInfo
-            }
-        }, {
-            headers: headers
+        this.setState({
+        editMode: !this.state.editMode,
         })
-             .then( response => {
-                if(response.status === 200){
-                    console.log("RESPONSE: ", response.data);
-                    this.setState({
-                        editMode: !this.state.editMode,
-                    })
-                }else{
-                    console.log("BAD_REQUEST");
-                }
-            })
+
+        // this.instance.post("/updateCompanyProfile", {
+        //     params: {
+        //         requestInfo: "LOGIN",
+        //         data: companyInfo
+        //     }
+        // }, {
+        //     headers: headers
+        // })
+        //      .then( response => {
+        //         if(response.status === 200){
+        //             this.setState({
+        //                 editMode: !this.state.editMode,
+        //             })
+        //         }else{
+        //             console.log("BAD_REQUEST");
+        //         }
+        //     })
+        //     .catch( error => {
+        //         console.log('error : ', error)
+        //     })
     }
 
 
     renderEditView = () => {
-        return(
+        const {location, contact} = this.props.companyDetails
+        const profile_pic = ""
 
-        
+        return(
             <div className="ui card" style={{width: "80%"}}>
                 <form className="image" style={{overflow:"hidden"}} onSubmit={this.handleFormSubmit}>
-                    <img src={this.state.img}/>
+                    <img src= {`${API_ENDPOINT}/${profile_pic}`} alt=""/>
                     <input type="file" name="file" onChange ={this.handleFileUpload} />
                     <button type="submit">upload</button>
-                </form>
+                </form> 
                     <div className="content">
                     <div className="description">Company Loc</div>
                     <div className="ui input">
-                        <input type="text" name="company_loc" value={this.state.company_loc || ''} onChange = { this.handleChange}/>
+                        <input type="text" name="location" defaultValue={location || ''} onChange = { this.handleChange}/>
                     </div>
                     <div className="description">Contact</div>
                     <div className="ui input">
-                        <input type="text" name="company_contact" value={this.state.company_contact || ''} onChange = { this.handleChange}/>
+                        <input type="text" name="contact" defaultValue={contact || ''} onChange = { this.handleChange}/>
                     </div>
                 </div>
                 <div className="extra content">
@@ -200,16 +170,16 @@ import {API_ENDPOINT} from '../controller/endpoint';
 
     renderViewMode = () => {
         console.log("renderViewMode: ", this.state);
+        const {name, location, contact, profile_pic} = this.props.companyDetails
         return(
-         
                     <div className="ui card"  style={{width: "80%"}}>
                             <div className="image">
-                                    <img src= {this.state.img} style={{width:"443px", height:"300px"}}/>
+                                    <img src= {`${API_ENDPOINT}/${profile_pic}`} style={{width:"443px", height:"300px"}} alt=""/>
                             </div>
                             <div className="content">
-                                    <div className="header"><h1><b>{this.state.company_name}</b></h1></div>
-                                    <div className="description"><h2>{this.state.company_loc}</h2></div>
-                                    <div className="description"><h3>{this.state.company_contact}</h3></div>
+                                    <div className="header"><h1><b>{name}</b></h1></div>
+                                    <div className="description"><h2>{location}</h2></div>
+                                    <div className="description"><h3>{contact}</h3></div>
                             </div>
                             <div className="extra content">
                                     <div onClick= {this.handleEdit} className="ui bottom attached center medium button">
@@ -235,4 +205,4 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }
 }
 
-export default withRouter(CompanyInfoCard);
+export default connect(null, {updateProfileInfo})(CompanyInfoCard);

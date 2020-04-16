@@ -10,10 +10,10 @@ import PropTypes from 'prop-types';
         super(props);
 
         this.state = {
-            expInfo:[],
+            // expInfo:[],
             token:"",
             title:"",
-            position:"",
+            location:"",
             joined_date:"",
             company_name:"",
             description:"",
@@ -63,14 +63,18 @@ import PropTypes from 'prop-types';
 
         const expInfo = {
             title: this.state.title,
-            position: this.state.position,
+            location: this.state.location,
             company_name:this.state.company_name,
             joined_date: this.state.joined_date,
             description: this.state.description,
         }
 
+
         console.log("expInfo: ", expInfo);
-        this.props.addExperience(expInfo,this.state.token );
+        const {token} = this.state
+        this.props.addExperience(expInfo,token );
+        const {email} = this.props
+        this.props.fetchExperience(token, email)
     }
 
     setAddMode = () => {
@@ -88,7 +92,7 @@ import PropTypes from 'prop-types';
         })
         const expInfo = {
             title: this.state.title,
-            position: this.state.position,
+            location: this.state.location,
             company_name:this.state.company_name,
             joined_date: this.state.joined_date,
             description: this.state.description,
@@ -98,13 +102,13 @@ import PropTypes from 'prop-types';
         this.props.updateExperience(expInfo, this.state.token)
      }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.experienceInfo){
-            this.setState({
-                expInfo: nextProps.experienceInfo
-            })
-        }
-    }
+    // componentWillReceiveProps(nextProps){
+    //     if(nextProps.experienceInfo){
+    //         this.setState({
+    //             expInfo: nextProps.experienceInfo
+    //         })
+    //     }
+    // }
     
     componentDidMount(){
         const accessString = localStorage.getItem('JWT');
@@ -112,49 +116,68 @@ import PropTypes from 'prop-types';
             this.setState({
                 isLogin: false
             })
-            console.log("token is null!....Please Login Again......");
         }
 
         this.setState({
             token: accessString,
-            isLogin: true
         })
-        this.props.fetchExperience(accessString);
     }
     
     renderViewMode = () =>{
-        let data = this.state.expInfo;
-        console.log("exp_data: ", data);
-        if(data !== undefined){
+        const {experienceInfo} = this.props
+        console.log('experience obj - ', experienceInfo)
+        let data = experienceInfo
+        const {adminView} = this.props
+        if(data !== undefined && data !== ""){
             return(
                     <div className="ui cards">
                     <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
                     <div className="content">
-                    <div className="header">Experience</div>
-                    <br/>
-                    { data.map( exp => 
-                    <div onClick={this.handleEdit} id="eduCard"  data-div_id={exp.experience_id}  style={{padding: "20px"}}>
-                            <div className="description">
-                                    <h2>{exp.experience_details.title}</h2>
-                            </div>
-                            <div className ="description">
-                            {   exp.experience_details.company_name}
-                            </div>
-                            <div className="description">
-                                 {exp.experience_details.position} 
-                            </div>
-                            <div className="description">
-                                 {exp.experience_details.joined_date} 
-                            </div>
-                            <div className="ui divider"></div>
-                    </div>
-                        ) }
+                        <div className="header">Experience</div>
+                        <br/>
+                        { data.map( exp => 
+                            (adminView === true)
+                                ?<div onClick={this.handleEdit} id="eduCard"  data-div_id={exp.experience_id}  style={{padding: "20px"}}>
+                                        <div className="description">
+                                                <h2>{exp.experience_details.title}</h2>
+                                        </div>
+                                        <div className ="description">
+                                        {   exp.experience_details.company_name}
+                                        </div>
+                                        <div className="description">
+                                            {exp.experience_details.location} 
+                                        </div>
+                                        <div className="description">
+                                            {exp.experience_details.description} 
+                                        </div>
+                                        <div className="ui divider"></div>
+                                </div>
+                                :<div id="eduCard"  data-div_id={exp.experience_id}  style={{padding: "20px"}}>
+                                        <div className="description">
+                                                <h2>{exp.experience_details.title}</h2>
+                                        </div>
+                                        <div className ="description">
+                                        {   exp.experience_details.company_name}
+                                        </div>
+                                        <div className="description">
+                                            {exp.experience_details.location} 
+                                        </div>
+                                        <div className="description">
+                                            {exp.experience_details.description} 
+                                        </div>
+                                        <div className="ui divider"></div>
+                                </div>
+                            ) }
                         </div>
-                        <div  className="extra content">
+                        {
+                        (adminView === true)
+                        ?<div  className="extra content">
                             <div onClick={this.setAddMode} className="ui bottom attached large button">
                                 Add 
                             </div>
                         </div>
+                        : null
+                        }
                     </div>
                     </div>
                 );  
@@ -166,6 +189,14 @@ import PropTypes from 'prop-types';
                                 <div className="header">Experience</div>
                                 <div>No Experience Added!</div>
                             </div>
+                            { (adminView === true)
+                            ?<div className="extra content">
+                                <div onClick={this.setAddMode} className="ui bottom attached large button">
+                                    Add 
+                                </div>
+                            </div>
+                            : null
+                            }
                         </div>
                     </div>
                 )
@@ -173,6 +204,7 @@ import PropTypes from 'prop-types';
         }
 
         renderEditView = () => {
+            const {experienceInfo} = this.props
             return(
             <div className="ui cards">
                     <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
@@ -183,31 +215,31 @@ import PropTypes from 'prop-types';
                                             <div className="description">
                                                     Title
                                             </div>
-                                            <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                    <input type="text" name="title" value={this.state.title || ''} onChange = { this.handleChange}/>
+                                            <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
+                                                    <input type="text" name="title" defaultValue={experienceInfo.title || ''} onChange = { this.handleChange}/>
                                             </div>
                                             <div className="description">
                                                     Company Name
                                             </div>
-                                            <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
+                                            <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
                                                     <input type="text" name="company_name" value={this.state.company_name || ''} onChange = { this.handleChange}/>
                                             </div>
                                             <div className ="description">
-                                                    Position
+                                                    Location
                                             </div>
-                                            <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                    <input type="text" name="position" value={this.state.position || ''} onChange = { this.handleChange}/>
+                                            <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
+                                                    <input type="text" name="location" value={this.state.location || ''} onChange = { this.handleChange}/>
                                             </div>
                                             <div className ="description">
                                                      Start and End Date
                                             </div>
-                                            <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
+                                            <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
                                                     <input type="text" name="joined_date" value={this.state.joined_date || ''} onChange = { this.handleChange}/>
                                             </div>
                                             <div className="description">
                                                    Description
                                             </div>
-                                            <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
+                                            <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
                                                     <input type="text" name="description" value={this.state.description || ''} onChange = { this.handleChange}/>
                                             </div>
                                             <div className="extra content" style={{paddingTop:"10px"}}>
@@ -236,31 +268,31 @@ import PropTypes from 'prop-types';
                         <div className="description">
                                 Title
                         </div>
-                        <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
+                        <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
                                 <input type="text" name="title"  onChange = { this.handleChange}/>
                         </div>
                         <div className="description">
                                 Company Name
                         </div>
-                        <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
+                        <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
                                 <input type="text" name="company_name" onChange = { this.handleChange}/>
                         </div>
                         <div className ="description">
-                                Position
+                                Location
                         </div>
-                        <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                <input type="text" name="position"  onChange = { this.handleChange}/>
+                        <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
+                                <input type="text" name="location"  onChange = { this.handleChange}/>
                         </div>
                         <div className ="description">
                                     Start and End Date
                         </div>
-                        <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
+                        <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
                                 <input type="text" name="joined_date"  onChange = { this.handleChange}/>
                         </div>
                         <div className="description">
                                 Description
                         </div>
-                        <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
+                        <div className="ui input" style={{fontSize: "1em", width:"100%" }}>
                                 <input type="text" name="description" onChange = { this.handleChange}/>
                         </div>
                         <div className="extra content" style={{paddingBottom:"20px"}}>
@@ -278,6 +310,7 @@ import PropTypes from 'prop-types';
         }
 
         render(){
+
             if(this.state.isLogin === true){
                 if(this.state.addMode){
                     return(
@@ -298,14 +331,13 @@ import PropTypes from 'prop-types';
 }
 
 ExperienceCard.propTypes = {
-fetchExperience: PropTypes.func.isRequired,
 addExperience: PropTypes.func.isRequired,
 updateExperience: PropTypes.func.isRequired,
-experienceInfo: PropTypes.array.isRequired
+experienceInfo: PropTypes.array.isRequired,
+fetchExperience: PropTypes.array.isRequired
 }
 
 const mapStateToProps = state => ({
-experienceInfo: state.Handshake_User_Info.experienceInfo,
 isLogin: state.Handshake_User_Info.isLogin
 })
 

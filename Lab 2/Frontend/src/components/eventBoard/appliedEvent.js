@@ -46,8 +46,15 @@ componentWillReceiveProps(nextProps){
 
 render(){
 
+    console.log('this.props - ', this.props.appliedEvents)
+
+    if(this.props.appliedEvents === 'jwt expired' || this.props.appliedEvents === "jwt malformed"){
+
+        this.props.history.push('/login')
+    }
+
 const renderdata = this.state.eventData;
-if(renderdata){
+if(renderdata !== undefined && renderdata.length > 0){
     return(
         <div className="container" style={{ padding:"20px"}}>
         <div className="row">

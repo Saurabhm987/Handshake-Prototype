@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Link , withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {logout, login} from '../../actions/loginAction';
-import {search} from '../../actions/fetchAction';
+import {search, fetchDashboard} from '../../actions/fetchAction';
 import PropTypes from 'prop-types';
 import {parseToken} from '../auth/parseToken';
 
@@ -13,7 +13,8 @@ class Header extends Component{
             isLogin : false,
             access:"",
             email:"",
-            searchText:""
+            searchText:"",
+            token: ""
         }
         this.handleLogout = this.handleLogout.bind(this);
     };
@@ -21,6 +22,12 @@ class Header extends Component{
 
     handleChange = (e) =>{
         e.preventDefault()
+
+        if(!e.target.value){
+            const{token} = this.state
+            this.props.fetchDashboard(token)
+        }
+
         this.setState({
             searchText: e.target.value
         })
@@ -28,8 +35,7 @@ class Header extends Component{
 
     handleSearch = () =>{
         console.log("search handling...");
-        const accessString = localStorage.getItem('JWT');
-        this.props.search(this.state.searchText, accessString);
+        this.props.search(this.state.searchText, this.props.jobDetails);
     }
 
     componentWillReceiveProps(nextProps){
@@ -41,26 +47,25 @@ class Header extends Component{
                 this.setState({
                     isLogin: nextProps.isLogin,
                     access: data.access,
-                    email: data.id
+                    email: data.id,
                 })
         }
     }
 
    async componentDidMount(){
-       console.log("componentDidMount...")
         const accessString = localStorage.getItem('JWT');
         if(accessString === null) {
             this.setState({
                 isLogin: false
             })
         }else{
-            console.log("executing componentDidMoutn else cond..");
             const data = parseToken(accessString);
             console.log('token_data: ', data);
             await this.setState({
                 access: data.access,
                 email: data.id,
-                isLogin: true
+                isLogin: true,
+                token: accessString
             })
         }
     }
@@ -115,7 +120,7 @@ class Header extends Component{
                                 <i className="dropdown icon"></i>
                                 <div className=" menu">
                                     <Link to="/studentAppliedJob" className="item">Applications</Link>
-                                    <Link to="/studentProfile" className="item">Profile</Link>
+                                    <Link to={`/studentProfile?email=${this.state.email}`} className="item">Profile</Link>
                                     <Link to="/appliedEvents" className="item">Registered Event</Link>
                                     <Link to="/login" className="item" onClick={this.handleLogout}>Logout</Link>
                                 </div>
@@ -137,7 +142,7 @@ class Header extends Component{
                                 {this.state.email}
                                 <i className="dropdown icon"></i>
                                 <div className=" menu">
-                                    <Link to="/companyProfile" className="item">Profile</Link>
+                                    <Link to={`/companyProfile?email=${this.state.email}`} className="item">Profile</Link>
                                     <Link to="/jobPost" className="item" >Post Job</Link>
                                     <Link to="/eventPost" className="item" >Post Event</Link>
                                     <Link to="/companyLogin" className="item" onClick={this.handleLogout}>Logout</Link>
@@ -176,11 +181,14 @@ class Header extends Component{
 Header.propTypes = {
     logout: PropTypes.func.isRequired,
     search: PropTypes.func.isRequired,
-    isLogin: PropTypes.bool.isRequired
+    isLogin: PropTypes.bool.isRequired,
+    fetchDashboard: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
-    isLogin: state.Handshake_User_Info.isLogin
+    isLogin: state.Handshake_User_Info.isLogin,
+    jobDetails: state.Handshake_User_Info.jobDetails
+
 })
 
-export default connect(mapStateToProps, {logout, search})(withRouter(Header));
+export default connect(mapStateToProps, {logout, search, fetchDashboard})(withRouter(Header));

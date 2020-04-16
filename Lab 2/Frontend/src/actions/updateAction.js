@@ -1,4 +1,4 @@
-import {UPDATE_STUDENT_PROFILE,UPDATE_SUMMARY, ADD_EDUCATION, UPDATE_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE } from './types';
+import {ERROR, UPDATE_STUDENT_PROFILE, UPDATE_DESCRIPTION, UPDATE_SUMMARY, ADD_EDUCATION, UPDATE_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE } from './types';
 import {API_ENDPOINT} from '../components/controller/endpoint';
 import axios from 'axios';
 
@@ -89,7 +89,7 @@ export const  updateStudentProfile = (profleInfo, accessString) => dispatch => {
                  console.log("message: ", response.data.message);
                  dispatch({
                     type : ADD_EDUCATION,
-                    message: response.data.message,
+                    payload: response.data
                  });
               }else{
                 console.log("bad request!")
@@ -110,7 +110,7 @@ export const  updateStudentProfile = (profleInfo, accessString) => dispatch => {
         }
     } ).then(response => {
               if(response.status === 200){
-                      if(response.data === "jwt expired"){
+                      if(response.data.error === "jwt expired"){
                               localStorage.removeItem('JWT');
                               dispatch({
                                 type : ADD_EXPERIENCE,
@@ -119,8 +119,9 @@ export const  updateStudentProfile = (profleInfo, accessString) => dispatch => {
                  }
                  dispatch({
                     type : ADD_EXPERIENCE,
-                    message: response.data.message,
-                    // payload: educationInfo
+                    // message: response.data.message,
+                    payload: response.data
+                    // payload: response.data
                  });
               }else{
                 console.log("bad request!")
@@ -150,7 +151,7 @@ export const  updateStudentProfile = (profleInfo, accessString) => dispatch => {
                  }
                  dispatch({
                     type : UPDATE_EDUCATION,
-                    message: "Education Updated",
+                    payload: response.data
                     // payload: eduInfo
                  });
               }else{
@@ -181,11 +182,86 @@ export const  updateStudentProfile = (profleInfo, accessString) => dispatch => {
                  }
                  dispatch({
                     type : UPDATE_EXPERIENCE,
-                    message: "Experience Updated",
-                    // payload: eduInfo
+                    payload: response.data
                  });
               }else{
                 console.log("bad request!")
               }
           })
+  }
+
+
+  export const updateDescription = (email, headers, description ) => dispatch => {
+    console.log('hitting')
+      axios.post(API_ENDPOINT+"/updateCompanyProfile", {
+        params: {
+            requestInfo: "DESCR",
+            data: description,
+            email: email
+        }
+        }, 
+        {
+            headers: headers
+        }
+    )
+    .then( response => {
+        if(response.status === 200){
+            dispatch({
+              type: UPDATE_DESCRIPTION,
+              message: 'Description Updated!',
+              payload: response.data
+            })
+        }
+    })
+    .catch( error => {
+        console.log(`Error : ${error}`)
+        alert('Error while updating description')
+        dispatch({
+          type: ERROR,
+          message: 'Error while processing request'
+        })
+    })
+  }
+
+
+  export const updateProfileInfo = (companyInfo, headers ) => dispatch => {
+      axios.post(API_ENDPOINT+"/updateCompanyProfile", {
+        params: {
+            requestInfo: "LOGIN",
+            data: companyInfo
+        }
+      }, {
+        headers: headers
+      })
+        .then( response => {
+            if(response.status === 200){
+                this.setState({
+                    editMode: !this.state.editMode,
+                })
+            }else{
+                console.log("BAD_REQUEST");
+            }
+        })
+        .catch( error => {
+            console.log('error : ', error)
+        })
+  }
+
+
+  export const changeStatus = (statusBody) => dispatch => {
+     axios.post(API_ENDPOINT+"/changeStatus",  statusBody)
+        .then(res=>{
+            if(res.status === 200){
+              const {data} = res
+              console.log('change data - ', data)
+                console.log("Status changed!");
+                alert("Status changed");
+            }else{
+                console.log("error!");
+                alert("Can't change status!");
+            }
+        })
+        .catch( error => {
+          console.log('error - ', error)
+        })
   }

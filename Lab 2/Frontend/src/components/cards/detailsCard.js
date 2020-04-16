@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import {withRouter} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
+import queryString from 'query-string';
+
 
  class DetailsCard extends Component {
     constructor(props){
@@ -26,7 +28,7 @@ import {API_ENDPOINT} from '../controller/endpoint';
     }    
 
   getInfo = (token) =>{
-        console.log("thisProsp: ", this.state.event_id.id);
+      
         const event_id = this.state.event_id.id;
 
         let config = {
@@ -50,10 +52,12 @@ import {API_ENDPOINT} from '../controller/endpoint';
                     this.setState({
                         event_name: data.eventName,
                         event_loc:data.eventLocation,
-                        event_time: data.event_time,
+                        event_time: data.eventTime,
                         event_descr: data.eventDescription,
                         profile_pic: data.profile_pic,
-                        event_eligible: data.eventEligible
+                        event_eligible: data.eventEligible,
+                        profile_pic: data.profile_pic
+
                     })
                 }else{
                     console.log("ERROR");
@@ -75,6 +79,8 @@ import {API_ENDPOINT} from '../controller/endpoint';
             this.props.history.push('/login');
         }
 
+        // const {email} = queryString.parse(location.search);
+
         await this.setState({
             event_id: this.props.location.event_id || "",
 
@@ -92,12 +98,12 @@ renderViewMode = () => {
                     <div>
                     <br/>
                         <div className="row">
-                            <img src={profile_pic} style={{width:"1150px", height:"400px"}}/>
+                            <img src={`${API_ENDPOINT}/${profile_pic}`} style={{width:"1150px", height:"400px"}}/>
                         </div>
                         <div className="row">
                             <div className="ui items" style={{width:"100%"}}>
                                         <div className="item" onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
-                                            <img src={profile_pic} style={{width:"200px", height: "110px" }}/>
+                                            <img src={`${API_ENDPOINT}/${profile_pic}`} style={{width:"200px", height: "110px" }}/>
                                             <div className="content" style={{padding: "10px 5px 5px 50px"}}>
                                                     <div className="header" ><h4><b>{event_name}</b></h4></div>
                                                     <div className="extra"><h4><b>{event_loc}</b></h4></div>

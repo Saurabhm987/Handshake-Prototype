@@ -1,12 +1,12 @@
-.form {
+.inputform {
     display: flex;
     border-top: 2px solid #D3D3D3;
   }
   
-  .input {
+  .inputField {
     border: none;
     border-radius: 0;
-    padding: 5%;
+    padding: 2%;
     width: 80%;
     font-size: 1.2em;
   }
@@ -19,7 +19,7 @@
     color: #fff !important;
     text-transform: uppercase;
     text-decoration: none;
-    background: #2979FF;
+    background: rgb(87, 206, 133);
     padding: 20px;
     display: inline-block;
     border: none;

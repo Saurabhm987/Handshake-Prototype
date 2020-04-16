@@ -3,8 +3,11 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { API_ENDPOINT } from '../controller/endpoint';
 import {parseToken} from '../auth/parseToken';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'
+import {postJob} from '../../actions/applyActions'
 
-export default class JobPost extends Component{
+class JobPost extends Component{
     constructor(props){
         super(props);
 
@@ -39,6 +42,7 @@ export default class JobPost extends Component{
 
     componentDidMount(){
       const accessString = localStorage.getItem('JWT');
+      const profileData = JSON.parse(localStorage.getItem('profileInfo'))
 
       if(accessString === null){
           this.setState({
@@ -49,93 +53,34 @@ export default class JobPost extends Component{
           this.history.push("/companyLogin");
       }
 
-      const tokenData = parseToken(accessString);
-
       this.setState({
           token: accessString,
-          company_name: tokenData.name,
-          profile_pic: tokenData.profile_pic
+          company_name: profileData.name,
+          profile_pic: profileData.profile_pic
       })
-
-    //   this.instance.get("/profileCompany/companyInfo", { 
-    //     headers: {
-    //         Authorization: `JWT ${accessString}`
-    //     }
-    // } ).then(response => {
-    //         if(response.status === 200){
-    //             if(response.data === "jwt expired"){
-    //               this.props.history.push("/companyLogin");
-    //                 alert("session expired! ");
-    //             }
-    //             const data = response.data;
-
-    //             this.setState({
-    //                 company_name : data.company_name,
-    //                 profile_pic: data.profile_pic
-    //             })
-
-    //             console.log("company_InfoCard_RESPONSE_DATA", data);
-
-    //         }else{
-    //             console.log("ERROR");
-    //         }
-    //     })
-
     }
 
     submitForm = (e) => {
         e.preventDefault();
         const jobInfo = Object.assign(this.state); 
-        delete jobInfo.isLogin;
-        
-        console.log("postJob_jobInfo: ", jobInfo);
+        const {token} = this.state
 
-        const headers = {
-          Authorization: `JWT ${this.state.token}`
-      }
+      this.props.postJob(jobInfo, token)
 
-        axios.defaults.withCredentials = true;
-         this.instance.post('/postJob', {
-          params: {
-            data: jobInfo
-          }},
-          {
-            headers: headers
-          })
-            .then(response => {
-                console.log("responseJobPost: ", response );
-                if(response.status === 200){
-
-                  console.log("response_message: ", response.data.message);
-
-                  if(response.data.message ==="jwt expired"){
-                    localStorage.removeItem('JWT');
-                    this.setState({
-                      isLogin: false
-                    })
-                    this.props.history.push("/companyLogin");
-                  }
-
-                  this.setState({
-                   message: "Job Posted!",
-                   isLogin: true
-                  })
-                    alert("successfully posted job!!!!!!!!!!");
-                }else{
-                  console.log("bad response!!!!!!!");
-                }
-            })
     }
 
     render(){
 
       const logStat = this.state.isLogin;
-      
+      console.log('logStat - ', logStat)
+      const profileData = JSON.parse(localStorage.getItem('profileInfo'))
+      const {profile_pic, name} = profileData
+
       if(logStat){
         return(
           <div   style={{margin: "4% 15% 8% 26%", width:"50%"}}>
           <div className="image" style={{ height:"300px", paddingLeft: "25%", marginTop:"2%"}}>
-              <img src={this.state.profile_pic} style={{width:"350px", height:"280px", objectFit:"cover"}} />
+              <img src={`${API_ENDPOINT}/${profile_pic}`} alt="" style={{width:"350px", height:"280px", objectFit:"cover"}} />
           </div>
             <div>
               <h3>Enter Job Description</h3>
@@ -154,7 +99,7 @@ export default class JobPost extends Component{
                 <br/>
                 <div className="field">
                     <h5><label>Company Name</label></h5>
-                     <input type="text"  value={this.state.company_name}/>
+                     <input type="text"  value={name}/>
                 </div>
                 <br/>
                 <div className="field">
@@ -178,7 +123,8 @@ export default class JobPost extends Component{
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Submit</button>
                 <br/>
                 <div>
-                  <span style={{color: "green"}}> {this.state.message}</span>
+                  <span style={{color: "green"}}> {this.props.error}</span>
+                  <span style={{color: "green"}}> {this.props.actionMessage}</span>
                 </div>
               </form>
             </div>
@@ -190,3 +136,18 @@ export default class JobPost extends Component{
       }
     }
 }
+
+JobPost.propTypes  = {
+  companyDetails : PropTypes.object.isRequired,
+  postJob : PropTypes.func.isRequired,
+  error : PropTypes.string.isRequired
+}
+
+const mapStateToProps = state => ({
+  companyDetails: state.Handshake_User_Info.companyDetails,
+  error : state.Handshake_User_Info.error,
+  message: state.Handshake_User_Info.message,
+  actionMessage: state.Handshake_User_Info.actionMessage
+})
+
+export default connect(mapStateToProps, {postJob})(JobPost)
