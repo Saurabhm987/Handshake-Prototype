@@ -1,14 +1,9 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
+const User = require('../models/userModel');
 
 module.exports = app =>{
     app.get("/profileCompany/:requestInfo", (req, res, next)  => {
-        console.log("CALLING_PROFILE_Company");
-        passport.authenticate('jwtcompany', {session: false}, (err, user, info) => { 
-        
-         console.log("IN_PROFILE_Company_AFT_AUTH");
-
+        passport.authenticate('jwt', {session: false}, (err, user, info) => { 
           if(err){
               console.log("ERROR:" , err);
           }
@@ -17,9 +12,7 @@ module.exports = app =>{
             console.log("ERROR_MESSGE",   info.message);
             res.status(200).send(info.message);
 
-            // sending username in the requested body as well
-            // once auth gets clear will check email as well 
-          }else if(user.company_email !== ""){
+          }else if(user.email !== ""){
 
             let companyInfo = {
                 company_name: "",
@@ -31,78 +24,26 @@ module.exports = app =>{
 
             if(req.params.requestInfo === 'companyInfo'){
 
-                let insertQuery = 'SELECT * FROM company_info WHERE ?? = ? ';
-                let query = mysql.format(insertQuery, [ "company_email", user.company_email]);
-        
-                pool.query(query, (err, rows) =>{
+                const email = req.query.email
 
-                    if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.status(200).send({
-                            message: "DB_ERROR"
-                        });
+                User.findOne(
+                    {email: email},
+                    {description:1,location:1, name: 1, "profileInfo.profile_pic":1,contact:1,email: 1,  _id: 0}
+                )
+                .exec()
+                .then( response => {
+                    console.log('profileInfo - ', response)
+                    response = response.toObject()
+                    if(response.profileInfo){
+                        const profile_pic= response.profileInfo.profile_pic
+                        response.profile_pic = profile_pic
                     }
-
-                    console.log("profileCompany_NO_QUERY_ERROR!");
-                    console.log("-----------------rendered company info ---------------------------")
-
-                    delete rows[0].student_password;
-                    companyInfo.company_name = rows[0].company_name;
-                    companyInfo.company_loc = rows[0].company_loc;
-                    companyInfo.company_descr = rows[0].company_descr;
-                    companyInfo.company_contact = rows[0].company_contact;
-                    companyInfo.profile_pic = rows[0].profile_pic;
-                    companyInfo.access = rows[0].access;
-                    res.json(companyInfo);
-
+                    delete response.profileInfo
+                    res.json(response)
                 })
-
-                }else if(req.params.requestInfo === 'postedJobInfo'){
-
-                    console.log("geting postedJobInfo........")
-
-                    let insertQuery1 = 'SELECT * FROM job_post WHERE ?? = ? ';
-                    let query1 = mysql.format(insertQuery1, [ "company_name", user.company_name ]);
-
-                    pool.query(query1, (err, rows) =>{
-                        if(err){
-                            console.log("QUERY_ERROR: ", err);
-                            res.status(200).send({
-                                message: "Q_ERROR"
-                            });
-                        }
-                        console.log("fetched expinfo!");            
-                        console.log('sending back to client.....');
-                        console.log("_______________________________________");
-                        res.json(rows);
-
-                    })
-                } 
-                else if(req.params.requestInfo === 'summary'){
-
-                let insertQuery = 'SELECT * FROM students WHERE ?? = ? ';
-                let query = mysql.format(insertQuery, [ "company_email", user.company_email]);
-        
-                pool.query(query, (err, rows, field) =>{
-
-                    if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.status(200).send({
-                            message: "DB_ERROR"
-                        });
-                    }
-
-                    console.log("profileStudent_NO_QUERY_ERROR!");
-
-                    delete rows[0].student_password;
-                    companyInfo.student_name = rows[0].student_name;
-                    companyInfo.student_college_name = rows[0].student_college_name;
-                    companyInfo.degree = rows[0].degree;
-                    companyInfo.major = rows[0].major;
-                    companyInfo. gpa = rows[0].gpa;
-                    companyInfo.grad_date = rows[0].grad_date;
-                    companyInfo.student_objective = rows[0].student_objective;
-                    res.json(companyInfo);
+                .catch( error => {
+                    console.log(`company profile error - ${error}`)
+                    res.end()
                 })
                 }
                 else{

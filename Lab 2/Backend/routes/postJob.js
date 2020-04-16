@@ -1,5 +1,6 @@
 const passport = require('passport'); 
 const User = require('../models/userModel');
+var mongoose = require('mongoose');
 
 module.exports = app =>{
         app.post('/postJob', (req, res, next)=>{
@@ -12,10 +13,7 @@ module.exports = app =>{
 
             if(info !== undefined){
                 console.log("postJob_info_message: ", info.message);
-                res.status(200).send({
-                    message: info.message
-                });
-
+                res.json({error : info.message})
             }else{
 
                 console.log("inside post job!!!!!");
@@ -28,17 +26,20 @@ module.exports = app =>{
 
                     console.log("Job_posting_details:  ", req_body);
                     const email = user.email;
+                    let _id = mongoose.Types.ObjectId().toString();
 
                     User.updateOne(  
                         { email: email }, 
                         { $push: {"postedJob": {
+                            job_id: _id,
                             title: req_body.job_title,
                             location: req_body.job_loc,
                             salary: req_body.job_salary,
                             postedDate: new Date(),
                             description: req_body.job_descr,
                             name: req_body.company_name,
-                            // profile_pic: req_body.profile_pic
+                            profile_pic: req_body.profile_pic,
+                            job_type: req_body.job_type
                         }}},
                         {upsert: true}, 
                         function(err, user){

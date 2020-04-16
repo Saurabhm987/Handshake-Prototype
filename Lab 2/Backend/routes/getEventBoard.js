@@ -1,5 +1,6 @@
 const passport = require('passport'); 
 const User = require("../models/userModel");
+var kafka = require('../kafka/client');
 
 module.exports = app => {
     app.get('/getEventBoard/:requestInfo', (req, res, next) => {
@@ -13,40 +14,35 @@ module.exports = app => {
                 console.log("checking error msg from passport.." , info.message);
                 res.status(200).send(info.message);
                 
-            }else if(user.student_email !== null){
+            }else if(user.email !== null){
                 if(req.params.requestInfo === "board"){
-                    User.find( 
-                        {access: "company"},
-                        {postedEvent: 1, _id: 0},
-                        (err, result)=>{
-                            if(err){
-                                console.log("err: ", err);
-                                res.status(400).end(err);
-                            }
-                            result = result.filter(event =>{
-                                return event.postedEvent.length>0
-                            })
-                            const data = result[0].postedEvent;
-                            // console.log("data: ", data);
-                            res.json(data);
+
+                    kafka.make_request('fetch_event_board', null, (error, result)=>{
+                        console.log("response after make_request")
+                        if(error){
+                            console.log("error: ", error)
+                            res.json({error : 'Erro while fetching Event'})
                         }
-                    )
+                        res.json(result)
+                    })
+                    
             }else if(req.params.requestInfo === "appliedevents"){
                 const email = user.email
 
-                User.findOne(
-                    {email: email},
-                    {appliedEvent: 1, _id:0},
-                    (err, result)=>{
-                        if(err){
-                            console.log("err: ", err);
-                            res.status(400).send({message:"Bad Request!"});
-                        }
-                        // console.log("result: ", result.appliedEvent);
-                        const data = result.appliedEvent
-                        res.json(data);
+                let find_query = {
+                    email : email
+                }
+
+                kafka.make_request('applied_event', find_query, (error, result)=>{
+                    console.log("response after make_request")
+                    if(error){
+                        console.log("error: ", error)
+                        res.json({error : 'Erro while fetching Event'})
                     }
-                )
+                    console.log('applied event - ', result)
+                    res.json(result)
+                })
+
             }else {
                 console.log("No parameters recieved !");
                 res.end();

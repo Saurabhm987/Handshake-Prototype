@@ -7,6 +7,8 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
 const jwtSecret = require('./jwtConfig')
 const User = require('../models/userModel');
+var kafka = require('../kafka/client');
+
 
 passport.use(
     'register',
@@ -19,7 +21,6 @@ passport.use(
         }, 
         (req, email, password, done) => {
             try{
-                    console.log("email : ", email);
                     User.find({email : email}, function(err, user) {
                         if(err){
                             console.log("error pass searching! ", err);
@@ -70,33 +71,49 @@ passport.use(
       },
       (email, password, done) => {
         try {
-            console.log("INSIDE_PASSPORTJS");
-            console.log("email: ", email);
+            console.log("passport login strategy");
+            // console.log("email: ", email);
+            let req = new Object()
+            req.email = email
+            req.password = password
+            console.log(`passport req: ${req}`)
 
-            User.findOne({ email : email}, function(err, user){
-                if(err){
-                    console.log("pass login error !", err);
+            kafka.make_request('login', req , (error, result)=>{
+                console.log("response after make_request")
+                if(error){
+                    console.log("error: ", error)
+                    res.status(400).end()
                 }
-
-                if(user === undefined && user === null){
-                    console.log("user doesn't exist!")
-                    return done(null, false, {message: "Username doesn't exist!"});
+                if(result.error){
+                    console.log("passport-error: ", result.error)
+                    return done(null, false, {message: result.error})
                 }
+                console.log(`final response: ${result.name}`)
+                return done(null, result)
+            } )
 
-                console.log("userInfo: ", user);
+            // User.findOne({ email : email}, function(err, user){
+            //     if(err){
+            //         console.log("pass login error !", err);
+            //     }
+            //     if(user === undefined && user === null){
+            //         console.log("user doesn't exist!")
+            //         return done(null, false, {message: "Username doesn't exist!"});
+            //     }
+            //     console.log("userInfo: ", user);
+            //     console.log("password hashed", user.password);
+            //     const  encryptedpsw = user.password;
+            //     const decryptedString = cryptr.decrypt(encryptedpsw);
+            //     if(password  === decryptedString){
+            //         console.log("user Info: ", user);
+            //         return done(null, user.toObject());
+            //     }else{
+            //         console.log("Password doesn't match!");
+            //         return done(null, false, {message: "Incorrect Password"});
+            //     }
+            // })
 
-                console.log("password hashed", user.password);
-                const  encryptedpsw = user.password;
-                const decryptedString = cryptr.decrypt(encryptedpsw);
-                
-                if(password  === decryptedString){
-                    console.log("user Info: ", user);
-                    return done(null, user.toObject());
-                }else{
-                    console.log("Password doesn't match!");
-                    return done(null, false, {message: "Incorrect Password"});
-                }
-            })
+
         } catch (err) {
           return done(err);
         }
@@ -134,40 +151,3 @@ passport.use(
         }
     })
 );
-
-
-
-// const options = {
-//     jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),
-//     secretOrKey: jwtSecret.secret,
-//   };
-
-// passport.use(
-//     'jwtcompany',
-//     new JWTstrategy(options, (jwt_payload, done) => {
-//         console.log("USING_JWT_COMPANY_STRATEGY");
-//         try{
-//             console.log("JWT_ID: ", jwt_payload.id);
-//             let insertquery = 'SELECT * FROM company_info WHERE ?? = ?';
-//             let query = mysql.format(insertquery, ["company_email", jwt_payload.id]);
-
-//             pool.query(query, (err, rows) => {
-//                 if(err){
-//                     console.log("DB_ERROR: ", err);
-//                 }
-
-//                 if(rows.length > 0){
-//                     console.log('PASSPORT_USER_EXIST');
-//                     done(null,  rows[0]);
-//                 }else{
-//                     console.log("USER_NOT_EXIST");
-//                     // console.log("Result_got: ", rows[0].length);
-//                     done(null, false, {message: "user doesnt not exist"});
-//                 }
-//             })  
-//         } catch (err){
-//             console.log("jwt_error:", err)
-//             done(err);
-//         }
-//     })
-// );

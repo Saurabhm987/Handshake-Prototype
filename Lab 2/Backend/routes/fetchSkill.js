@@ -1,7 +1,7 @@
 const passport = require('passport'); 
 const User = require('../models/userModel')  
 module.exports = app => {
-app.post('/addSkill',  (req, res, next) =>{
+app.get('/fetchSkill',  (req, res, next) =>{
     passport.authenticate('jwt', {session: false}, (err, user, info) =>{
 
     if(err){
@@ -15,27 +15,15 @@ app.post('/addSkill',  (req, res, next) =>{
     }else if(user.email !== ""){
 
         let email = user.email;
-        let skill = req.body.params.data
-        console.log( 'skill data - ', skill)
 
-        let options = {
-            upsert: true, 
-            new: true,
-            useFindAndModify: false,
-        }
-
-        User.findOneAndUpdate(
+        User.findOne(
             {email : email},
-            {
-                $addToSet : 
-                {
-                    skills: skill
-                }
-            },
-            options
+            {skills: 1, _id:0},
         )
+        .exec()
         .then( response => {
-            console.log( 'response - ', response.skills)
+            console.log( 'fetch skill response - ', response.skills)
+            // res.json(response.skills)
             res.json(response.skills)
         })
     }

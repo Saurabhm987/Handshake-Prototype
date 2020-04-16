@@ -5,6 +5,7 @@ module.exports = app =>{
     app.get("/profileStudent/:requestInfo", (req, res, next)  => {
         passport.authenticate('jwt', {session: false}, (err, user, info) => { 
         console.log("req params:", req.params);
+        console.log("req_query: ", req.query);
           if(err){
               console.log("ERROR:" , err);
               res.status(400).send({message:"error"});
@@ -16,40 +17,56 @@ module.exports = app =>{
 
           }else if(user.email !== ""){
             if(req.params.requestInfo === 'userInfo'){
-                console.log("hitting UserInof!!!");
-                const email = user.email
-
+                const email = req.query.email
+                let result_Query = {
+                    profileInfo: 1, 
+                    name:1,
+                    college:1, 
+                    _id: 0
+                }
                 User.findOne(
                     {email: email},
-                    {profileInfo: 1, name:1,college:1, _id: 0},
-                    (err, result)=>{
-                        if(err){
-                            console.log("err:", err);
-                        }
-                        // console.log("result:", result);
-                        result = result.toObject();
-                        let data = new Object();
-                        data.name = result.name
-                        data.college = result.college
-                        data.degree = result.profileInfo.degree
-                        data.gpa = result.profileInfo.gpa
-                        data.grad_date = result.profileInfo.grad_date
-                        data.major = result.profileInfo.major
-                        data.summary = result.profileInfo.summary
-                        console.log("data; ", data);
+                    result_Query
+                    )
+                    .exec()
+                    .then( response => {
+                        console.log(`response : ${response}`)
+                        const {name, college, profileInfo} = response
+                        const { degree, gpa, grad_date, major, summary, profile_pic, resume} = profileInfo.toObject()
+                        let data = new Object()
+                        data.name = name
+                        data.college = college
+                        data.degree = degree
+                        data.gpa = gpa
+                        data.grad_date = grad_date
+                        data.major = major
+                        data.summary = summary
+                        data.profile_pic = profile_pic
+                        data.resume = resume
                         res.json(data)
                     })
+                    .catch( error => {
+                        console.log(`error : ${error}`)
+                        res.json({error: 'error while processing request'})
+                    })
+
                 }else if(req.params.requestInfo === 'expInfo'){
-                    const email = user.email
+                    const email = req.query.email
                     User.findOne(
                         {email: email},
                         {"experience": 1, _id: 0}
                     )
+                    .exec()
                     .then(response=>{
-                        console.log("expInfo: ", response)
-                        const data = response.toObject();
-                        const result = data.experience;
-                        res.json(result);
+                        if(response){
+                            console.log(`exp response - ${response}`)
+                            const data = response.toObject()
+                            const result = data.experience
+                            console.log(`expt sent to client - ${JSON.stringify(result)}`)
+                            res.json(result)
+                        }else{
+                            res.status(400).end()
+                        }
                     })
                     .catch(err=>{
                         console.log("err: ", err);
@@ -57,7 +74,8 @@ module.exports = app =>{
                     })
 
                 }else if(req.params.requestInfo === 'eduInfo'){
-                    const email = user.email
+                    const email = req.query.email
+                    console.log("email: ", email)
                     User.findOne(
                         {email:email},
                         {"education": 1, _id: 0},
@@ -65,9 +83,10 @@ module.exports = app =>{
                             if(err){
                                 console.log("err: ", err);
                             }
+                            console.log('edu response - ', response)
                             const data = response.toObject();
                             const result = data.education;
-                            // console.log("GET_edu_result:", result);
+                            console.log(`edu response sent to client - ${result}`)
                             res.json(result);
                         }
                     )

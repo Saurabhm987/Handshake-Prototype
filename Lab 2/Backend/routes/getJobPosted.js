@@ -14,13 +14,21 @@ module.exports = app => {
             }else if(user.email !== null){
                 if(req.params.requestInfo === "postedjob"){
                     User.find( 
-                        { email : user.email},{postedJob: 1, _id:0},  
-                        function(err, result){
-                        if(err){
-                            console.log("error_while_getting_data", err);
+                        { email : user.email},
+                        {postedJob: 1, profile_pic: 1, _id:0}
+                    )
+                    .exec()
+                    .then(response => {
+                        if(response[0].postedJob){
+                            response = response[0].postedJob,
+                            res.json(response)
+                        }else{
+                            res.end()
                         }
-                        result= result[0].postedJob;                        
-                        res.json(result);
+                    })
+                    .catch( error => {
+                        console.log(`error : ${error}`)
+                        res.json({error : 'Error while getting posted job'})
                     })
 
                  }else if( req.params.requestInfo === "postedevent"){
@@ -37,27 +45,6 @@ module.exports = app => {
                             res.json(result);
                         }
                     )
-
-
-                // let eventPosted = new Object();
-                // let insertQuery = 'SELECT * FROM event_info WHERE company_name = ?';
-                // let query = mysql.format(insertQuery, [user.company_name]);
-                // pool.query(query, (err, rows) =>{
-                //     if(err){
-                //         console.log("QUERY_ERROR: ", err);
-                //         res.status(200).send({
-                //             message: "DB_ERROR"
-                //         });
-                //     }
-                //     console.log("getJobPosted_NO_QUERY_ERROR!");
-                //     console.log("-----------------rendered job info ---------------------------")
-
-                //     eventPosted = Object.assign(rows);
-
-                //     console.log("Posted Event.",eventPosted);
-
-                //     res.json(eventPosted);
-                // })
 
             }else{
                 console.log("no parameters provided!!");

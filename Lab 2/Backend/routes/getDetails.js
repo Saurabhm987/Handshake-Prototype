@@ -1,8 +1,9 @@
 const passport = require('passport'); 
-const User = require('../models/userModel');
+var kafka = require('../kafka/client');
 
 module.exports = app => {
     app.get('/getDetails', (req, res, next) => {
+        console.log('hitting')
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
             if(err){
                 console.log("errors while authenticating", err);
@@ -15,85 +16,35 @@ module.exports = app => {
             }else if(user.email !== null){
                 if(req.query.info === "getEventDetails"){
                     const _id = req.query.event_id;
-                    console.log("id: ", _id);
-                    User.findOne(
-                        {email: user.email}, 
-                        {"postedEvent": 1, "_id": 0},
-                        (err, result)=>{
-                            if(err){
-                                console.log("error: ", err);
-                            }
-                            result = result.postedEvent;
-                            resultArray = []
-                            resultArray = result.filter( event =>{
-                                return event._id == _id
-                            })
-                            console.log("resultArray: ", resultArray);
-                            res.json(resultArray[0]);
+
+                    let request = new Object()
+
+                    request.email = user.email
+                    request._id = _id
+
+                    kafka.make_request('get_event_detail',request, (error, result)=>{
+                        console.log("response after make_request")
+                        if(error){
+                            console.log("error: ", error)
+                            res.status(400).send({error: "kafka make_request error"})
                         }
-                    )
+                        res.json(result[0])
+                    })
+
+                }else if(req.query.info === "appliedJob"){  
+                    const email = user.email
+                    
+                    kafka.make_request('get_applications',email, (error, result)=>{
+                        console.log("response after make_request")
+                        if(error){
+                            console.log("error: ", error)
+                            res.status(400).send({error: "kafka make_request error"})
+                        }
+                        console.log('update education result - ', result)
+                        res.json(result)
+                    })
                 }
             }
         })(req, res, next);
     });
 }
-
-                // if(req.params.requestInfo === "postedjob"){
-
-                // let jobPosted = new Object();
-                // let insertQuery = 'SELECT * FROM job_post WHERE company_name = ?';
-                // let query = mysql.format(insertQuery, [user.company_name]);
-
-                // pool.query(query, (err, rows) =>{
-
-                //     if(err){
-                //         console.log("QUERY_ERROR: ", err);
-                //         res.status(200).send({
-                //             message: "DB_ERROR"
-                //         });
-                //     }
-                //     console.log("getJobPosted_NO_QUERY_ERROR!");
-                //     console.log("-----------------rendered job info ---------------------------")
-
-                //     jobPosted = Object.assign(rows);
-
-                //     console.log("job posted..",jobPosted);
-
-                //     res.json(jobPosted);
-                // })
-
-            // }else if( req.params.requestInfo === "postedevent"){
-
-            //     let eventPosted = new Object();
-
-            //     let insertQuery = 'SELECT * FROM event_info WHERE company_name = ?';
-            //     let query = mysql.format(insertQuery, [user.company_name]);
-
-            //     pool.query(query, (err, rows) =>{
-
-            //         if(err){
-            //             console.log("QUERY_ERROR: ", err);
-            //             res.status(200).send({
-            //                 message: "DB_ERROR"
-            //             });
-            //         }
-            //         console.log("getJobPosted_NO_QUERY_ERROR!");
-            //         console.log("-----------------rendered job info ---------------------------")
-
-            //         eventPosted = Object.assign(rows);
-
-            //         console.log("job posted..",eventPosted);
-
-            //         res.json(eventPosted);
-            //     })
-
-            // }
-            
-            // else{
-            //     console.log("no parameters provided!!");
-            // }
-//             }
-//         })(req, res, next);
-//     })
-// }
-

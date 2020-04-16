@@ -27,7 +27,29 @@ module.exports = app =>{
                  eventDetails.profile_pic = req.body.params.profile_pic;
                  eventDetails.location = req.body.params.event_loc;
 
-                 const email = user.email
+                 const email = user.email   
+
+                 const company_name = req.body.params.company_name
+                 studentApplied = new Object()
+                 studentApplied.name = user.name
+                 studentApplied.title = req.body.params.event_name
+                 studentApplied._id = req.body.params.event_id
+                 studentApplied.email = user.email
+                 studentApplied.status = "Applied"
+ 
+                 User.updateOne(
+                     { name : company_name },
+                     {
+                         $push:{"studentAppliedEvent": studentApplied}
+                     }
+                 )
+                 .exec()
+                 .then((response) => {
+                     console.log('response  - ', response)
+                 })
+                 .catch( error => {
+                     console.log('error - ', error)
+                 })
 
                 User.updateOne(
                     {email: email},

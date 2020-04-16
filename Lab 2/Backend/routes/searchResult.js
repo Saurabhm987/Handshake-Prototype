@@ -13,28 +13,33 @@ module.exports = app => {
                 res.status(400).end()
             }
             if(user){
-                // const email = user.email
-                const searchText = req.params.searchText
-                console.log("searchText: ", searchText);
+                const searchText = req.params.searchText.toString()
 
-                find_query = {
-                    'access':'company',
-                    'postedJob': {
-                        $elemMatch: {
-                            'title' :'Dev'
+                User.createIndexes({ title: 'text'})
+
+                User.find(
+                    {
+                        'postedJob.title' : {
+                            '$regex' : '/*'+searchText+'/*'
                         }
-                    }
-                }
-
-                User.find(find_query)
-                    .then(response=>{
-                        console.log("find_response: ", response)
-                        res.end()
-                    })
-                    .catch(err=>{
-                        console.log("error: ", err)
-                        res.status(400).end()
-                    })
+                    },
+                    { 'postedJob': 1}
+                
+                    // {
+                    //     $text: {
+                    //         $search: searchText
+                    //     }
+                    // }
+                )
+                .exec()
+                .then(response=>{
+                    console.log(" Search response -  ", JSON.stringify(response))
+                    res.end()
+                })
+                .catch(err=>{
+                    console.log("error: ", err)
+                    res.status(400).end()
+                })
 
                 res.status(200).send({message: "success"})
             }else{

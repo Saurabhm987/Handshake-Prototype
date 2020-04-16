@@ -36,23 +36,20 @@ AWS.config.update({
 
             targetName = targetName.replace(/ /g,"+");
             
-            // console.log("targetName: ", targetName);
+            let storeURL = keys.pic_url + targetName; 
+            console.log("storeURL:" , storeURL);
 
-          let storeURL = keys.pic_url + targetName; 
-          console.log("storeURL:" , storeURL);
-
-            insertQuery = 'UPDATE ?? SET ?? = ? WHERE ?? = ? '
-            query = mysql.format(insertQuery, [type, fileType, storeURL,emailType, email ])
-
-            pool.query(query, (err, res)=> {
-
-                if(err){
-                    console.log("DB_ERROR: ", err)
-                }else{
-                    console.log("inserted to db!");
-                }
-            });
+            // insertQuery = 'UPDATE ?? SET ?? = ? WHERE ?? = ? '
+            // query = mysql.format(insertQuery, [type, fileType, storeURL,emailType, email ])
+            // pool.query(query, (err, res)=> {
+            //     if(err){
+            //         console.log("DB_ERROR: ", err)
+            //     }else{
+            //         console.log("inserted to db!");
+            //     }
+            // });
             // console.log("query: ", query);
+            
             return res.send({success:true});
           }
         });

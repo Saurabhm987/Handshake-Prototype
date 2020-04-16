@@ -1,13 +1,14 @@
 const passport = require('passport'); 
 const User = require('../models/userModel');
+var kafka = require('../kafka/client');
 
 module.exports = app => {
     app.get('/getJobBoard/:requestInfo', (req, res, next) => {
+        console.log(`Get - jobboard`)
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
             if(err){
                 console.log("errors while authenticating", err);
             }
-            // console.log("getJobBoard_req_body: ", req.body.params);
 
             if(info !== undefined){
                 console.log("checking error msg from passport.." , info.message);
@@ -15,16 +16,17 @@ module.exports = app => {
                 
             }else if(user.email !== null){
                 if(req.params.requestInfo === "board"){
-                    User.find({access: "company"}, {postedJob: 1, _id: 0}, (err, result)=> {
-                        if(err){
-                            console.log('error: ', err);
+                    //kafka request 
+                    const access = "company"
+                    kafka.make_request('fetch_job_board',access, (error, result)=>{
+                        console.log("response after make_request")
+                        if(error){
+                            console.log("error: ", error)
+                            res.status(400).send({error: "kafka make_request error"})
                         }
-                        // console.log("result: ", result);
-                        let postedResult = [];
-                        result.forEach( jobs =>{
-                               postedResult = [...postedResult ,...jobs.postedJob]
-                        })
-                        res.json(postedResult);
+                        console.log("Final response: ")
+                        console.log(result)
+                        res.json(result)
                     })
             }else if(req.params.requestInfo === "applications"){
                 User.findOne({ }, {appliedJob: 1}, (err, result)=> {
@@ -38,21 +40,3 @@ module.exports = app => {
         })(req, res, next);
     })
 }
-
-
-
-                    // User.find({ }, {postedJob: 1, _id:0}, function(err, result){
-                    //     if(err){
-                    //         console.log('err: ', err);
-                    //     }
-                    //     let postedResult = [];
-                    //     result.forEach( postedJob =>{
-                    //             postedResult.push(Object.values(postedJob.postedJob));
-                    //     })
-                    //     let jobsPost = {};
-                    //     jobsPost = postedResult.filter((jobs)=>{
-                    //          return jobs.length>0;
-                    //     })
-                    //     var merged = [].concat.apply([], jobsPost);
-                    //     res.status(200).json(merged);
-                    // })

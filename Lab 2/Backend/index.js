@@ -7,6 +7,8 @@ const http = require('http')
 const app = express();
 const server = http.createServer(app)
 const  io = socketio(server)
+const path = require('path');
+
 module.exports=io;
 require('./config/passport');
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users.js');
@@ -17,7 +19,7 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,POST,PUT,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Authorization, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
     res.setHeader('Cache-Control', 'no-cache');
     next();
   });
@@ -25,6 +27,10 @@ app.use(function(req, res, next) {
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
+app.use(express.static('public/uploads'));
+
+// app.use(express.static("public"));
+
 
 io.on('connection', (socket)=>{
   socket.on('USER_CONNECT', ({ name, room }, callback) => {
@@ -33,22 +39,16 @@ io.on('connection', (socket)=>{
     if(error) return callback(error);
 
     if(user){ 
-      console.log("joined_user:  ", user)
       io.to(user.id).emit('message', {text: `Welcome ${user.name}`} )
     }
 
     })
 
   socket.on('SEND_MESSAGE', ({message, reciever, sender }, callback) => {
-    console.log("server_recieved_request")
-    console.log(`reciver_name: ${reciever}`)
     const sendMsgToReciever = getUser(reciever)
     const senderData =  getUser(sender)
-    console.log(`message sending to ${sendMsgToReciever.id}`)
-    console.log(`message_reciveed: ${message}`)
-    io.to(sendMsgToReciever.id).emit('message', { user: reciever, text: message})
+    io.to(sendMsgToReciever.id).emit('message', { user: sender, text: message})
     io.to(senderData.id).emit('message', { user: sender, text: message})
-
     callback();
   })
 
@@ -57,9 +57,7 @@ io.on('connection', (socket)=>{
   })
 })
 
-
 require('./routes/applyJob')(app);
-require('./routes/loginCompany')(app);
 require('./routes/loginStudent')(app);
 require('./routes/postJob')(app);
 require('./routes/profileCompany')(app);
@@ -72,8 +70,7 @@ require('./routes/addEduExp')(app);
 require('./routes/getJobBoard')(app);
 require('./routes/getJobPosted')(app);
 require('./routes/getResume')(app);
-require('./routes/uploadStdProfPic')(app);
-require('./routes/uploadCmpProfPic')(app);
+require('./routes/uploadfile')(app);
 require('./routes/addSkills')(app);
 require('./routes/getEventBoard')(app);
 require('./routes/applyEvent')(app);
@@ -81,9 +78,10 @@ require('./routes/postEvent')(app);
 require('./routes/getDetails')(app);
 require('./routes/getStudents')(app);
 require('./routes/uploadRes')(app);
-require('./routes/getJobAppliedStudents')(app);
+require('./routes/getAppliedStudents')(app);
 require('./routes/changeStatus')(app);
 require('./routes/searchResult')(app);
+require('./routes/fetchSkill')(app)
 
 server.listen(PORT , () => console.log(`Server is listening on port ${PORT}`));
 module.exports = app;

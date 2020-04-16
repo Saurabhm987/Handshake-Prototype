@@ -16,28 +16,32 @@ module.exports = app =>{
                 });
 
             }else{    
-                    console.log("requested body :", req.body );
                     const req_body = Object.assign(req.body.params.data);
-
                     let name = req_body.company_name; 
                     let profile_pic = req_body.profile_pic;
                     let eventName = req_body.event_name; 
                     let eventLocation = req_body.event_loc;
                     let eventDescription = req_body.event_descr;
                     let eventEligible = req_body.event_eligible;
+                    let eventTime = req_body.event_time
 
-                    console.log("copy_object: ", req_body);
+                    console.log('eventTime' , eventTime)
+
                     const email = user.email
+                    let _id = mongoose.Types.ObjectId().toString();
+                    console.log('mongoose id - ', _id)
+                    
                     User.updateOne(
                         {email: email},
                         {$push: { "postedEvent":{
-                            _id: new mongoose.Types.ObjectId(),
+                            event_id: _id,
                             name: name,
                             profile_pic: profile_pic,
                             eventName: eventName,
                             eventLocation: eventLocation,
                             eventDescription: eventDescription,
-                            eventEligible: eventEligible
+                            eventEligible: eventEligible,
+                            eventTime: eventTime
                         }}},
                         {upsert: true},
                         (err, result)=>{

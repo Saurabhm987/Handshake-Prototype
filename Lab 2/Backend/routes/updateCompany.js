@@ -1,80 +1,57 @@
 const passport = require('passport'); 
-var mysql = require('mysql');
-var pool = require('../database/db-connection');
-const uploadFile = require('../config/s3BucketUpload');
+const User = require('../models/userModel')
+// const uploadFile = require('../config/s3BucketUpload');
   
 module.exports = app => {
 app.post('/updateCompanyProfile',  (req, res, next) =>{
+    console.log('update profile')
+    passport.authenticate('jwt', {session: false}, (err, user, info) =>{
 
-    console.log("updateComapanyReq: ", req);
-    console.log("CHECKING_AUTH_TOKEN");
-
-    passport.authenticate('jwtcompany', {session: false}, (err, user, info) =>{
-    console.log("IN_UPDATE_COMPANY_PROFILE!");
-
-    if(err){
-        console.log("updateStudent_ERROR: ",   err);
-    }
+        if(err){
+            console.log("updateStudent_ERROR: ",   err);
+        }
     
     if(info !== undefined){
         console.log("ERROR_MESSGE_UPDATE_STUDENT",   info.message);
-        res.status(200).send(info.message);
+        res.json({error : info.message});
 
-    }else if(user.company_email !== ""){
-        console.log("updateStudent..user exist!");
-
+    }else if(user.email !== ""){
         if(req.body.params.requestInfo === "LOGIN"){
-
-                console.log("IN_LOGIN_UPDATE");
                 let reqObj = req.body.params.data;
-                // console.log("updateStudent_login_reqObj: ",reqObj)
-                company_email = user.company_email;
-            
-                let loginObj = {
-                    company_loc: reqObj.company_loc,
-                    company_contact : reqObj.company_contact,
-                }
-
-                let insertQuery = 'UPDATE company_info SET ? WHERE company_email = ? ';
-                let query = mysql.format(insertQuery, [loginObj, company_email ] );
-                console.log("QUERY_FORMED: ", query);
-
-                pool.query(query, (err, row)=>{
-                    if(err){
-                        console.log("QUERY_ERROR: ", err);
-                        res.end();
+                const email = user.email;
+         
+                User.findOneAndUpdate(
+                    { email : email},
+                    {
+                        $set: {location : reqObj.location, contact: reqObj.contact}
                     }
-                    console.log("ROWS: ", row);
-                    console.log("QUERY_SUCCESS!");
+                )
+                .then(response => {
+                    console.log(`response - ${response}`)
+                    res.end()
                 })
-                
-                res.status(200).send({
-                    message: "Updated"
-                });
+                .catch( error => {
+                    console.log(`error : ${error}`)
+                    res.end()
+                })
 
     }else if(req.body.params.requestInfo === "DESCR"){
-
-        console.log("Description edit!");
-
-        let company_email = user.company_email;
-        let data = req.body.params.data
-    
-        console.log("REQUESTED_BODY: ",data);
-
-        let insertQuery = 'UPDATE company_info SET ? WHERE company_email = ?';
-        let query = mysql.format(insertQuery, [data, company_email]);
-        
-        pool.query(query, (err, rows)=>{
-            if(err){
-                console.log("QUERY_ERROR", err);
-                res.status(200).end();
-            }   
-
-            console.log("QUERY_SUCCESS!");
+        let email = user.email;
+        let description = req.body.params.data
+        console.log('description : ', description)
+        User.findOneAndUpdate(
+            {email : email},
+            { description : description },
+            {new : true}
+        )
+        .then( response => {
+            response = response.toObject()
+            res.json(response.description)
         })
-
-        res.end();
-
+        .catch( error => {
+            console.log(`error : ${error}`)
+            res.end()
+        })
     }else{
         console.log("PLEASE_PROVIDE_SUMMARY_PARAMS!");
         console.log("request_query", req);
