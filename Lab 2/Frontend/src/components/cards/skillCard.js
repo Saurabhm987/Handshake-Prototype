@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import {addSkill} from '../../actions/applyActions'
@@ -45,7 +44,6 @@ class SkillCard extends Component {
                 token: accessString
             })
 
-        // this.props.fetchSkill(accessString)
     }
 
     render(){
@@ -99,11 +97,6 @@ class SkillCard extends Component {
 SkillCard.propTypes = {
     skills: PropTypes.array.isRequired,
     addSkill: PropTypes.func.isRequired,
-    fetchSkill: PropTypes.func.isRequired
 }
 
-const mapStateToprops = state => ({
-    skills : state.Handshake_User_Info.skills
-})
-
-export default connect(mapStateToprops, {addSkill, fetchSkill})(SkillCard)
+export default connect(null, {addSkill})(SkillCard)

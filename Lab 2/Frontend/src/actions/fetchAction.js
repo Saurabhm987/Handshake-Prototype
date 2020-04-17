@@ -369,11 +369,14 @@ export const getApplications = (accessString) => dispatch => {
 }
 
 
-export const fetchSkill = (accessString) => dispatch => {
+export const fetchSkill = (accessString, email) => dispatch => {
     axios.get( API_ENDPOINT+ "/fetchSkill", 
     {
         headers: {
             Authorization: `JWT ${accessString}`
+        },
+        params: {
+            email: email
         }
     }
     )

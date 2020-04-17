@@ -9,7 +9,7 @@ import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
 import { parseToken } from '../auth/parseToken';
 import { connect } from 'react-redux';
-import {fetchStudent} from '../../actions/fetchAction'
+import {fetchStudent, fetchSkill} from '../../actions/fetchAction'
 import PropTypes from 'prop-types'
 import {fetchStudentProfile, fetchEducation, fetchExperience} from '../../actions/fetchAction'
 
@@ -46,11 +46,13 @@ class StudentProfile extends Component {
         this.props.fetchStudentProfile(accessString, email)
         this.props.fetchEducation(accessString, email)
         this.props.fetchExperience(accessString, email)
+        this.props.fetchSkill(accessString, email)
+
     }
 
     render(){
         const {adminView, email} = this.state
-        const {profileInfo, educationInfo, experienceInfo} = this.props
+        const {profileInfo, educationInfo, experienceInfo, skills} = this.props
         console.log("experiencInfoProps: ", experienceInfo)
         if(this.state.isLogin === true){
         return(
@@ -64,7 +66,7 @@ class StudentProfile extends Component {
                             <InterestCard  adminView={adminView}/>
                         </div>
                         <div className="ui cards" style={{marginLeft: "50%"}}>
-                            <SkillCard  adminView={adminView}/>
+                            <SkillCard  adminView={adminView} skills={skills}/>
                         </div>
                     </div>
                     <div className="col-md-8">
@@ -97,7 +99,9 @@ StudentProfile.propTypes = {
     fetchStudentProfile: PropTypes.func.isRequired,
     profileInfo:PropTypes.object.isRequired,
     fetchExperience: PropTypes.func.isRequired,
-    experienceInfo:PropTypes.array.isRequired
+    experienceInfo:PropTypes.array.isRequired,
+    fetchSkill: PropTypes.func.isRequired
+
   }
   
   const mapStateToProps = state => ({
@@ -105,6 +109,7 @@ StudentProfile.propTypes = {
     educationInfo: state.Handshake_User_Info.educationInfo,
     profileInfo: state.Handshake_User_Info.profileInfo,
     experienceInfo: state.Handshake_User_Info.experienceInfo,
+    skills : state.Handshake_User_Info.skills
   })
   
-  export default connect(mapStateToProps, {fetchStudent,fetchStudentProfile, fetchEducation, fetchExperience})(StudentProfile)
+  export default connect(mapStateToProps, {fetchStudent,fetchStudentProfile, fetchEducation, fetchExperience, fetchSkill})(StudentProfile)
