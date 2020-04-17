@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Redirect, withRouter} from 'react-router-dom';
 import {updateDescription} from '../../actions/updateAction'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
@@ -107,12 +107,16 @@ import {parseToken} from '../auth/parseToken'
                                 <br/>
                                 <div className="paragraph"><h4>{this.props.description}</h4></div>
                     </div>
-                    <div className="extra content">
-                        <div onClick= {this.handleEdit} data-descriptionEdit = "descriptionEdit" className="ui bottom attached center medium button">
-                                    <i className="edit icon"></i>
-                                        Edit 
-                        </div>
-                    </div>
+                    {
+                        (this.props.adminView === true)
+                            ?<div className="extra content">
+                                    <div onClick= {this.handleEdit} data-descriptionEdit = "descriptionEdit" className="ui bottom attached center medium button">
+                                                <i className="edit icon"></i>
+                                                    Edit 
+                                    </div>
+                                </div>
+                                : null
+                    }
                 </div>           
         )
     }
@@ -134,4 +138,4 @@ CompanyDescriptionCard.propTypes = {
     updateDescription : PropTypes.func.isRequired,
 }
 
-export default connect(null, {updateDescription})(CompanyDescriptionCard);
+export default connect(null, {updateDescription})(withRouter(CompanyDescriptionCard));

@@ -1,4 +1,4 @@
-    import {FETCH_SKILL, ADD_SKILL, GET_APPLICATIONS, JOB_APPLIED_STUDENT,MESSAGE,ERROR, LOGIN, UPDATE_DESCRIPTION, REGISTER,FETCH_COMPANY_PROFILE,  FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT, FETCH_APPLIED_EVENT, UPDATE_STUDENT_PROFILE, FETCH_STUDENT_PROFILE, UPDATE_SUMMARY, ADD_EDUCATION, FETCH_EXPERIENCE, UPDATE_EDUCATION, FETCH_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE, SEARCH, FETCH_STUDENT} from '../actions/types';
+    import {UPDATE_COMPANY_PROFILE, FETCH_COMPANY,FETCH_SKILL, ADD_SKILL, GET_APPLICATIONS, JOB_APPLIED_STUDENT,MESSAGE,ERROR, LOGIN, UPDATE_DESCRIPTION, REGISTER,FETCH_COMPANY_PROFILE,  FETCH_DASHBOARD, LOGOUT, JOB_APPLY, FETCH_EVENT, FETCH_APPLIED_EVENT, UPDATE_STUDENT_PROFILE, FETCH_STUDENT_PROFILE, UPDATE_SUMMARY, ADD_EDUCATION, FETCH_EXPERIENCE, UPDATE_EDUCATION, FETCH_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE, SEARCH, FETCH_STUDENT} from '../actions/types';
 
     const initialState = {
         regdetails : {},
@@ -7,6 +7,7 @@
         jobDetails: [],
         eventDetails: [],
         studentDetails:[],
+        companyList:[],
         companyDetails: {},
         educationInfo: [],
         experienceInfo:[],
@@ -171,6 +172,14 @@
                     }
                 }
 
+            case UPDATE_COMPANY_PROFILE:
+                return{ 
+                    ...state,
+                    companyDetails : {
+                        ...state.companyDetails, contact:action.payload.contact, location:action.payload.location
+                    }
+                }
+
             case ERROR:
                 return{
                     ...state,
@@ -213,6 +222,12 @@
                     skills: action.payload
                 }
             
+            case FETCH_COMPANY:
+                return{
+                    ...state,
+                    companyList: action.payload
+                }
+
             default:
                 return state;
         }

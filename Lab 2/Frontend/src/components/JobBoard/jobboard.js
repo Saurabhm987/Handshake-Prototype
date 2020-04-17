@@ -61,6 +61,9 @@ sendData = () => {
             console.log("token is null!");
             this.props.push("login");
         }
+        console.log('applying to this job - ', this.state)
+        alert(`You have applied`)
+
         this.props.applyJob(this.state)
 
         console.log('after applied - ', this.props.error)
@@ -207,14 +210,6 @@ render() {
       </div>
         )
       }
-  // let searchBar = (
-  //   <div className ="row">
-  //             <div className="ui fluid action input" style={{marginLeft: "1.5%", marginRight:"1.5%", width:"100%"}}>
-  //                 <input type="text" placeholder="Search opportunities"/>
-  //                 <div className="ui button">Search</div>
-  //             </div>
-  //     </div>
-  // )
   let filters = (
     <div className="row" style={{ padding:"16px", background:"white", marginLeft: "9px", marginRight:"3px"}}>
           <button className="ui primary basic button" value="Full-Time" onClick={this.handleFilter}>Full-Time Internship</button>
@@ -226,9 +221,9 @@ render() {
   let lefBar = (
     <div className="ui items" id="scroll">
         { renderdata.map( (item, index) =>
-          <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
-                <img src={item.profile_pic}  style={{width:"170px", height:"125px"}}/>
-                <div className="content" style={{padding: "5px"}}>
+          <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "5px"}}>
+                <img src={`${API_ENDPOINT}/${item.profile_pic}`}  style={{width:"150px", height:"125px", margin:"8px 11px"}}/>
+                <div className="content" style={{padding: "5px"}}>  
                     <div className="header" > {item.title}</div>
                         <div className="meta">
                             <span><b>{item.name}</b> ,{item.location}</span>

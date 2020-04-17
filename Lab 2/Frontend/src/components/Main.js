@@ -22,6 +22,8 @@ import JobAppliedStudent from './cards/jobAppliedStudentCard';
 import EventAppliedStudents from './cards/eventAppliedStudentCard';
 import Chat from '../components/message/chat/Chat'
 import PdfView from '../components/cards/pdfView'
+import EventDetail from '../components/cards/getEventDetail'
+import ComapnyListCard from '../components/cards/companyListCard'
 
 class Main extends Component {
     render() {
@@ -46,10 +48,12 @@ class Main extends Component {
                 <Route exact path="/companyProfile" component={CompanyProfile} />
                 <Route exact path="/details" component={DetailsCard} />
                 <Route exact path="/students" component={StudentsCard} />
+                <Route exact path="/companies" component={ComapnyListCard} />
                 <Route exact path="/jobAppliedStudent" component={JobAppliedStudent} />
                 <Route exact path="/eventAppliedStudent" component={EventAppliedStudents} />
                 <Route exact path='/chat' component={Chat}></Route>
                 <Route exact path='/viewPdf' component={PdfView}></Route>
+                <Route exact path ='/eventDetail' component={EventDetail} ></Route>
             </div>
             </BrowserRouter>
         );

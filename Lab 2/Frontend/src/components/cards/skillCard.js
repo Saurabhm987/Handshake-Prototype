@@ -51,34 +51,47 @@ class SkillCard extends Component {
     render(){
 
         let skills = this.props.skills
-        console.log('---------------skills -----------------', skills)
-        if(this.props.adminView){
+        if(this.props.skills){
             return(
-                        <div>
-                            <div className='row' style={{margin: "10px 10px 0px 5px"}}>
-                               <h3> Skills</h3>
-                            </div>
-                            <div className="row" style={{margin: "10px 10px 0px 5px"}}>
-                                {  skills.map( item => 
-                                            <a class="ui label">
-                                                {item}
-                                                <i class="delete icon"></i>
-                                            </a>
-                                    )
-                                }
-                            </div>
-                                <div className="ui action input" style={{margin:"5px"}}>
-                                    <input type="text" placeholder="Add..."  name="skill" onChange={this.changeHandler}/>
-                                            <button class="ui icon button" onClick={this.addSkills}>
-                                            <i class="add icon"></i>
-                                    </button>
-                                </div>
+                    <div>
+                        <div className='row' style={{margin: "10px 10px 0px 5px"}}>
+                            <h3> Skills</h3>
                         </div>
+                        <div className="row" style={{margin: "10px 10px 0px 5px"}}>
+                            {  skills.map( item => 
+                                        <a class="ui label">
+                                            {item}
+                                            <i class="delete icon"></i>
+                                        </a>
+                                )
+                            }
+                        </div>
+                        {
+                        (this.props.adminView === true)
+                            ?<div className="ui action input" style={{margin:"5px"}}>
+                                <input type="text" placeholder="Add..."  name="skill" onChange={this.changeHandler}/>
+                                        <button class="ui icon button" onClick={this.addSkills}>
+                                        <i class="add icon"></i>
+                                </button>
+                            </div>
+                            : null
+                        }
+                    </div>
             );
         }else{
-            return(
-                null
-            )
+            console.log('adming view -------------', this.props.adminView)
+            if(this.props.adminView){
+                return(
+                    <div className="ui action input" style={{margin:"5px"}}>
+                        <input type="text" placeholder="Add..."  name="skill" onChange={this.changeHandler}/>
+                            <button class="ui icon button" onClick={this.addSkills}>
+                                <i class="add icon"></i>
+                            </button>
+                    </div>
+                )
+            }else{
+                return null
+            }
         }
     }
 }

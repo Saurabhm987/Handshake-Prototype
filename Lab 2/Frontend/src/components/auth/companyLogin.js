@@ -114,7 +114,7 @@ class CompanyLogin extends Component{
       </div>
       )}else{
         return (
-          <Redirect to="companyProfile"/>    
+          <Redirect to={`companyProfile?email=${this.state.email}`}/>    
         )
       }
     }

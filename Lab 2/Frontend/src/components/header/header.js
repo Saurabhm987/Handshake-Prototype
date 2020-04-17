@@ -14,7 +14,8 @@ class Header extends Component{
             access:"",
             email:"",
             searchText:"",
-            token: ""
+            token: "",
+            job:"active item",
         }
         this.handleLogout = this.handleLogout.bind(this);
     };
@@ -88,13 +89,13 @@ class Header extends Component{
                                     Student Login
                                 </a>
                                 <a href="/companyLogin" className="item">
-                                Employer Login
+                                    Employer Login
                                 </a>
                                 <a href="/companyReg" className="item">
-                                Employer Registration
+                                    Employer Registration
                                 </a>
                                 <a href="register" className="item">
-                                Student Registration
+                                    Student Registration
                                 </a>
                             </div>
                     </div>
@@ -110,11 +111,13 @@ class Header extends Component{
                         </div>
                     </div>
 
-                    <div className="right menu">
+                    <div className="right menu" >
                         <Link to="/jobBoard" className="item">Jobs </Link>
                         <Link to="/eventBoard" className="item">Events</Link>
-                        <Link to={`/chat?name=${this.state.email}`} className='item'>Messages</Link>
-                        <Link to="/students" className="item">Students</Link>
+                        <Link to={`/chat?name=${this.state.email}`} className="item">Messages</Link>
+                        <Link to="/students" name="student" className="item">Students</Link>
+                        <Link to="/companies" name="company" className="item">Companis</Link>
+
                         <div className="ui simple dropdown item">
                                 {this.state.email}
                                 <i className="dropdown icon"></i>
@@ -129,42 +132,75 @@ class Header extends Component{
                  </div>
             )
 
-            let CompanyLogin = (
-                
-                <div className="ui blue inverted menu" style={{padding:"10px"}}>
-                    <Link to="/companyPostedJobCard" className="item"> Posted Job </Link>                
-                    <Link to="/companyPostedEventCard" className="item">Event Posted </Link>
+            let newCompanyLogin=(
+
+                <div className="ui secondary menu" style={{padding:"10px", marginLeft: "19.5%", marginRight:"20%"}}>
+                <div className="item">
+                    <div className="ui action left icon input">
+                        <i className="search icon"></i>
+                        <input type="text" placeholder="Search" />
+                        <button className="ui button">Search</button>
+                    </div>
+                </div>
+                <div className="right menu" >
+                    <Link to={`/companyPostedJobCard?email=${this.state.email}`} className="item">Posted Job </Link>
+                    <Link to="/companyPostedEventCard" className="item">Posted Events</Link>
+                    <Link to={`/chat?name=${this.state.email}`} className="item">Messages</Link>
                     <Link to="/jobAppliedStudent" className="item">Job Applied</Link>
                     <Link to="/eventAppliedStudent" className="item">Event Registered</Link>
-
-                    <div className="right menu">
-                        <div className="ui simple dropdown item">
-                                {this.state.email}
-                                <i className="dropdown icon"></i>
-                                <div className=" menu">
-                                    <Link to={`/companyProfile?email=${this.state.email}`} className="item">Profile</Link>
-                                    <Link to="/jobPost" className="item" >Post Job</Link>
-                                    <Link to="/eventPost" className="item" >Post Event</Link>
-                                    <Link to="/companyLogin" className="item" onClick={this.handleLogout}>Logout</Link>
-                                </div>
+                    <Link to="/students" name="student" className="item">Students</Link>
+                    <Link to="/companies" name="company" className="item">Companis</Link>
+                    <div className="ui simple dropdown item">
+                            {this.state.email}
+                            <i className="dropdown icon"></i>
+                            <div className=" menu">
+                            <Link to={`/companyProfile?email=${this.state.email}`} className="item">Profile</Link>
+                            <Link to="/jobPost" className="item" >Post New Job</Link>
+                            <Link to="/eventPost" className="item" >Post New Event</Link>
+                            <Link to="/companyLogin" className="item" onClick={this.handleLogout}>Logout</Link>
                         </div>
                     </div>
+                </div>
              </div>
+
             )
+
+            // let CompanyLogin = (
+                
+            //     <div className="ui blue inverted menu" style={{padding:"10px"}}>
+            //         <Link to="/companyPostedJobCard" className="item"> Posted Job </Link>                
+            //         <Link to="/companyPostedEventCard" className="item">Event Posted </Link>
+            //         <Link to="/jobAppliedStudent" className="item">Job Applied</Link>
+            //         <Link to="/eventAppliedStudent" className="item">Event Registered</Link>
+
+            //         <div className="right menu">
+            //             <div className="ui simple dropdown item">
+            //                     {this.state.email}
+            //                     <i className="dropdown icon"></i>
+            //                     <div className=" menu">
+            //                         <Link to={`/companyProfile?email=${this.state.email}`} className="item">Profile</Link>
+            //                         <Link to="/jobPost" className="item" >Post Job</Link>
+            //                         <Link to="/eventPost" className="item" >Post Event</Link>
+            //                         <Link to="/companyLogin" className="item" onClick={this.handleLogout}>Logout</Link>
+            //                     </div>
+            //             </div>
+            //         </div>
+            //  </div>
+            // )
 
        const {isLogin, access} = this.state;    
         
        if(isLogin){
             if(access === "student"){
                 return(
-                    <div>
+                    <div style={{background:"white", borderBottom:"2px solid rgb(220, 220, 220)"}}>
                         {StudentLogin}
                     </div>
                 )
             }else{
                 return(
-                    <div>
-                        {CompanyLogin}
+                    <div style={{background:"white", borderBottom:"2px solid rgb(220, 220, 220)"}}>
+                        {newCompanyLogin}
                     </div>
                 )
             }

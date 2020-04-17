@@ -188,9 +188,7 @@ import {API_ENDPOINT} from '../controller/endpoint';
         return(
             <div className="ui card">
                     <div className="image">
-                            {/* <img src="http://localhost:3001/file-1586426967363.png" alt=""/> */}
                         <img src={`${API_ENDPOINT}/${profile_pic}`} alt=""/>
-
                     </div>
                     <div className="content">
                         <div className="header">{name}</div>

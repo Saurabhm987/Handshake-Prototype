@@ -181,12 +181,16 @@ import { connect } from 'react-redux';
                                     <div className="description"><h2>{location}</h2></div>
                                     <div className="description"><h3>{contact}</h3></div>
                             </div>
-                            <div className="extra content">
+                            {   
+                            (this.props.adminView === true)
+                            ?<div className="extra content">
                                     <div onClick= {this.handleEdit} className="ui bottom attached center medium button">
                                                 <i className="edit icon"></i>
                                                     Edit 
                                     </div>
                             </div>
+                            : null
+                            }
                     </div>
                     
         )
@@ -205,4 +209,4 @@ import { connect } from 'react-redux';
     }
 }
 
-export default connect(null, {updateProfileInfo})(CompanyInfoCard);
+export default connect(null, {updateProfileInfo})(withRouter(CompanyInfoCard));

@@ -8,13 +8,13 @@ class JobPost extends Component{
         super(props);
 
         this.state = {
-            company_name : "",
+            name : "",
             email: "",
             password: "",
-            company_loc: "",
-            company_descr: "",
-            company_contact: "",
-            company_profile_photo: "",
+            location: "",
+            description: "",
+            contact: "",
+            profile_pic: "",
             access: "company"
         }
         
@@ -55,7 +55,7 @@ class JobPost extends Component{
             <form className="ui form">
               <div className="field">
                     <h5><label>Company Name</label></h5>
-                     <input onChange={this.changeHandler} type="text" name="company_name" placeholder="Company Name"/>
+                     <input onChange={this.changeHandler} type="text" name="name" placeholder="Company Name"/>
                 </div>
                 <br/>
                 <div className="field">
@@ -70,17 +70,17 @@ class JobPost extends Component{
                 <br/>
                 <div className="field">
                     <h5><label>Location </label></h5>
-                     <input onChange={this.changeHandler} type="text" name="company_loc" placeholder="Location"/>
+                     <input onChange={this.changeHandler} type="text" name="location" placeholder="Location"/>
                 </div>
                 <br/>
                 <div className="field" >
                     <h5><label>Company Description</label></h5>
-                     <input onChange={this.changeHandler} type="text" name="company_descr" placeholder="Company Description"/>
+                     <input onChange={this.changeHandler} type="text" name="description" placeholder="Company Description"/>
                 </div> 
                 <br/>
                 <div className="field" >
                     <h5><label>Contact Number</label></h5>
-                     <input onChange={this.changeHandler} type="text" name="company_contact" placeholder="Contact Number"/>
+                     <input onChange={this.changeHandler} type="text" name="contact" placeholder="Contact Number"/>
                 </div> 
                 <br/>
                 <button onClick= {this.submitForm} className=" large ui button" type="submit">Register</button>

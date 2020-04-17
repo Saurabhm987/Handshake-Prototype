@@ -33,33 +33,6 @@ componentDidMount(){
 
   this.props.fetchCompanyPostedEvent(accessString);
 
-//   this.instance.get("/getJobPosted/postedevent", { 
-//       headers: {
-//           Authorization: `JWT ${accessString}`
-//       }
-//   } )
-//   .then(response => {
-//           if(response.status === 200){
-//             if(response.data === "jwt expired" && response.data === "jwt malformed"){
-//               localStorage.removeItem('JWT');
-//               this.setState({
-//                 isLogin: false
-//               })
-//               this.props.history.push("/companyLogin");
-//             }
-//               this.setState({
-//                   applicationData:response.data
-//               })
-//               console.log("Application_Data: ", this.state.applicationData);
-//           }else{
-//               console.log("ERROR");
-//           }
-//       })
-//       .catch((err)=>{
-//           console.error(err);
-//       })
-
-
 }
 
 render(){

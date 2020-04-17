@@ -70,7 +70,7 @@ if(renderdata !== undefined && renderdata.length > 0){
             <div className="ui items">
                     { renderdata.map( (item, index) =>
                     <div className="item" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "15px 10px 0px 15px ", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
-                        <img src={item.profile_pic} style={{width:"200px", height:"110px"}}/>
+                        <img src={`${API_ENDPOINT}/${item.profile_pic}`} alt="" style={{width:"200px", height:"110px"}}/>
                         <div className="content" style={{padding:"5px 5px 5px 100px"}}>
                                 <div className="header" ><h4><b>{item.name}</b></h4></div>
                                 <div className="extra" ><h4><b>{item.company_name}</b></h4></div>
@@ -90,8 +90,8 @@ if(renderdata !== undefined && renderdata.length > 0){
     )        
     }else{
         return(
-            <div>
-                No event applied!
+            <div className="container" style={{marginTop: "20px"}}>
+                <h2>No event applied!</h2>
             </div>
         )
     }

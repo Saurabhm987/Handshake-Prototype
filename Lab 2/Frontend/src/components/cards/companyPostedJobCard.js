@@ -7,6 +7,7 @@ export default class CompanyPostedJobCard extends Component {
     super(props);
     this.state ={
       applicationData: [],
+      adminView: true
     }
     this.instance = axios.create({
       baseURL: API_ENDPOINT,
@@ -24,6 +25,16 @@ componentDidMount(){
       })
   }
 
+  if( this.props.email === undefined){
+    this.setState({
+      adminView: true
+    })
+  }else{
+    this.setState({
+      adminView: false
+    });
+  }
+
   this.instance.get("/getJobPosted/postedjob", { 
       headers: {
           Authorization: `JWT ${accessString}`
@@ -36,11 +47,12 @@ componentDidMount(){
                 isLogin: false
               })
               this.props.history.push("/companyLogin");
-            }else if(response.data === ''){}
+            }else{
               this.setState({
                   applicationData:response.data
               })
               console.log("Application_Data: ", this.state.applicationData);
+            }
           }else{
               console.log("ERROR");
           }
@@ -52,9 +64,16 @@ render(){
 
 const renderdata = this.state.applicationData;
 if(renderdata && renderdata.length > 0){
+
+  console.log('admin View -----------------', this.props.adminView)
+
   return(
-    <div className="container">
+    (this.state.adminView)
+    ?<div className="container">
         <div className="row" style={{marginTop:"2%"}} >
+        <div>
+          <h1>Posted Job</h1>
+        </div>
           <div className="ui items" style={{width:"100%"}}>
                   { renderdata.map( (item, index) =>
                   <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "5px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
@@ -69,12 +88,15 @@ if(renderdata && renderdata.length > 0){
             </div>
          </div>
       </div>
+      : null
   )
 }else{
   return (
-    <div className="container" style={{marginTop: "20px"}}>
+    (this.props.adminView)
+    ?<div className="container" style={{marginTop: "20px"}}>
               <h2>No Job Posted!</h2>
     </div>
+    : null
   )
 }
    

@@ -1,4 +1,4 @@
-import {LOGOUT, GET_APPLICATIONS, JOB_APPLIED_STUDENT,FETCH_DASHBOARD, FETCH_COMPANY_PROFILE, FETCH_EVENT, FETCH_APPLIED_EVENT, FETCH_STUDENT_PROFILE, FETCH_EXPERIENCE, FETCH_EDUCATION, SEARCH, FETCH_STUDENT, ERROR, FETCH_SKILL} from './types';
+import {FETCH_COMPANY, LOGOUT, GET_APPLICATIONS, JOB_APPLIED_STUDENT,FETCH_DASHBOARD, FETCH_COMPANY_PROFILE, FETCH_EVENT, FETCH_APPLIED_EVENT, FETCH_STUDENT_PROFILE, FETCH_EXPERIENCE, FETCH_EDUCATION, SEARCH, FETCH_STUDENT, ERROR, FETCH_SKILL} from './types';
 import {API_ENDPOINT} from '../components/controller/endpoint';
 import axios from 'axios';
 
@@ -244,6 +244,38 @@ export const  fetchStudent = (accessString) => dispatch => {
     })
 }
 
+
+export const  fetchCompanies = (accessString) => dispatch => {
+    console.log('hitting fetch companies')
+    axios.get(API_ENDPOINT+"/getCompanies", { 
+        headers: {
+            Authorization: `JWT ${accessString}`
+        }
+    } ).then(response => {
+            if(response.status === 200){
+                    if(response.data === "jwt expired"){
+                            localStorage.removeItem('JWT');
+                            dispatch({
+                                type: FETCH_COMPANY,
+                                message: "jwt expired"
+                            })
+                    }else{
+                        dispatch({
+                            type : FETCH_COMPANY,
+                            payload: response.data,
+                            message: "fetched student!"
+                         });
+                    }  
+            }else{
+                console.log("ERROR");
+            }
+    })
+    .catch( error => {
+        console.log('error : ', error)
+    })
+}
+
+
 export const fetchCompanyPostedEvent =(accessString) => dispatch => {
     axios.get(API_ENDPOINT+"/getJobPosted/postedevent", { 
     headers: {
@@ -402,3 +434,17 @@ export const searchJobType = (searchText, data) => dispatch => {
         payload: result
     })
 }
+
+
+export const filterStudent = (searchText, data) => dispatch => {
+    if(searchText){
+        var result  = data.filter( item => item.profileInfo.major.includes(searchText) )
+    }
+
+    dispatch({
+        type: FETCH_STUDENT,
+        payload: result
+    })
+}
+
+

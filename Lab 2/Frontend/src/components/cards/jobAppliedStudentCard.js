@@ -94,7 +94,7 @@ render(){
                     { renderdata.map( (item, index) =>
                     <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", margin:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
                         {/* <div className="image">￼ */}
-                                <img src="" style={{width:"200px", height: "130px" }}/>
+                                <img src={`${API_ENDPOINT}/${item.profile_pic}`} style={{width:"200px", height: "130px" }}/>
                         {/* </div> */}
                         <div className="content" style={{padding: "10px 5px 5px 60px", color:"black"}}>
                         <Link to={`/studentProfile?email=${item.email}`}>

@@ -79,8 +79,6 @@ import queryString from 'query-string';
             this.props.history.push('/login');
         }
 
-        // const {email} = queryString.parse(location.search);
-
         await this.setState({
             event_id: this.props.location.event_id || "",
 
@@ -98,12 +96,12 @@ renderViewMode = () => {
                     <div>
                     <br/>
                         <div className="row">
-                            <img src={`${API_ENDPOINT}/${profile_pic}`} style={{width:"1150px", height:"400px"}}/>
+                            <img src={`${API_ENDPOINT}/${profile_pic}`} alt="" style={{width:"1150px", height:"400px"}}/>
                         </div>
                         <div className="row">
                             <div className="ui items" style={{width:"100%"}}>
                                         <div className="item" onClick={this.cardSelect} style={{background: "white", padding: "10px 10px 10px 10px", marginTop:"15px", boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.10)"}}>
-                                            <img src={`${API_ENDPOINT}/${profile_pic}`} style={{width:"200px", height: "110px" }}/>
+                                            <img src={`${API_ENDPOINT}/${profile_pic}`} alt="" style={{width:"200px", height: "110px" }}/>
                                             <div className="content" style={{padding: "10px 5px 5px 50px"}}>
                                                     <div className="header" ><h4><b>{event_name}</b></h4></div>
                                                     <div className="extra"><h4><b>{event_loc}</b></h4></div>

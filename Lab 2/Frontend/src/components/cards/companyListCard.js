@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {API_ENDPOINT} from '../controller/endpoint';
-import {fetchStudent, filterStudent} from '../../actions/fetchAction'
+import {fetchCompanies, filterStudent} from '../../actions/fetchAction'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 
-class StudentsCard extends Component {
+class ComapnyListCard extends Component {
   constructor(props){
     super(props);
 
@@ -45,7 +44,7 @@ componentDidMount(){
       })
       console.log("token is null!");
   }
-  this.props.fetchStudent(accessString);
+  this.props.fetchCompanies(accessString);
 }
 
 render(){
@@ -59,7 +58,7 @@ render(){
       </div>
   )
 
-const renderdata = this.props.studentDetails;
+const renderdata = this.props.companyList;
 console.log('renderdata - ', renderdata)
 
   if(renderdata !== undefined){
@@ -70,18 +69,17 @@ console.log('renderdata - ', renderdata)
         <br/>
             <div className="row" style={{marginTop:"2%"}} >
             <div className="header" style={{marginLeft: "14px"}}>
-                        <h2>Students</h2>
+                        <h2>Companies</h2>
               </div>
             <div className="ui items" style={{width:"100%"}}>
                     { renderdata.map( (item, index) =>
                     <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", margin:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
                         <img src={`${API_ENDPOINT}/${item.profileInfo.profile_pic}`} alt="" style={{width:"200px", height: "130px" }}/>
                         <div className="content" style={{padding: "10px 5px 5px 60px"}}>
-                          <Link to={`/studentProfile?email=${item.email}`}>
-                                  <div className="header" ><h4><b>{item.name}</b></h4></div>
+                          <Link to={`/companyProfile?email=${item.email}`}>
+                                  <div className="header" ><h4><b>{item.profileInfo.name}</b></h4></div>
                           </Link>
-                          <div className="extra"><b>{item.college}</b></div>
-                          <div className="extra"><b>Major : {item.profileInfo.major}</b></div>
+                          <div className="extra"><b>{item.profileInfo.location}</b></div>
                         </div>
                     </div>
                     )}
@@ -92,12 +90,12 @@ console.log('renderdata - ', renderdata)
   }else{
       return(
         <div className="container">
-            <div className="row" style={{marginTop:"2%"}} >
+            <div className="row" style={{margin:"2%"}} >
                 <div className="header">
-                            <h2>Students</h2>
+                            <h2>Companies</h2>
                   </div>
-                  <div className="ui items">
-                      No Data!
+                  <div>
+                      <h3>No Data!</h3>
                   </div>
               </div>
           </div>
@@ -106,13 +104,13 @@ console.log('renderdata - ', renderdata)
 }
 }
 
-StudentsCard.propTypes = {
-  studentDetails : PropTypes.array.isRequired,
-  fetchStudent : PropTypes.func.isRequired
+ComapnyListCard.propTypes = {
+  companyList : PropTypes.array.isRequired,
+  fetchCompanies : PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
-  studentDetails : state.Handshake_User_Info.studentDetails
+  companyList : state.Handshake_User_Info.companyList
 })
 
-export default connect(mapStateToProps, {fetchStudent, filterStudent})(StudentsCard)
+export default connect(mapStateToProps, {fetchCompanies, filterStudent})(ComapnyListCard)

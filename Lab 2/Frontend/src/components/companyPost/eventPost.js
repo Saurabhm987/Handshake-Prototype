@@ -75,6 +75,7 @@ class EventPost extends Component{
         const eventInfo = Object.assign(this.state); 
         delete eventInfo.isLogin;
         console.log('eventtime - ', this.state.event_time)
+        alert('Event posted!')
         this.props.postEvent(eventInfo, this.state.token)
     
     }

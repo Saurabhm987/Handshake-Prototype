@@ -61,8 +61,8 @@ if(renderdata !== null && renderdata !== undefined && renderdata.length > 0){
             <div className="ui items">
                     { renderdata.map( (item, index) =>
                     <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "10px", marginTop:"15px", boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.10)"}}>
-                        <img src={item.profile_pic} style={{width:"200px", height:"110px"}}/>
-                        <div className="content" style={{padding: "10px 5px 5px 30px"}}>
+                        <img src={`${API_ENDPOINT}/${item.profile_pic}`} alt="" style={{width:"145px", height:"110px", marginLeft:"20px"}}/>
+                        <div className="content" style={{padding: "10px 5px 5px 80px"}}>
                                 <div className="header" id="cardHover" ><h4><b>{item.name}</b></h4></div>
                                 <div className="extra" ><h4><b>{item.position}</b></h4></div>
                                 <div className="extra">
@@ -79,8 +79,8 @@ if(renderdata !== null && renderdata !== undefined && renderdata.length > 0){
     )  
 }else{
     return(
-        <div>
-            No Applied Job!
+        <div className="container" style={{marginTop:"20px"}}>
+            <h2>No Applied Job!</h2>
         </div>
     )
 }

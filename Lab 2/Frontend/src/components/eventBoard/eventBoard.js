@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import {fetchEvent, searchEvent} from '../../actions/fetchAction'
 import {applyEvent} from '../../actions/applyActions'
 import PropTypes from 'prop-types'
+import {Link} from 'react-router-dom'
 
 class EventBoard extends Component {
   constructor(props){
@@ -151,7 +152,7 @@ render() {
     <div className="ui items" id="scroll" style={{width:"100%"}}>
         { renderdata.map( (item, index) =>
           <div className="item" id="cardHover" data-div_id={index} onClick={this.cardSelect} style={{background: "white", padding: "20px"}}>
-              <img src={item.profile_pic}  style={{width:"170px", height:"110px"}}/>
+              <img src={`${API_ENDPOINT}/${item.profile_pic}`}  style={{width:"240px", height:"170px"}}/>
               <div className="row" style={{width:"100%"}}>
                   <div className="col-md-9">
                     <div className="content" style={{padding: " 5px 5px 5px 35px"}}>
@@ -169,7 +170,7 @@ render() {
                                 Time: {item.eventTime}
                             </div>
                             <div className="extra" style={{textDecorationColor:"blue", color:"blue"}}>
-                                  View Details
+                            <Link to={`/eventDetail?id=${item.event_id}`}>View Detail</Link>
                             </div>
                     </div>
                   </div>

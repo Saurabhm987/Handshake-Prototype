@@ -1,4 +1,4 @@
-import {ERROR, UPDATE_STUDENT_PROFILE, UPDATE_DESCRIPTION, UPDATE_SUMMARY, ADD_EDUCATION, UPDATE_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE } from './types';
+import {UPDATE_COMPANY_PROFILE, JOB_APPLIED_STUDENT,ERROR, UPDATE_STUDENT_PROFILE, UPDATE_DESCRIPTION, UPDATE_SUMMARY, ADD_EDUCATION, UPDATE_EDUCATION, ADD_EXPERIENCE, UPDATE_EXPERIENCE } from './types';
 import {API_ENDPOINT} from '../components/controller/endpoint';
 import axios from 'axios';
 
@@ -235,8 +235,13 @@ export const  updateStudentProfile = (profleInfo, accessString) => dispatch => {
       })
         .then( response => {
             if(response.status === 200){
-                this.setState({
-                    editMode: !this.state.editMode,
+                const {data} = response
+                dispatch({
+                    type: UPDATE_COMPANY_PROFILE,
+                    payload: {
+                      location: data.location,
+                      contact : data.contact
+                    }
                 })
             }else{
                 console.log("BAD_REQUEST");
@@ -253,9 +258,12 @@ export const  updateStudentProfile = (profleInfo, accessString) => dispatch => {
         .then(res=>{
             if(res.status === 200){
               const {data} = res
-              console.log('change data - ', data)
-                console.log("Status changed!");
-                alert("Status changed");
+              alert("Status changed");
+              dispatch({
+                type: JOB_APPLIED_STUDENT,
+                payload: data
+              })
+
             }else{
                 console.log("error!");
                 alert("Can't change status!");
