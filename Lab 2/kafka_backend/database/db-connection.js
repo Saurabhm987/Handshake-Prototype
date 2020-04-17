@@ -1,7 +1,8 @@
 // MongoDB Connection 
 const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
-var url = process.env.MONGOURI;
+const key = require('../config/key')
+var url = key.MONGOURI;
 var pool; 
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true }, (err, db) => {
