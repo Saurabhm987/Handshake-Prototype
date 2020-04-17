@@ -16,6 +16,7 @@ app.post('/addSkill',  (req, res, next) =>{
 
         let email = user.email;
         let skill = req.body.params.data
+        console.log('email skill add --------------------------', email)
         console.log( 'skill data - ', skill)
 
         let options = {
