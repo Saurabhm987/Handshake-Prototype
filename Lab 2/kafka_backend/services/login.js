@@ -23,6 +23,7 @@ function handle_request(msg, callback){
                     const decryptedString = cryptr.decrypt(encryptedpsw);
                     if(msg.password  === decryptedString){
                         console.log(`user exist!`)
+                        console.log('user login - ', user)
                         callback(null, user.toObject())
                         // return done(null, user.toObject());
                     }else{

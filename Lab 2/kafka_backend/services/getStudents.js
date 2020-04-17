@@ -5,7 +5,7 @@ function handle_request(email, callback){
 
     User.find(
         {access: "student"},
-        {name: 1, college: 1,email:1},
+        {name: 1, college: 1,email:1, "profileInfo.major": 1, "profileInfo.profile_pic": 1},
     )
     .then( response => {
         console.log(' get all student response - ', response)

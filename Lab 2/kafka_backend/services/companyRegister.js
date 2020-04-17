@@ -8,6 +8,10 @@ function handle_request(req, callback){
     var responseObj = new Object()
     const { email } = req
     delete req.email
+    delete req.password
+    delete req.access
+
+    console.log('company register ------: ', req)
 
    User.updateOne(
         {email: email}, 

@@ -13,6 +13,7 @@ var AppliedEvent = require('./services/appliedEvent')
 var GetStudents = require('./services/getStudents')
 var GetApplications = require('./services/getApplications')
 var GetEventDetail = require('./services/getEventDetail')
+var GetCompanyList = require('./services/getCompanies')
 
 const mongoose = require('mongoose');
 const pool = require('./database/db-connection')
@@ -73,3 +74,4 @@ handleTopicRequest('applied_event', AppliedEvent)
 handleTopicRequest('get_students', GetStudents)
 handleTopicRequest('get_applications', GetApplications)
 handleTopicRequest('get_event_detail', GetEventDetail)
+handleTopicRequest('get_companies', GetCompanyList)

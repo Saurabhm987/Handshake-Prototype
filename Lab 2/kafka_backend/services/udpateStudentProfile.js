@@ -16,7 +16,7 @@ function handle_request(req, callback){
         update_query,
         options
     )
-    .then( response => {
+    .then( () => {
         console.log('login update response - '. response)
         callback(null, {message : 'Profile Updated!'})
     })
