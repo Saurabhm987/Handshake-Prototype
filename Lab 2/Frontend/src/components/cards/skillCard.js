@@ -45,7 +45,7 @@ class SkillCard extends Component {
                 token: accessString
             })
 
-        this.props.fetchSkill(accessString)
+        // this.props.fetchSkill(accessString)
     }
 
     render(){
