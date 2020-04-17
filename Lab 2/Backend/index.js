@@ -69,7 +69,6 @@ require('./routes/updateStudent')(app);
 require('./routes/addEduExp')(app);
 require('./routes/getJobBoard')(app);
 require('./routes/getJobPosted')(app);
-require('./routes/getResume')(app);
 require('./routes/uploadfile')(app);
 require('./routes/addSkills')(app);
 require('./routes/getEventBoard')(app);
@@ -82,6 +81,7 @@ require('./routes/getAppliedStudents')(app);
 require('./routes/changeStatus')(app);
 require('./routes/searchResult')(app);
 require('./routes/fetchSkill')(app)
+require('./routes/getCompanies')(app)
 
 server.listen(PORT , () => console.log(`Server is listening on port ${PORT}`));
 module.exports = app;

@@ -71,7 +71,8 @@ var AppliedJob = new Schema({
     name: String,
     position:String,
     job_id: String,
-    date: {type: Date, default: Date.now}
+    date: {type: Date, default: Date.now},
+    profile_pic: String
 }
 )
 
@@ -81,7 +82,8 @@ var AppliedEvent = new Schema({
     company_name: String,
     status: String,
     profile_pic: String,
-    location: String, 
+    location: String,
+    profile_pic: String, 
     date: {type: Date, default: Date.now}
 })
 
@@ -90,7 +92,8 @@ var StudentApplied = new Schema({
     title: String,
     job_id: String,
     status: String,
-    email: String
+    email: String,
+    profile_pic: String
 })
 
 var EventApplied = new Schema({
@@ -98,7 +101,8 @@ var EventApplied = new Schema({
     title: String,
     job_id: String,
     status: String,
-    email: String
+    email: String,
+    profile_pic: String
 })
 
 var userSchema = new Schema({

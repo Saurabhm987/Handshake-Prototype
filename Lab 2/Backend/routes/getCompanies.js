@@ -1,9 +1,8 @@
 const passport = require('passport')
-const User = require('../models/userModel')
 var kafka = require('../kafka/client');
 
 module.exports = app => {
-    app.get("/getStudents", (req, res, next) => {
+    app.get("/getCompanies", (req, res, next) => {
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
                 if(err){
                     console.log("passport_error: ", err);
@@ -16,13 +15,13 @@ module.exports = app => {
                     // get except  current user
                     const email = user.email
 
-                    kafka.make_request('get_students',email, (error, result)=>{
+                    kafka.make_request('get_companies',email, (error, result)=>{
                         console.log("response after make_request")
                         if(error){
                             console.log("error: ", error)
                             res.status(400).send({error: "kafka make_request error"})
                         }
-                        console.log('get student result  - ', result)
+                        console.log('all company result ------------- ', result)
                         res.json(result)
                     })
             }

@@ -34,11 +34,12 @@ module.exports = app =>{
                  studentApplied.name = user.name
                  studentApplied.title = req.body.params.event_name
                  studentApplied._id = req.body.params.event_id
+                 studentApplied.profile_pic = req.body.params.profile_pic;
                  studentApplied.email = user.email
                  studentApplied.status = "Applied"
  
                  User.updateOne(
-                     { name : company_name },
+                     { "profileInfo.name" : company_name },
                      {
                          $push:{"studentAppliedEvent": studentApplied}
                      }

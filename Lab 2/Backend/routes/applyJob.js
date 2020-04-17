@@ -17,36 +17,43 @@ module.exports = app =>{
                     console.log("No parameters sent !!", req.body);
                     return  res.status(400).end();
                 }
-
-                appliedDetails = new Object();
-                appliedDetails.status = "Applied"
-                appliedDetails._id = req.body.params.id
-                appliedDetails.name = req.body.params.name
-                appliedDetails.position = req.body.params.title
-                const email = user.email
-                console.log('job id - ', appliedDetails._id)
-
-                const company_name = req.body.params.name
+                
                 studentApplied = new Object()
+                console.log('request body - ', req.body.params)
+                
                 studentApplied.name = user.name
                 studentApplied.title = req.body.params.title
                 studentApplied.email = user.email
                 studentApplied.status ="Applied"
                 studentApplied._id = req.body.params.id
+                studentApplied.profile_pic = req.body.params.profile_pic
+                console.log('student applied details - ', studentApplied)
 
+                const company_name = req.body.params.name
                 User.updateOne(
-                    { name : company_name },
+                    { access: 'company', "profileInfo.name" : company_name },
                     {
                         $push:{"studentAppliedJob": studentApplied}
                     }
                 )
                 .exec()
                 .then((response) => {
-                    console.log('response  - ', response)
+                    console.log('student applied job response  - ', response)
                 })
                 .catch( error => {
                     console.log('error - ', error)
                 })
+
+
+                appliedDetails = new Object();
+                appliedDetails.status = "Applied"
+                appliedDetails._id = req.body.params.id
+                appliedDetails.name = req.body.params.name
+                appliedDetails.position = req.body.params.title
+                appliedDetails.profile_pic = req.body.params.profile_pic
+                const email = user.email
+
+                console.log('applied details - ', appliedDetails)
 
                 User.updateOne(  
                     { email: email }, 

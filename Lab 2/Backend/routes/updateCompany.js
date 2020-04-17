@@ -20,15 +20,25 @@ app.post('/updateCompanyProfile',  (req, res, next) =>{
                 let reqObj = req.body.params.data;
                 const email = user.email;
          
+                let options = {
+                    upsert: true, 
+                    new: true,
+                    useFindAndModify: false,
+                }
+
                 User.findOneAndUpdate(
                     { email : email},
                     {
-                        $set: {location : reqObj.location, contact: reqObj.contact}
-                    }
+                        "profileInfo.location" : reqObj.location, "profileInfo.contact": reqObj.contact
+                    },
+                    options
                 )
+                .exec()
                 .then(response => {
-                    console.log(`response - ${response}`)
-                    res.end()
+                    response = response.toObject()
+                    const {location, contact } = response.profileInfo
+                    console.log(`update response profileinfo - ${response.profileInfo}`)
+                    res.json({location: location, contact:contact})
                 })
                 .catch( error => {
                     console.log(`error : ${error}`)
@@ -39,14 +49,22 @@ app.post('/updateCompanyProfile',  (req, res, next) =>{
         let email = user.email;
         let description = req.body.params.data
         console.log('description : ', description)
+
+
+        let options = {
+            upsert: true, 
+            new: true,
+            useFindAndModify: false,
+        }
+
         User.findOneAndUpdate(
             {email : email},
-            { description : description },
-            {new : true}
+            { "profileInfo.description" : description },
+            options
         )
         .then( response => {
             response = response.toObject()
-            res.json(response.description)
+            res.json(response.profileInfo.description)
         })
         .catch( error => {
             console.log(`error : ${error}`)

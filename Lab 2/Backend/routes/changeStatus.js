@@ -15,19 +15,31 @@ module.exports = app => {
             
             console.log('change id - ', _id)
 
+
+            let options = {
+                upsert: true, 
+                new: true,
+                useFindAndModify: false,
+            }
+
+
             User.findOneAndUpdate(
-                {email : email , "appliedJob._id": _id },
+                {"appliedJob._id": _id },
                 {
                     $set :{
                         "appliedJob.$.status": status
                     }
-                }
+                },
+                options
             )
-            .then( () => {
+            .exec()
+            .then( (response) => {
+                console.log('_________student status change daa ________', response)
             })
             .catch( error => {
                 console.log('error - ', error)
              })
+
 
              User.findOneAndUpdate(
                 {"studentAppliedJob._id": _id},
@@ -35,11 +47,13 @@ module.exports = app => {
                     $set : {
                         "studentAppliedJob.$.status": status
                     },
-                    new: true
-                }
+                },
+                options
             )
+            .exec()
             .then( response => {
-                console.log('_______indentify_____',response.studentAppliedJob)
+                response = response.toObject()
+                console.log('_______company applied job status change_____',response.studentAppliedJob)
                 res.json(response.studentAppliedJob)
             })
             .catch( error => {
