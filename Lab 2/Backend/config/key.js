@@ -1,8 +1,4 @@
-const dotenv = require('dotenv').config();
-
+// const dotenv = require('dotenv').config();
 module.exports = {
-    iam_access_id: process.env.IAM_ACCESS_ID,
-    iam_secret: process.env.IAM_SECRET,
-    pic_url : process.env.AWS_URL,
-    bucket_name: process.env.BUCKET_NAME,
+    MONGOURI: "mongodb+srv://saurabh:r0NFtVWvIH5Dt5wR@handshake-cluster-i7dsd.mongodb.net/test?retryWrites=true&w=majority"
 }

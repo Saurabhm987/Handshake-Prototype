@@ -1,6 +1,6 @@
 const multer  = require('multer');
 const passport = require('passport'); 
-const uploadFile = require('../config/s3BucketUpload');
+// const uploadFile = require('../config/s3BucketUpload');
 
 const storage = multer.diskStorage({
     destination : 'uploads/',

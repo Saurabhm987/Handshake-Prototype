@@ -1,5 +1,5 @@
 const passport = require('passport');
-require('dotenv').config(); 
+// require('dotenv').config(); 
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('myTotalySecretKey');
 const JWTstrategy = require('passport-jwt').Strategy;
