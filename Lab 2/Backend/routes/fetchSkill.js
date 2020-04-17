@@ -14,7 +14,7 @@ app.get('/fetchSkill',  (req, res, next) =>{
 
     }else if(user.email !== ""){
 
-        let email = user.email;
+        const email = req.query.email
 
         User.findOne(
             {email : email},
