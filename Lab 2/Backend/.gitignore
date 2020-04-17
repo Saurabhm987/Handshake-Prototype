@@ -17,8 +17,6 @@ package-lock.json
 .env
 
 # misc
-/uploads
-/public
 .DS_Store
 .env.local
 .env.development.local
