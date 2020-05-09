@@ -6,6 +6,7 @@ module.exports = app => {
     app.get('/getEventBoard/:requestInfo', (req, res, next) => {
         console.log("event_board");
         passport.authenticate('jwt',{session: false}, (err, user, info) => {
+            console.log('authentication done !')
             if(err){
                 console.log("errors while authenticating", err);
             }

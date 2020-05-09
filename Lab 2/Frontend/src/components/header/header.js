@@ -165,8 +165,7 @@ class Header extends Component{
 
             )
 
-            // let CompanyLogin = (
-                
+            // let CompanyLogin = (       
             //     <div className="ui blue inverted menu" style={{padding:"10px"}}>
             //         <Link to="/companyPostedJobCard" className="item"> Posted Job </Link>                
             //         <Link to="/companyPostedEventCard" className="item">Event Posted </Link>

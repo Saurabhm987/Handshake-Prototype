@@ -25,7 +25,7 @@ module.exports = app => {
                             res.status(400).send({error: "kafka make_request error"})
                         }
                         console.log("Final response: ")
-                        console.log(result)
+                        console.log( "__________________Job Board Reponse ___________________", result)
                         res.json(result)
                     })
             }else if(req.params.requestInfo === "applications"){

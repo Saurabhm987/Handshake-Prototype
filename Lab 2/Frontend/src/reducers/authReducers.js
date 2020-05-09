@@ -22,7 +22,7 @@
         isRegistered: false,
         token: null,
         loggedIn: true,
-        error: ""
+        error: ''
     }
 
     export default function(state = initialState, action){

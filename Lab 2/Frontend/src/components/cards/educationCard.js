@@ -1,30 +1,30 @@
-import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
-import {addEducation, updateEducation} from '../../actions/updateAction';
-import {fetchEducation} from '../../actions/fetchAction';
+import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
+import { addEducation, updateEducation } from '../../actions/updateAction';
+import { fetchEducation } from '../../actions/fetchAction';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 class EducationCard extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
-            token: "", 
-            college:"",
-            location:"",
+            token: "",
+            college: "",
+            location: "",
             degree: "",
-            major:"",
-            gpa:"",
-            yop:"",
-            _id:"",
+            major: "",
+            gpa: "",
+            yop: "",
+            _id: "",
             isLogin: true,
             editMode: false,
-            addMode:false, 
+            addMode: false,
         }
     }
 
-    handleCancelAdd = () =>{
+    handleCancelAdd = () => {
         this.setState({
             addMode: false
         })
@@ -38,7 +38,7 @@ class EducationCard extends Component {
     }
 
     handleCancel = () => {
-        this.setState ({
+        this.setState({
             editMode: !this.state.editMode
         })
     }
@@ -48,13 +48,13 @@ class EducationCard extends Component {
         const value = target.value;
         const name = target.name;
 
-        this.setState ({
+        this.setState({
             [name]: value
         });
     }
 
     handleAdd = (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         this.setState({
             addMode: false
         })
@@ -62,43 +62,43 @@ class EducationCard extends Component {
         const educationInfo = {
             college: this.state.college,
             location: this.state.location,
-            degree:this.state.degree,
+            degree: this.state.degree,
             major: this.state.major,
             gpa: this.state.gpa,
             yop: this.state.yop,
         }
-        const {token} = this.state
-        this.props.addEducation(educationInfo,token );
-        const {email} = this.props
+        const { token } = this.state
+        this.props.addEducation(educationInfo, token);
+        const { email } = this.props
         this.props.fetchEducation(token, email)
     }
 
     setAddMode = () => {
-            this.setState({
-                addMode: true
+        this.setState({
+            addMode: true
         })
     }
 
     handleSave = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         this.setState({
             editMode: !this.state.editMode
         })
         const userInfo = {
             college: this.state.college,
             location: this.state.location,
-            degree:this.state.degree,
+            degree: this.state.degree,
             major: this.state.major,
             gpa: this.state.gpa,
             yop: this.state.yop,
             _id: this.state._id
         }
         this.props.updateEducation(userInfo, this.state.token);
-        }
+    }
 
-    componentDidMount(){
+    componentDidMount() {
         const accessString = localStorage.getItem('JWT');
-        if(accessString === null){
+        if (accessString === null) {
             this.setState({
                 isLogin: false
             })
@@ -108,205 +108,205 @@ class EducationCard extends Component {
         })
     }
 
-        renderViewMode = () =>{
-            const {educationInfo, adminView} = this.props
-            let data = educationInfo;
-            if(data !== undefined &&  data !== ""){
-                return(
-                        <div className="ui cards">
-                            <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
-                                <div className="content">
-                                    <div className="header">Education</div>
-                                    <br/>
-                                    {  data.map( edu => 
-                                            (this.props.adminView)
-                                            ?<div onClick={this.handleEdit} id="eduCard"  data-div_id={edu.education_id}  style={{padding: "20px"}}>
-                                                    <div className="description">
-                                                            <h2>{edu.education_details.college}</h2>
-                                                    </div>
-                                                    <div className ="description">
-                                                    {edu.education_details.degree} in {edu.education_details.major} 
-                                                    </div>
-                                                    <div className="description">
-                                                        Graduate: {edu.education_details.yop} 
-                                                    </div>
-                                                    <div className="description">
-                                                        GPA:  {edu.education_details.gpa} 
-                                                    </div>
-                                                    <div className="ui divider"></div>
-                                            </div>
-                                            :<div id="eduCard"  data-div_id={edu.education_id}  style={{padding: "20px"}}>
-                                                    <div className="description">
-                                                            <h2>{edu.education_details.college}</h2>
-                                                    </div>
-                                                    <div className ="description">
-                                                    {edu.education_details.degree} in {edu.education_details.major} 
-                                                    </div>
-                                                    <div className="description">
-                                                        Graduate: {edu.education_details.yop} 
-                                                    </div>
-                                                    <div className="description">
-                                                        GPA:  {edu.education_details.gpa} 
-                                                    </div>
-                                                    <div className="ui divider"></div>
-                                            </div>
-                                    ) }
-                                </div>
-                                { (this.props.adminView)
-                                ?<div  className="extra content">
-                                    <div onClick={this.setAddMode} className="ui bottom attached large button">
-                                        Add 
+    renderViewMode = () => {
+        const { educationInfo, adminView } = this.props
+        let data = educationInfo;
+        if (data !== undefined && data !== "") {
+            return (
+                <div className="ui cards">
+                    <div className="card" style={{ width: "55%", fontSize: "1.5em" }}>
+                        <div className="content">
+                            <div className="header">Education</div>
+                            <br />
+                            {data.map(edu =>
+                                (this.props.adminView)
+                                    ? <div onClick={this.handleEdit} id="eduCard" data-div_id={edu.education_id} style={{ padding: "20px" }}>
+                                        <div className="description">
+                                            <h2>{edu.education_details.college}</h2>
+                                        </div>
+                                        <div className="description">
+                                            {edu.education_details.degree} in {edu.education_details.major}
+                                        </div>
+                                        <div className="description">
+                                            Graduate: {edu.education_details.yop}
+                                        </div>
+                                        <div className="description">
+                                            GPA:  {edu.education_details.gpa}
+                                        </div>
+                                        <div className="ui divider"></div>
                                     </div>
-                                </div>
-                                : null
-                                }
-                            </div>
+                                    : <div id="eduCard" data-div_id={edu.education_id} style={{ padding: "20px" }}>
+                                        <div className="description">
+                                            <h2>{edu.education_details.college}</h2>
+                                        </div>
+                                        <div className="description">
+                                            {edu.education_details.degree} in {edu.education_details.major}
+                                        </div>
+                                        <div className="description">
+                                            Graduate: {edu.education_details.yop}
+                                        </div>
+                                        <div className="description">
+                                            GPA:  {edu.education_details.gpa}
+                                        </div>
+                                        <div className="ui divider"></div>
+                                    </div>
+                            )}
                         </div>
-                    );  
-                }else{
-                    return(
-                        <div className="ui cards">
-                        <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
-                            <div className="content">
-                                <div className="header">Experience</div>
-                                <div>No Education Added!</div>
-                            </div>
-                            { (adminView === true)
-                            ?<div className="extra content">
+                        {(this.props.adminView)
+                            ? <div className="extra content">
                                 <div onClick={this.setAddMode} className="ui bottom attached large button">
-                                    Add 
+                                    Add
+                                    </div>
+                            </div>
+                            : null
+                        }
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div className="ui cards">
+                    <div className="card" style={{ width: "55%", fontSize: "1.5em" }}>
+                        <div className="content">
+                            <div className="header">Experience</div>
+                            <div>No Education Added!</div>
+                        </div>
+                        {(adminView === true)
+                            ? <div className="extra content">
+                                <div onClick={this.setAddMode} className="ui bottom attached large button">
+                                    Add
                                 </div>
                             </div>
                             : null
-                            }
+                        }
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    renderEditView = () => {
+        return (
+            <div className="ui cards">
+                <div className="card" style={{ width: "55%", fontSize: "1.5em" }}>
+                    <div className="content">
+                        <div className="header">Education</div>
+                        <br />
+                        <div style={{ padding: "20px" }}>
+                            <div className="description">
+                                College Name
+                            </div>
+                            <div className="ui input" style={{ fontSize: "0.5em", width: "350px" }}>
+                                <input type="text" name="college" value={this.state.college || ''} onChange={this.handleChange} />
+                            </div>
+                            <div className="description">
+                                College Location
+                            </div>
+                            <div className="ui input" style={{ fontSize: "0.5em", width: "350px" }}>
+                                <input type="text" name="location" value={this.state.location || ''} onChange={this.handleChange} />
+                            </div>
+                            <div className="description">
+                                Degree
+                            </div>
+                            <div className="ui input" style={{ fontSize: "0.5em", width: "350px" }}>
+                                <input type="text" name="degree" value={this.state.degree || ''} onChange={this.handleChange} />
+                            </div>
+                            <div className="description">
+                                Major
+                            </div>
+                            <div className="ui input" style={{ fontSize: "0.5em", width: "350px" }}>
+                                <input type="text" name="major" value={this.state.major || ''} onChange={this.handleChange} />
+                            </div>
+                            <div className="description">
+                                Year of Passing
+                            </div>
+                            <div className="ui input" style={{ fontSize: "0.5em", width: "350px" }}>
+                                <input type="text" name="yop" value={this.state.yop || ''} onChange={this.handleChange} />
+                            </div>
+                            <div className="description">
+                                GPA
+                            </div>
+                            <div className="ui input" style={{ fontSize: "0.5em", width: "350px" }}>
+                                <input type="text" name="gpa" value={this.state.gpa || ''} onChange={this.handleChange} />
+                            </div>
+                            <div className="extra content" style={{ paddingTop: "10px" }}>
+                                <div onClick={this.handleSave} className="ui medium green button" style={{ width: "100px", float: "left" }}>
+                                    Save
+                                </div>
+                                <div onClick={this.handleCancel} className="ui medium button" style={{ width: "100px", marginLeft: "24%" }}>
+                                    Cancel
+                                </div>
+                            </div>
+                            <br />
                         </div>
                     </div>
-                    )
-                }
-            }
-
-            renderEditView = () => {
-                return(
-                <div className="ui cards">
-                        <div className="card" style={{width: "55%", fontSize:"1.5em"}}>
-                                <div className="content">
-                                        <div className="header">Education</div>
-                                        <br/>
-                                        <div style={{padding: "20px"}}>
-                                                <div className="description">
-                                                        College Name
-                                                </div>
-                                                <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                        <input type="text" name="college" value={this.state.college || ''} onChange = { this.handleChange}/>
-                                                </div>
-                                                <div className="description">
-                                                        College Location
-                                                </div>
-                                                <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                        <input type="text" name="location" value={this.state.location || ''} onChange = { this.handleChange}/>
-                                                </div>
-                                                <div className ="description">
-                                                        Degree
-                                                </div>
-                                                <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                        <input type="text" name="degree" value={this.state.degree || ''} onChange = { this.handleChange}/>
-                                                </div>
-                                                <div className ="description">
-                                                         Major
-                                                </div>
-                                                <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                        <input type="text" name="major" value={this.state.major || ''} onChange = { this.handleChange}/>
-                                                </div>
-                                                <div className="description">
-                                                        Year of Passing
-                                                </div>
-                                                <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                        <input type="text" name="yop" value={this.state.yop || ''} onChange = { this.handleChange}/>
-                                                </div>
-                                                <div className="description">
-                                                        GPA
-                                                </div>
-                                                <div className="ui input" style={{fontSize: "0.5em", width:"350px" }}>
-                                                        <input type="text" name="gpa" value={this.state.gpa || ''} onChange = { this.handleChange}/>
-                                                </div>
-                                                <div className="extra content" style={{paddingTop:"10px"}}>
-                                                <div  onClick= {this.handleSave } className="ui medium green button" style={{width:"100px", float:"left"}}>
-                                                        Save 
-                                                </div>
-                                                <div onClick={this.handleCancel} className="ui medium button" style={{width:"100px", marginLeft:"24%"}}>
-                                                            Cancel 
-                                                </div>
-                                                </div>
-                                                <br/>
-                                        </div>
-                                </div>
-                        </div>
                 </div>
+            </div>
+        )
+    }
+
+    renderAddCollege = () => {
+        console.log("in render add college!!!");
+        return (
+            <div className="ui cards">
+                <div className="card" style={{ width: "55%", fontSize: "1.3em" }}>
+                    <div className="header" style={{ padding: "10px" }}> Add Education</div>
+                    <form className="ui form" style={{ padding: "20px" }}>
+                        <div className="field">
+                            <label>College Name</label>
+                            <input type="text" name="college" onChange={this.handleChange} />
+                        </div>
+                        <div className="field">
+                            <label>College Location</label>
+                            <input type="text" name="location" onChange={this.handleChange} />
+                        </div>
+                        <div className="field">
+                            <label>Degree</label>
+                            <input type="text" name="degree" onChange={this.handleChange} />
+                        </div>
+                        <div className="field">
+                            <label>Major</label>
+                            <input type="text" name="major" onChange={this.handleChange} />
+                        </div>
+                        <div className="field">
+                            <label>Year of passing</label>
+                            <input type="text" name="yop" onChange={this.handleChange} />
+                        </div>
+                        <div className="field">
+                            <label>GPA</label>
+                            <input type="text" name="gpa" onChange={this.handleChange} />
+                        </div>
+                        <div className="extra content" style={{ paddingBottom: "20px" }}>
+                            <div onClick={this.handleAdd} className="ui medium green button" style={{ width: "100px", float: "left" }}>
+                                Save
+                            </div>
+                            <div onClick={this.handleCancelAdd} className="ui medium button" style={{ width: "100px", float: "right" }}>
+                                Cancel
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )
+    }
+
+    render() {
+        if (this.state.isLogin === true) {
+            if (this.state.addMode) {
+                return (
+                    this.renderAddCollege()
+                )
+            } else {
+                return (
+                    this.state.editMode ? this.renderEditView() : this.renderViewMode()
                 )
             }
-
-            renderAddCollege = () => {
-                console.log("in render add college!!!");
-                return(
-                    <div className="ui cards">
-                    <div className="card" style={{width: "55%", fontSize:"1.3em"}}>
-                    <div className="header" style={{padding: "10px"}}> Add Education</div>
-                    <form className="ui form" style={{padding:"20px"}}>
-                            <div className="field">
-                                    <label>College Name</label>
-                                    <input type="text" name="college"  onChange={this.handleChange}/>
-                            </div>
-                            <div className="field">
-                                    <label>College Location</label>
-                                    <input type="text" name="location" onChange={this.handleChange} />
-                            </div>
-                            <div className="field">
-                                    <label>Degree</label>
-                                    <input type="text" name="degree" onChange={this.handleChange}/>
-                            </div>
-                            <div className="field">
-                                    <label>Major</label>
-                                    <input type="text" name="major" onChange={this.handleChange} />
-                            </div>
-                            <div className="field">
-                                    <label>Year of passing</label>
-                                    <input type="text" name="yop" onChange={this.handleChange}/>
-                            </div>
-                            <div className="field">
-                                    <label>GPA</label>
-                                    <input type="text" name="gpa" onChange={this.handleChange}/>
-                            </div>
-                            <div className="extra content" style={{paddingBottom:"20px"}}>
-                                                <div  onClick= {this.handleAdd } className="ui medium green button" style={{width:"100px", float:"left"}}>
-                                                        Save 
-                                                </div>
-                                                <div onClick={this.handleCancelAdd} className="ui medium button" style={{width:"100px",float:"right"}}>
-                                                            Cancel 
-                                                </div>
-                                </div>
-                  </form>
-                  </div>
-                  </div>
-                )
-            }
-
-            render(){
-                if(this.state.isLogin === true){
-                    if(this.state.addMode){
-                        return(
-                            this.renderAddCollege()
-                        )
-                    }else{
-                        return(
-                            this.state.editMode ? this.renderEditView() : this.renderViewMode()
-                        )
-                    }
-                }else{
-                    return(
-                        <Redirect to="/login"/>
-                    )
-                }
-            }
+        } else {
+            return (
+                <Redirect to="/login" />
+            )
+        }
+    }
 }
 
 EducationCard.propTypes = {
@@ -320,4 +320,4 @@ const mapStateToProps = state => ({
     educationInfo: state.Handshake_User_Info.educationInfo
 })
 
-export default connect(mapStateToProps, {addEducation, fetchEducation, updateEducation})(EducationCard);
+export default connect(mapStateToProps, { addEducation, fetchEducation, updateEducation })(EducationCard);

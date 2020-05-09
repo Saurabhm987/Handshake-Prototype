@@ -7,6 +7,8 @@ const cryptr = new Cryptr('myTotalySecretKey');
 function handle_request(msg, callback){
     console.log("In login handle request:"+ JSON.stringify(msg));
 
+    console.log("passport login is working")
+
      User.findOne({ email : msg.email}, function(err, user){
                 if(err){
                     console.log("pass login error !", err);

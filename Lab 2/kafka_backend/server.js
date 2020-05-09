@@ -60,6 +60,7 @@ function handleTopicRequest(topic_name,fname){
 
 //first argument is topic name
 //second argument is a function that will handle this topic request
+
 // handleTopicRequest("student_register",Register)
 // handleTopicRequest("company_register",CompanyRegister)
 handleTopicRequest('login', Login)
