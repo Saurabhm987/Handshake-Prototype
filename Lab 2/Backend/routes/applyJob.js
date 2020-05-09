@@ -1,7 +1,7 @@
 const passport = require('passport'); 
 const User = require('../models/userModel');
 
-module.exports = app =>{
+module.exports = app => {
         app.post('/applyJob', (req, res, next)=>{
             passport.authenticate('jwt', (err, user, info) => {
             if(err){

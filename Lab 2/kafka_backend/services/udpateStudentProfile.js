@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 function handle_request(req, callback){
     console.log("Handling update login request");
     console.log("Login_update_message: ",req);
-
+    callback(null, {message:"sending error"})
     const { email, options, update_query } = req
 
     console.log('email - ', email)

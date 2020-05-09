@@ -13,6 +13,7 @@ function handle_request(msg, callback){
         response.forEach( jobs =>{
                 postedResult = [...postedResult ,...jobs.postedJob]
         })
+        console.log('_________________getting result ______________: ', postedResult)
         callback(null, postedResult)
      })
      .catch( error => {

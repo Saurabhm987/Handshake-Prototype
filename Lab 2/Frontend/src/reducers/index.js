@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import authReducers from './authReducers'
+import authReducers from './authReducers';
 
-export default combineReducers( {
+export default combineReducers({
     Handshake_User_Info: authReducers
 });

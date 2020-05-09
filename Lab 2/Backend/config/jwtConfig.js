@@ -1,4 +1,4 @@
-// const dotenv = require('dotenv').config();
+const dotenv = require('dotenv').config();
 module.exports = {
-    secret : "mynewsecretejwtsecretepassportuse"
+    secret : process.env.JWT_SECRET
 };

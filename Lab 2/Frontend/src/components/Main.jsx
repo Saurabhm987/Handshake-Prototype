@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Route, BrowserRouter} from 'react-router-dom';
+import React, { Component } from 'react';
+import { Route, BrowserRouter } from 'react-router-dom';
 import Login from './auth/Login';
 import Register from './auth/Register';
 import Home from "./Home/home"
@@ -20,10 +20,10 @@ import DetailsCard from './cards/detailsCard';
 import StudentsCard from './cards/studentsCard';
 import JobAppliedStudent from './cards/jobAppliedStudentCard';
 import EventAppliedStudents from './cards/eventAppliedStudentCard';
-import Chat from '../components/message/chat/Chat'
-import PdfView from '../components/cards/pdfView'
-import EventDetail from '../components/cards/getEventDetail'
-import ComapnyListCard from '../components/cards/companyListCard'
+import Chat from './message/chat/Chat'
+import PdfView from './cards/pdfView'
+import EventDetail from './cards/getEventDetail'
+import ComapnyListCard from './cards/companyListCard'
 
 class Main extends Component {
     render() {

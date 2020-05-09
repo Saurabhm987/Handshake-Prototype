@@ -25,13 +25,12 @@ AWS.config.update({
             ACL: "public-read"
         };
         s3.putObject(putParams, function(err, data){
-          if (err) {
+          if(err){
 
             console.log('Could nor upload the file. Error :',err);
             return res.send({success:false});
 
-          } 
-          else{
+          }else{
 
             console.log('Successfully uploaded the file');
 

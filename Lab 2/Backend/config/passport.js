@@ -1,5 +1,5 @@
 const passport = require('passport');
-// require('dotenv').config(); 
+require('dotenv').config(); 
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('myTotalySecretKey');
 const JWTstrategy = require('passport-jwt').Strategy;
@@ -8,7 +8,6 @@ const LocalStrategy = require('passport-local').Strategy;
 const jwtSecret = require('./jwtConfig')
 const User = require('../models/userModel');
 var kafka = require('../kafka/client');
-
 
 passport.use(
     'register',
@@ -71,6 +70,7 @@ passport.use(
       },
       (email, password, done) => {
         try {
+
             console.log("passport login strategy");
             // console.log("email: ", email);
             let req = new Object()
@@ -132,6 +132,8 @@ passport.use(
     'jwt',
     new JWTstrategy(opts, (jwt_payload, done) => {
         try{
+
+            console.log('hitting jwt startegy')
             console.log("JWT_ID: ", jwt_payload.id);
             User.findOne({email:jwt_payload.id},function(err, result){
                 if(err){

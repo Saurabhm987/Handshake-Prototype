@@ -26,9 +26,7 @@ class CompanyProfile extends Component {
     componentDidMount(){
 
         const accessString = localStorage.getItem('JWT')
-        console.log("acccccccccccccccccc- ", accessString)
         if(accessString === undefined && accessString === "null"){
-            console.log('calling thissssssssssssssssssssssssss')
             this.props.history.push('/companyLogin')
             this.setState({
                 isLogin: false
@@ -69,8 +67,6 @@ class CompanyProfile extends Component {
         const {companyDetails} = this.props
         const {email, adminView } = this.state
         const {description} = companyDetails
-        console.log('description : ', description)  
-        console.log('--------------------adminView ------------------- ', adminView)
         
         return(
             <div className="container">

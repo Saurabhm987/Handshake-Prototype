@@ -7,6 +7,8 @@ const http = require('http')
 const app = express();
 const server = http.createServer(app)
 const  io = socketio(server)
+const pool = require('./database/db-connection')
+pool
 const path = require('path');
 
 module.exports=io;
@@ -16,7 +18,7 @@ const { addUser, removeUser, getUser, getUsersInRoom } = require('./users.js');
 const PORT = process.env.PORT || 3001
 
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://35.153.200.88:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Authorization, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
@@ -85,4 +87,3 @@ require('./routes/getCompanies')(app)
 
 server.listen(PORT , () => console.log(`Server is listening on port ${PORT}`));
 module.exports = app;
-
